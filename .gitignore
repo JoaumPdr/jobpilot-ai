@@ -1,0 +1,58 @@
+# Ambiente e dependências
+.env
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# uv - NÃO ignorar uv.lock e .python-version (são versionados)
+# uv.lock
+# .python-version
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Dados reais (nunca versionar)
+data/*.db
+data/*.sqlite
+data/*.csv
+!data/golden/
+!data/taxonomy/
+
+# Docker
+.docker/
+
+# Build e distribuição
+dist/
+build/
+*.egg-info/
+
+# Segredos e chaves (proteção extra)
+*.pem
+*.key
+*.crt
+secrets/
+
+# Temporários
+tmp/
+temp/
