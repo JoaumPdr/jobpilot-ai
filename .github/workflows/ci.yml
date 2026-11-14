@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, phase/*]
+  pull_request:
+    branches: [main, develop, phase/*]
+
+env:
+  DATABASE_URL: postgresql+psycopg://jobpilot:jobpilot@localhost:5433/jobpilot
+  POSTGRES_USER: jobpilot
+  POSTGRES_PASSWORD: jobpilot
+  POSTGRES_DB: jobpilot
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobpilot
+          POSTGRES_PASSWORD: jobpilot
+          POSTGRES_DB: jobpilot
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sincronizar dependências (lock travado)
+        run: uv sync --locked
+
+      - name: Lint com Ruff
+        run: uv run ruff check .
+
+      - name: Testes com pytest
+        run: uv run pytest
+
+      - name: Teste de migração Alembic (upgrade/downgrade)
+        run: |
+          uv run alembic upgrade head
+          uv run alembic downgrade -1
+          uv run alembic upgrade head
