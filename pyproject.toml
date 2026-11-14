@@ -21,10 +21,18 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "fastapi>=0.162.7",
+    "httpx>=0.28.1",
     "pre-commit>=4.7.0",
     "pytest>=9.2.0",
     "ruff>=0.17.4",
+    "structlog>=26.1.0",
+    "uvicorn>=0.54.0",
 ]
 
 [tool.ruff]
 exclude = [".agents"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
