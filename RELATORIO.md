@@ -65,6 +65,7 @@
 - **Ajuste de bônus:** `fastapi`, `structlog` e `uvicorn` estavam em `[dependency-groups] dev`, apesar de serem dependências de runtime; movidos para `[project] dependencies` (um `uv sync --no-dev` antes quebraria a app).
 - **Verificação (por que agora acredito que passa):** criado um `git worktree` destacado em `HEAD` (árvore limpa, **sem** `src/`, igual ao CI) e executadas as quatro etapas do workflow: `uv sync --locked` sem etapa de build, `ruff check` limpo, `pytest` 4 passed, `alembic upgrade/downgrade/upgrade` OK. Worktree removido ao final.
 - **Lição registrada:** qualquer validação "passa local / falha no CI" deve ser repetida em worktree limpo, nunca na árvore de trabalho com arquivos não versionados.
+- **Inconsistência detectada na revisão do gate:** a tag `fase-00` foi criada em `3df13a3`, antes das correções de CI, ou seja, marca um estado que falhou no CI. Decisão (aprovada pelo JP): após o PR ficar verde e ser mesclado, apagar a tag local e remota e recriá-la no commit de merge de `develop`.
 
 ---
 
