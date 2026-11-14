@@ -10,25 +10,25 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 02:10 (UTC) |
-| **Fase atual** | Fase 0 — Fundação **concluída** (gate fechado) |
-| **Branch da fase** | `phase/00-fundacao` (mesclada em `develop`) |
-| **Tarefa atual** | F0-GATE — **concluído**; próxima tarefa F1-T01 (modelos do perfil) |
-| **Branch da tarefa** | `docs/f0-gate-encerrado` (fechamento documental) |
-| **Estado da tarefa** | concluída |
-| **Último commit** | `cbbeb65` — Merge pull request #4 from JoaumPdr/phase/00-fundacao |
+| **Última atualização** | 2026-11-14 02:45 (UTC) |
+| **Fase atual** | Fase 0 — Fundação **concluída**; Fase 1 em preparação (sem código) |
+| **Branch da fase** | `phase/00-fundacao` (mesclada em `develop`); `phase/01-nucleo-sem-ia` ainda não criada |
+| **Tarefa atual** | Higiene F0 + preparação da F1-T01 (nenhum código de F1 escrito) |
+| **Branch da tarefa** | `chore/f0-higiene-desenvolvimento` |
+| **Estado da tarefa** | preparação concluída, aguardando merge do PR |
+| **Último commit** | `0f9246c` — style: aplicar ruff format como baseline antes da Fase 1 |
 | **Testes** | verdes (4 passed) |
-| **CI** | verde no GitHub no PR #4 (execução completa: `uv sync --locked`, ruff, pytest com PostgreSQL, migração Alembic) |
+| **CI** | verde no PR #4; agora também verifica `ruff format --check` (GUIA §B.8) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 02:05 (UTC) — tag `fase-00` recriada no merge commit `cbbeb65` |
-| **PR aberto** | nenhum (PR #4 mesclado) |
+| **Último push** | 2026-11-14 02:45 (UTC) — branch `chore/f0-higiene-desenvolvimento` |
+| **PR aberto** | `chore/f0-higiene-desenvolvimento` → `develop` (realinhamento + higiene) |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a branch `phase/01-nucleo-sem-ia` a partir de `develop` atualizado e iniciar F1-T01 (modelos e migração do perfil).
+> Mesclar o PR `chore/f0-higiene-desenvolvimento` → `develop` e criar `phase/01-nucleo-sem-ia` a partir de `develop`.
 
 ---
 
@@ -42,6 +42,7 @@
 - F0-T06 concluída: `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com serviço PostgreSQL, teste de migração Alembic.
 - F0-T07 concluída: ADRs 0001–0007 e 0009 criados (total de 10 ADRs incluindo 0008 e 0010), `docs/privacy-and-sources.md` criado, README revisado e completo conforme GUIA_DOCS_E_GIT.md.
 - F0-GATE **concluído**: PR #4 (`phase/00-fundacao` → `develop`) mesclado com CI verde e merge commit `cbbeb65`; tag `fase-00` recriada nesse commit (a tag anterior apontava para `3df13a3`, que falhou no CI); `PR_BODY_F0.md` removido da raiz.
+- Higiene pós-gate: skill de terceiros ignorado no `.gitignore` (permanece instalado localmente), `skills-lock.json` restaurado, baseline de `ruff format` aplicado e `ruff format --check` adicionado ao CI. Preparação da F1-T01 documentada, sem código.
 
 ---
 
@@ -52,11 +53,37 @@
 - [x] Mesclar com **"Create a merge commit"** (PR #4 → `cbbeb65`) ✅
 - [x] Tag `fase-00` recriada no merge commit e publicada no remoto ✅
 - [x] Seção da Fase 0 no `RELATORIO.md` ✅
-- [ ] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e iniciar F1-T01
+- [x] Resolver skill de terceiros (`.gitignore` + `skills-lock.json` restaurado) ✅
+- [x] Baseline de formatação (`ruff format`) + `ruff format --check` no CI ✅
+- [ ] Mesclar PR `chore/f0-higiene-desenvolvimento` → `develop`
+- [ ] Criar `phase/01-nucleo-sem-ia` a partir de `develop`
+- [ ] Iniciar F1-T01 (modelos e migração do perfil)
 
-### Itens fora do escopo da Fase 0 (deixar como estão por ora)
+### Plano da F1-T01 (aprovado em nível de desenho; código ainda não escrito)
 
-- `skills-lock.json` modificado e `.agents/skills/git-create-repo/` não versionado: artefatos de skill instalados nesta sessão, não são trabalho da Fase 0. Decidir depois se entram ou vão para o `.gitignore`.
+**Arquivos previstos**
+- `app/models/candidate.py` — `Candidate` (`name`, `email` opcional, `resume_text`, `headline`, `education` JSONB, `languages` JSONB, timestamps)
+- `app/models/preferences.py` — `CandidatePreference` (1:1 por `candidate_id` único)
+- `app/models/skill.py` — `Skill` (`canonical_name` único, `category`, `aliases` JSONB) e `CandidateSkill` (único `(candidate_id, skill_id)`)
+- `app/models/experience.py` — `CandidateExperience` (FK, `start_date`/`end_date`, `description`, `skills_used` JSONB)
+- `app/models/__init__.py` — exportar modelos para o Alembic enxergar o metadata
+- `migrations/versions/000000000002_profile_tables.py` — migração reversível
+- `tests/db/conftest.py` — fixture de banco de teste dedicado (`jobpilot_test`)
+- `tests/db/test_profile_constraints.py` — constrains (únicos, FKs, CHECK)
+- `docs/data-model.md` — tabelas, relações, constraints, enums, diagrama
+
+**Decisões de desenho já tomadas**
+- `candidate_skills.level`: `VARCHAR` + `CHECK` (iniciante/intermediário/avançado) — evita `ALTER TYPE` do ENUM nativo em evoluções
+- `min_salary`: `Numeric(12, 2)`; sem coluna de moeda por ora (registrado no data-model)
+- `skills.category`: texto livre até a taxonomia da F2-T01
+- FKs com `ON DELETE CASCADE`; `end_date >= start_date` via CHECK; `years >= 0`
+- Banco de teste dedicado `jobpilot_test`, criado por fixture a partir de `TEST_DATABASE_URL` (default derivado de `DATABASE_URL`), com `alembic upgrade head` na sessão
+
+**Fora do escopo da F1-T01:** rotas, serviços e validação Pydantic dos JSONB (F1-T02) e tabelas de vagas (F1-T03).
+
+### Itens fora do escopo da Fase 0 (resolvido)
+
+- ~~`skills-lock.json` modificado e `.agents/skills/git-create-repo/` não versionado~~ → skill de terceiros ignorado no `.gitignore` e lock restaurado ao estado versionado (decisão registrada na seção 6).
 
 ---
 
@@ -81,7 +108,9 @@
 
 | Data | Tipo (bloqueio/bug/dívida/dúvida) | Descrição | Tarefa | Situação |
 |------|-----------------------------------|-----------|--------|----------|
-| — | — | — | — | — |
+| 2026-11-14 | processo | PR #5 (fechamento da Fase 0) foi aberto contra `main` em vez de `develop`; correção por realinhamento (`main` → `develop`) | F0-GATE | resolvido (aguardando merge) |
+| 2026-11-14 | dívida | `app/main.py` usa `@app.on_event` (depreciado no FastAPI); migrar para `lifespan` | F1 | aberto |
+| 2026-11-14 | dívida | `.agents/skills/alethe` versionado (~1,5 MB de assets) infla o repositório; reavaliar se precisa ficar versionado | — | aberto |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -94,12 +123,15 @@
 | 2026-11-10 | Repositório GitHub: `JoaumPdr/jobpilot-ai` privado | Nome sugerido no PLANO.md, conta do JP | — |
 | 2026-11-10 | Branch strategy: `main` → `develop` → `phase/*` | Modularidade, resiliência, gates por fase | 0009 (sincronização GitHub) |
 | 2026-11-13 | Gerenciador de dependências: `uv` | Performance, lock file, grupos de dependências | 0008 |
+| 2026-11-14 | Skills de agentes: versionar apenas o Alethe; skills de terceiros ficam fora do repo (`.gitignore`) | plugin de terceiros criava repositórios **públicos** por padrão e fixava outra conta do GitHub, inadequado a repo privado | — |
+| 2026-11-14 | `ruff format --check` passa a rodar no CI | GUIA §B.8 exige lint **e** formatação; baseline aplicado antes de iniciar a F1 | — |
 
 ---
 
 ## 7. Perguntas pendentes para o JP
 
 - [ ] Confirmar se deseja configurar proteção de branch no GitHub (requer plano pago ou settings de admin) ou seguir por disciplina registrada no STATUS.md
+- [ ] Decidir se `phase/00-fundacao` deve ser apagada após o gate (hoje preservada no remoto)
 
 ---
 
