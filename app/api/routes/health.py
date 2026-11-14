@@ -19,6 +19,22 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 
+def _psycopg_url(sqlalchemy_url: str) -> str:
+    """Converte URL SQLAlchemy para formato aceito pelo psycopg v3.
+
+    POR QUÊ: SQLAlchemy usa o prefixo ``postgresql+psycopg://``, mas o psycopg
+    v3 espera apenas ``postgresql://``. Essa conversão permite reusar a mesma
+    variável de ambiente para ambos.
+
+    Args:
+        sqlalchemy_url: URL no formato SQLAlchemy (ex: postgresql+psycopg://...).
+
+    Returns:
+        URL no formato psycopg (ex: postgresql://...).
+    """
+    return sqlalchemy_url.replace("postgresql+psycopg://", "postgresql://", 1)
+
+
 def _check_database() -> dict[str, Any]:
     """Tenta estabelecer conexão com o banco de dados.
 
@@ -26,7 +42,7 @@ def _check_database() -> dict[str, Any]:
         Dicionário com status da conexão e, em caso de falha, o erro.
     """
     try:
-        conn = connect(settings.database_url, connect_timeout=2)
+        conn = connect(_psycopg_url(settings.database_url), connect_timeout=2)
         conn.close()
         return {"status": "healthy"}
     except OperationalError as exc:
