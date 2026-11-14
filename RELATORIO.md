@@ -67,6 +67,12 @@
 - **Lição registrada:** qualquer validação "passa local / falha no CI" deve ser repetida em worktree limpo, nunca na árvore de trabalho com arquivos não versionados.
 - **Inconsistência detectada na revisão do gate:** a tag `fase-00` foi criada em `3df13a3`, antes das correções de CI, ou seja, marcava um estado que falhou no CI. **Resolvido:** após o PR #4 ficar verde e ser mesclado, a tag local e remota foi apagada e recriada em `cbbeb65` (merge commit em `develop`).
 
+### Higiene pós-gate e preparação da F1 (2026-11-14)
+- **Incidente de fluxo:** o PR do fechamento da Fase 0 foi aberto contra `main` em vez de `develop`, deixando `develop` sem os commits de documentação. Correção por realinhamento: branch criada a partir de `main` e PR para `develop`, o que torna `main` ancestral de `develop` e mantém o fluxo normal nas próximas fases.
+- **Skill de terceiros:** `.agents/skills/git-create-repo/` (origem `zc277584121/mygitplugin`) foi instalado por engano neste contexto — cria repositórios **públicos** por padrão e fixa outra conta do GitHub. Decisão: fica fora do versionamento (`.gitignore`) e `skills-lock.json` voltou ao estado versionado.
+- **Formatação:** `ruff format --check` falhava em 11 arquivos (o hook existia no pre-commit, mas nunca rodou, e o CI só validava lint). Baseline aplicado antes de iniciar a F1 e verificação adicionada ao CI, conforme GUIA §B.8.
+- **Preparação da F1-T01:** desenho das tabelas do perfil, constraints, migração, banco de teste dedicado (`jobpilot_test`) e arquivos previstos documentados no `STATUS.md`, sem escrever código.
+
 ---
 
 ## Fase 0 — Fundação (concluída)

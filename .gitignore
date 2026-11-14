@@ -53,6 +53,11 @@ build/
 *.crt
 secrets/
 
+# Ferramental de agentes: apenas o que é do projeto é versionado
+# (o skill Alethe fica versionado por ser parte do escopo de estudo de orquestração).
+# Skills de terceiros instalados localmente não entram no repositório.
+.agents/skills/git-create-repo/
+
 # Temporários
 tmp/
 temp/

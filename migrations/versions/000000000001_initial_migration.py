@@ -1,10 +1,11 @@
 """initial migration
 
 Revision ID: 000000000001
-Revises: 
+Revises:
 Create Date: 2026-11-13 23:30:00.000000
 
 """
+
 from collections.abc import Sequence
 
 # revision identifiers, used by Alembic.

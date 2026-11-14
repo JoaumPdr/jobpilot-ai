@@ -43,6 +43,9 @@ jobs:
       - name: Lint com Ruff
         run: uv run ruff check .
 
+      - name: Formatação com Ruff
+        run: uv run ruff format --check .
+
       - name: Testes com pytest
         run: uv run pytest
 
