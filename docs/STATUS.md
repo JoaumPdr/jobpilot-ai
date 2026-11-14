@@ -10,25 +10,25 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 02:45 (UTC) |
-| **Fase atual** | Fase 0 — Fundação **concluída**; Fase 1 em preparação (sem código) |
-| **Branch da fase** | `phase/00-fundacao` (mesclada em `develop`); `phase/01-nucleo-sem-ia` ainda não criada |
-| **Tarefa atual** | Higiene F0 + preparação da F1-T01 (nenhum código de F1 escrito) |
-| **Branch da tarefa** | `chore/f0-higiene-desenvolvimento` |
-| **Estado da tarefa** | preparação concluída, aguardando merge do PR |
-| **Último commit** | `0f9246c` — style: aplicar ruff format como baseline antes da Fase 1 |
+| **Última atualização** | 2026-11-14 03:05 (UTC) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**terreno pronto, F1-T01 não iniciada**) |
+| **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
+| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (aguardando sinal verde do JP) |
+| **Branch da tarefa** | a criar: `feat/f1-t01-modelos-perfil` |
+| **Estado da tarefa** | não iniciada (desenho e ambiente prontos) |
+| **Último commit** | `ff60748` — Merge pull request #6 from JoaumPdr/chore/f0-higiene-desenvolvimento |
 | **Testes** | verdes (4 passed) |
-| **CI** | verde no PR #4; agora também verifica `ruff format --check` (GUIA §B.8) |
+| **CI** | verde no PR #4; verifica lint **e** `ruff format --check` (GUIA §B.8) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 02:45 (UTC) — branch `chore/f0-higiene-desenvolvimento` |
-| **PR aberto** | `chore/f0-higiene-desenvolvimento` → `develop` (realinhamento + higiene) |
+| **Último push** | 2026-11-14 03:05 (UTC) — branch `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Mesclar o PR `chore/f0-higiene-desenvolvimento` → `develop` e criar `phase/01-nucleo-sem-ia` a partir de `develop`.
+> Criar `feat/f1-t01-modelos-perfil` a partir de `phase/01-nucleo-sem-ia` e implementar os modelos, a migração e os testes de constraint do perfil.
 
 ---
 
@@ -55,11 +55,12 @@
 - [x] Seção da Fase 0 no `RELATORIO.md` ✅
 - [x] Resolver skill de terceiros (`.gitignore` + `skills-lock.json` restaurado) ✅
 - [x] Baseline de formatação (`ruff format`) + `ruff format --check` no CI ✅
-- [ ] Mesclar PR `chore/f0-higiene-desenvolvimento` → `develop`
-- [ ] Criar `phase/01-nucleo-sem-ia` a partir de `develop`
-- [ ] Iniciar F1-T01 (modelos e migração do perfil)
+- [x] Mesclar a higiene em `develop` ✅ (PR #6 entrou em `main`; `develop` foi fast-forwarded para `ff60748`)
+- [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
+- [x] Verificar ambiente (uv sync, ruff, pytest, Alembic) e banco na porta 5433 ✅
+- [ ] Iniciar F1-T01 (modelos e migração do perfil) — **aguardando sinal verde do JP**
 
-### Plano da F1-T01 (aprovado em nível de desenho; código ainda não escrito)
+### Plano da F1-T01 (desenho pronto; nenhum código escrito)
 
 **Arquivos previstos**
 - `app/models/candidate.py` — `Candidate` (`name`, `email` opcional, `resume_text`, `headline`, `education` JSONB, `languages` JSONB, timestamps)
@@ -92,7 +93,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | não iniciada | — | — |
+| 1 — Núcleo sem IA | em preparação (F1-T01 não iniciada) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -108,7 +109,7 @@
 
 | Data | Tipo (bloqueio/bug/dívida/dúvida) | Descrição | Tarefa | Situação |
 |------|-----------------------------------|-----------|--------|----------|
-| 2026-11-14 | processo | PR #5 (fechamento da Fase 0) foi aberto contra `main` em vez de `develop`; correção por realinhamento (`main` → `develop`) | F0-GATE | resolvido (aguardando merge) |
+| 2026-11-14 | processo | PRs #5 e #6 foram abertos com base `main` em vez de `develop` (o GitHub mantém `main` como base padrão); corrigido por fast-forward de `develop` até `main`. **Mitigação:** abrir PRs sempre pela URL com base explícita (`/compare/develop...branch`) | F0-GATE | resolvido |
 | 2026-11-14 | dívida | `app/main.py` usa `@app.on_event` (depreciado no FastAPI); migrar para `lifespan` | F1 | aberto |
 | 2026-11-14 | dívida | `.agents/skills/alethe` versionado (~1,5 MB de assets) infla o repositório; reavaliar se precisa ficar versionado | — | aberto |
 
