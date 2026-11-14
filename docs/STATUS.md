@@ -10,18 +10,18 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 00:30 (UTC) |
+| **Última atualização** | 2026-11-14 00:45 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T07 — Docs-base: README, design, RELATORIO, ADRs 0001–0009, privacy-and-sources |
+| **Tarefa atual** | F0-GATE — Gate da fase (PR phase/00 → develop, tag fase-00) |
 | **Branch da tarefa** | `phase/00-fundacao` |
 | **Estado da tarefa** | não iniciada |
-| **Último commit** | `cc31644` — feat(ci): GitHub Actions com uv sync --locked, ruff, pytest e Alembic (F0-T06) |
+| **Último commit** | `a8387df` — docs: atualizar STATUS, BACKLOG e RELATORIO com conclusao da F0-T06 |
 | **Testes** | verdes (4 passed) |
 | **CI** | workflow criado em .github/workflows/ci.yml (não testado no GitHub ainda) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 00:25 (UTC) — branch `phase/00-fundacao` |
+| **Último push** | 2026-11-14 00:40 (UTC) — branch `phase/00-fundacao` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
@@ -40,14 +40,16 @@
 - F0-T04 concluída: `app/main.py` com FastAPI, middleware `request_id`, handler global de exceções; `app/api/routes/health.py` com `GET /health`; `app/core/logging.py` com structlog JSON; `tests/api/test_health.py` com 3 testes de API. 4 testes passando, lint limpo.
 - F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado, ADR 0010 (UUID) registrado.
 - F0-T06 concluída: `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com serviço PostgreSQL, teste de migração Alembic.
+- F0-T07 concluída: ADRs 0001–0007 e 0009 criados (total de 10 ADRs incluindo 0008 e 0010), `docs/privacy-and-sources.md` criado, README revisado e completo conforme GUIA_DOCS_E_GIT.md.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Criar docs-base: README inicial, design.md, RELATORIO.md, ADRs 0001–0009, docs/privacy-and-sources.md
-- [ ] Verificar que todos os arquivos seguem o GUIA_DOCS_E_GIT.md
-- [ ] Preparar PR phase/00-fundacao → develop e tag fase-00 para o F0-GATE
+- [ ] Abrir PR `phase/00-fundacao` → `develop` pelo MCP do GitHub
+- [ ] Conferir CI verde no GitHub antes de mesclar
+- [ ] Criar tag `fase-00` e publicar no remoto
+- [ ] Adicionar seção da Fase 0 no `RELATORIO.md`
 
 ---
 

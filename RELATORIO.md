@@ -48,6 +48,13 @@
 - **Testes adicionados / cobertura:** Nenhum teste novo (CI testa testes existentes). Lint limpo, 4 testes passando.
 - **Pendências / dívida técnica:** CI não foi executado no GitHub ainda (primeira execução será no próximo push/PR).
 
+### F0-T07 — Docs-base: ADRs, privacy-and-sources, README (2026-11-14)
+- **O que foi feito:** Criados ADRs 0001 (monólito modular), 0002 (FastAPI+SQLAlchemy+Alembic+Pydantic), 0003 (PostgreSQL), 0004 (LangGraph), 0005 (LLMProvider interface), 0006 (matching determinístico), 0007 (single-user MVP), 0009 (GitHub como remoto). Junto com 0008 (uv) e 0010 (UUID), totalizam 10 ADRs. Criado `docs/privacy-and-sources.md` com política LGPD e regras para fontes de vagas. README revisado: nome, link do repositório, badge de CI, descrição, objetivo, princípios, status, roadmap, pré-requisitos, instalação/ configuração/ execução via `uv`, testes e lint, arquitetura, estrutura de pastas, como contribuir/retomar, privacidade, licença.
+- **Decisões e motivos:** Seguir o `GUIA_DOCS_E_GIT.md` seção A.1 e A.3 para garantir que todos os documentos obrigatórios existam antes do F0-GATE.
+- **Problemas encontrados e soluções:** Nenhum.
+- **Testes adicionados / cobertura:** Nenhum (tarefa de documentação). 4 testes existentes continuam passando; lint limpo.
+- **Pendências / dívida técnica:** CHANGELOG.md será criado ao fazer a tag `fase-00` (F0-GATE).
+
 ---
 
 ## Fases 1–7
