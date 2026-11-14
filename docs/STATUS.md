@@ -10,26 +10,25 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 01:55 (UTC) |
-| **Fase atual** | Fase 0 — Fundação |
-| **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-GATE — Gate da fase (PR phase/00 → develop; tag `fase-00` a recriar) |
-| **Branch da tarefa** | `phase/00-fundacao` |
-| **Estado da tarefa** | em andamento |
-| **Último commit** | `80c2a01` — docs: registrar causa raiz do CI (projeto virtual) e verificacao em worktree limpo |
+| **Última atualização** | 2026-11-14 02:10 (UTC) |
+| **Fase atual** | Fase 0 — Fundação **concluída** (gate fechado) |
+| **Branch da fase** | `phase/00-fundacao` (mesclada em `develop`) |
+| **Tarefa atual** | F0-GATE — **concluído**; próxima tarefa F1-T01 (modelos do perfil) |
+| **Branch da tarefa** | `docs/f0-gate-encerrado` (fechamento documental) |
+| **Estado da tarefa** | concluída |
+| **Último commit** | `cbbeb65` — Merge pull request #4 from JoaumPdr/phase/00-fundacao |
 | **Testes** | verdes (4 passed) |
-| **CI** | causa raiz corrigida: projeto agora é virtual (sem `[build-system]`); `uv sync --locked` + ruff + pytest + Alembic validados em worktree limpo (sem `src/`). Falta apenas confirmar verde no GitHub |
-| **Verificação local pré-CI** | Worktree limpo `git worktree add --detach HEAD` executou as 4 etapas do CI com sucesso — deixa de haver dependência de arquivos não versionados |
+| **CI** | verde no GitHub no PR #4 (execução completa: `uv sync --locked`, ruff, pytest com PostgreSQL, migração Alembic) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 01:50 (UTC) — branch `phase/00-fundacao` |
-| **PR aberto** | nenhum (os PRs que falharam foram fechados pelo JP; novo PR `phase/00-fundacao` → `develop` a ser aberto pelo navegador) |
-| **Última tag publicada** | `fase-00` — ⚠️ aponta para `3df13a3`, commit **anterior** às correções de CI (estado não validado); recriar após o merge |
+| **Último push** | 2026-11-14 02:05 (UTC) — tag `fase-00` recriada no merge commit `cbbeb65` |
+| **PR aberto** | nenhum (PR #4 mesclado) |
+| **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Abrir o PR `phase/00-fundacao` → `develop` e confirmar o CI verde antes de mesclar.
+> Criar a branch `phase/01-nucleo-sem-ia` a partir de `develop` atualizado e iniciar F1-T01 (modelos e migração do perfil).
 
 ---
 
@@ -42,21 +41,20 @@
 - F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado, ADR 0010 (UUID) registrado.
 - F0-T06 concluída: `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com serviço PostgreSQL, teste de migração Alembic.
 - F0-T07 concluída: ADRs 0001–0007 e 0009 criados (total de 10 ADRs incluindo 0008 e 0010), `docs/privacy-and-sources.md` criado, README revisado e completo conforme GUIA_DOCS_E_GIT.md.
-- F0-GATE em andamento: três correções de CI aplicadas (a 3ª resolveu a causa raiz: projeto tratado como virtual, sem build backend). CI validado localmente em worktree limpo. JP fechou os PRs que falharam e abrirá um novo; com CI verde, mesclar com merge commit e **recriar a tag `fase-00`** (a atual aponta para `3df13a3`, estado que falhou no CI).
+- F0-GATE **concluído**: PR #4 (`phase/00-fundacao` → `develop`) mesclado com CI verde e merge commit `cbbeb65`; tag `fase-00` recriada nesse commit (a tag anterior apontava para `3df13a3`, que falhou no CI); `PR_BODY_F0.md` removido da raiz.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Abrir PR `phase/00-fundacao` → `develop` (JP faz pelo navegador; PRs anteriores fechados por falha de CI)
-- [ ] Conferir CI verde no GitHub antes de mesclar
-- [ ] Mesclar com **"Create a merge commit"** (GUIA §B.3 pede merge com histórico; nunca squash/rebase)
-- [x] Tag `fase-00` publicada no remoto ✅
-- [x] Adicionar seção da Fase 0 no `RELATORIO.md` ✅
-- [ ] **Recriar a tag `fase-00` após o merge** — hoje aponta para `3df13a3`, que falhou no CI; aprovado pelo JP fazer o recomendado (apagar local+remoto e recriar no commit de merge de `develop`)
-- [ ] Remover `PR_BODY_F0.md` da raiz após criar o PR (rascunho; não faz parte do mapa de docs do GUIA)
+- [x] Abrir PR `phase/00-fundacao` → `develop` ✅
+- [x] Conferir CI verde no GitHub antes de mesclar ✅
+- [x] Mesclar com **"Create a merge commit"** (PR #4 → `cbbeb65`) ✅
+- [x] Tag `fase-00` recriada no merge commit e publicada no remoto ✅
+- [x] Seção da Fase 0 no `RELATORIO.md` ✅
+- [ ] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e iniciar F1-T01
 
-### Itens fora do escopo do PR (deixar como estão por ora)
+### Itens fora do escopo da Fase 0 (deixar como estão por ora)
 
 - `skills-lock.json` modificado e `.agents/skills/git-create-repo/` não versionado: artefatos de skill instalados nesta sessão, não são trabalho da Fase 0. Decidir depois se entram ou vão para o `.gitignore`.
 
@@ -66,7 +64,7 @@
 
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
-| 0 — Fundação | em andamento | — | — |
+| 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | não iniciada | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |

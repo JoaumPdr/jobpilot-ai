@@ -46,7 +46,7 @@
 | [x] F0-T05 | SQLAlchemy + Alembic: conexão, sessão por requisição, migração inicial; decidir tipo de ID (int vs UUID) em ADR | F0-T04 | `upgrade` e `downgrade` funcionam; teste de integração conecta no banco; ADR do tipo de ID registrado |
 | [x] F0-T06 | CI no GitHub Actions usando **`uv`** (instalação com lock travado, lint + testes + PostgreSQL + migração) | F0-T05 | CI verde em PR; instala dependências com `uv sync --locked` (falha se `uv.lock` estiver desatualizado); comandos executados via `uv run`; falha se lint/teste/cobertura mínima falhar |
 | [x] F0-T07 | Docs-base: README inicial (com objetivo do repo), `design.md`, `RELATORIO.md`, ADRs 0001–0009 (inclui o ADR de sincronização com o GitHub), `docs/privacy-and-sources.md`, `STATUS.md` preenchido | F0-T01 | Todos os arquivos existem e seguem o `GUIA_DOCS_E_GIT.md`; README explica instalação e execução **com `uv`** (`uv sync`, `uv run`) e declara o objetivo de estudo de orquestração multiagente; ADR 0008 explica a escolha do `uv` |
-| [ ] F0-GATE | Gate da fase | todas | Itens do gate em `PLANO.md` §11 verdes → PR `phase/00` → `develop` **mesclado no GitHub com CI verde**, tag `fase-00` **publicada no remoto**, seção da fase no `RELATORIO.md` |
+| [x] F0-GATE | Gate da fase | todas | Itens do gate em `PLANO.md` §11 verdes → PR #4 `phase/00` → `develop` **mesclado no GitHub com CI verde**, tag `fase-00` **publicada no remoto** (`cbbeb65`), seção da fase no `RELATORIO.md` |
 
 ---
 
