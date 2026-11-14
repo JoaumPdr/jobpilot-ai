@@ -55,6 +55,17 @@
 - **Testes adicionados / cobertura:** Nenhum (tarefa de documentação). 4 testes existentes continuam passando; lint limpo.
 - **Pendências / dívida técnica:** CHANGELOG.md será criado ao fazer a tag `fase-00` (F0-GATE).
 
+### Correções de CI no F0-GATE (2026-11-14)
+- **Sintoma:** `uv sync --locked` falhava no GitHub Actions com `Expected a Python module at: src/jobpilot_ai/__init__.py`, enquanto localmente passava.
+- **Tentativas que NÃO resolveram:** `e9b5a54` removeu `[project.scripts]` (não era a causa) e `00060f2` adicionou `[tool.uv] no-build-package` (o uv ignora essa opção para o projeto raiz).
+- **Causa raiz (dupla):**
+  1. O `pyproject.toml` declarava `[build-system]` com `uv_build`. Quando existe build backend, o `uv` **sempre** tenta construir o projeto raiz — e o `uv_build` espera `src/jobpilot_ai/__init__.py` (ou `jobpilot_ai/`).
+  2. Localmente o build passava **apenas** porque havia uma pasta `src/jobpilot_ai/` não versionada (sobra do `uv init`), inexistente no checkout do CI. Isso mascarava o erro por três execuções.
+- **Solução:** removido `[build-system]` — o `uv` passa a tratar o projeto como **virtual** (não instala a si mesmo). Correto para o nosso caso, pois não distribuímos pacote/CLI: a app roda do diretório raiz via `uvicorn app.main:app`, os testes via `pythonpath = ["."]` e o Alembic via `prepend_sys_path = .`.
+- **Ajuste de bônus:** `fastapi`, `structlog` e `uvicorn` estavam em `[dependency-groups] dev`, apesar de serem dependências de runtime; movidos para `[project] dependencies` (um `uv sync --no-dev` antes quebraria a app).
+- **Verificação (por que agora acredito que passa):** criado um `git worktree` destacado em `HEAD` (árvore limpa, **sem** `src/`, igual ao CI) e executadas as quatro etapas do workflow: `uv sync --locked` sem etapa de build, `ruff check` limpo, `pytest` 4 passed, `alembic upgrade/downgrade/upgrade` OK. Worktree removido ao final.
+- **Lição registrada:** qualquer validação "passa local / falha no CI" deve ser repetida em worktree limpo, nunca na árvore de trabalho com arquivos não versionados.
+
 ---
 
 ## Fase 0 — Fundação (concluída)
@@ -65,7 +76,7 @@
 - [x] Docker Compose PostgreSQL 16 funcionando (porta 5433 no host)
 - [x] FastAPI `/health` respondendo 200 com verificação de banco
 - [x] SQLAlchemy + Alembic com UUID, migração inicial
-- [x] CI GitHub Actions com `uv sync --locked`, ruff, pytest, Alembic
+- [~] CI GitHub Actions com `uv sync --locked`, ruff, pytest, Alembic — configurado e validado em worktree limpo; falta a 1ª execução verde no GitHub
 - [x] ADRs 0001–0010 criados
 - [x] Tag `fase-00` publicada no remoto
 
