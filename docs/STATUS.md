@@ -10,18 +10,18 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 00:15 (UTC) |
+| **Última atualização** | 2026-11-14 00:30 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T06 — CI no GitHub Actions usando `uv` |
+| **Tarefa atual** | F0-T07 — Docs-base: README, design, RELATORIO, ADRs 0001–0009, privacy-and-sources |
 | **Branch da tarefa** | `phase/00-fundacao` |
 | **Estado da tarefa** | não iniciada |
-| **Último commit** | `336d857` — fix(infra): corrigir porta do PostgreSQL para 5433 e URL do psycopg (F0-T03) |
+| **Último commit** | `cc31644` — feat(ci): GitHub Actions com uv sync --locked, ruff, pytest e Alembic (F0-T06) |
 | **Testes** | verdes (4 passed) |
-| **CI** | não configurado |
+| **CI** | workflow criado em .github/workflows/ci.yml (não testado no GitHub ainda) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 00:10 (UTC) — branch `phase/00-fundacao` |
+| **Último push** | 2026-11-14 00:25 (UTC) — branch `phase/00-fundacao` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
@@ -38,13 +38,16 @@
 - F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
 - F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 (porta 5433 no host devido a conflito com Docker Desktop backend na 5432), `.env.example` e `alembic.ini` atualizados para porta 5433, `app/core/config.py` com validação de ambiente, `app/api/routes/health.py` com conversão de URL SQLAlchemy para psycopg v3. Verificado com banco real: container saudável, `alembic upgrade head` + `downgrade -1` funcionam, `/health` retorna 200 com database.status = healthy.
 - F0-T04 concluída: `app/main.py` com FastAPI, middleware `request_id`, handler global de exceções; `app/api/routes/health.py` com `GET /health`; `app/core/logging.py` com structlog JSON; `tests/api/test_health.py` com 3 testes de API. 4 testes passando, lint limpo.
-- F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado (`alembic.ini`, `migrations/env.py`, migração `000000000001`), ADR 0010 (tipo de ID: UUID) registrado.
+- F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado, ADR 0010 (UUID) registrado.
+- F0-T06 concluída: `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com serviço PostgreSQL, teste de migração Alembic.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Criar `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com PostgreSQL service, teste de migração Alembic
+- [ ] Criar docs-base: README inicial, design.md, RELATORIO.md, ADRs 0001–0009, docs/privacy-and-sources.md
+- [ ] Verificar que todos os arquivos seguem o GUIA_DOCS_E_GIT.md
+- [ ] Preparar PR phase/00-fundacao → develop e tag fase-00 para o F0-GATE
 
 ---
 

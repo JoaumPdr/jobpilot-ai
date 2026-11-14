@@ -41,6 +41,13 @@
 - **Testes adicionados / cobertura:** Nenhum teste novo (banco não disponível para teste de integração). Lint limpo, testes existentes (4) continuam passando.
 - **Pendências / dívida técnica:** Teste de integração com `upgrade`/`downgrade` contra banco real depende do Docker daemon estar disponível.
 
+### F0-T06 — CI no GitHub Actions com uv (2026-11-14)
+- **O que foi feito:** Criado `.github/workflows/ci.yml` com workflow disparado em push/PR para branches `main`, `develop` e `phase/*`. O CI: instala `uv` via `astral-sh/setup-uv@v3`, sincroniza dependências com `uv sync --locked` (falha se lock desatualizado), roda `ruff check`, executa `pytest` com serviço PostgreSQL 16 em container (porta 5433), e testa migração Alembic (`upgrade head` + `downgrade -1` + `upgrade head`).
+- **Decisões e motivos:** Seguir o padrão definido no `GUIA_DOCS_E_GIT.md` seção B.8; usar porta 5433 no service container devido a conflito com Docker Desktop backend na porta 5432 do host.
+- **Problemas encontrados e soluções:** Nenhum. YAML validado localmente; testes e lint passando.
+- **Testes adicionados / cobertura:** Nenhum teste novo (CI testa testes existentes). Lint limpo, 4 testes passando.
+- **Pendências / dívida técnica:** CI não foi executado no GitHub ainda (primeira execução será no próximo push/PR).
+
 ---
 
 ## Fases 1–7
