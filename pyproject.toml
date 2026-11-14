@@ -7,7 +7,10 @@ authors = [
     { name = "jp", email = "joaopedroescobar13@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "psycopg[binary]>=3.3.9",
+    "pydantic-settings>=2.16.3",
+]
 
 [project.scripts]
 jobpilot-ai = "jobpilot_ai:main"

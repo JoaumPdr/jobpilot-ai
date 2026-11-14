@@ -1,0 +1,1 @@
+"""Core module - configuração, logging, exceções base."""
