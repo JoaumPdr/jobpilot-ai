@@ -10,18 +10,18 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 01:05 (UTC) |
+| **Última atualização** | 2026-11-14 01:15 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
 | **Tarefa atual** | F0-GATE — Gate da fase (PR phase/00 → develop, tag fase-00 publicada) |
 | **Branch da tarefa** | `phase/00-fundacao` |
 | **Estado da tarefa** | em andamento |
-| **Último commit** | `e9b5a54` — fix(ci): remover project.scripts inexistente que quebra build do uv_build |
+| **Último commit** | `00060f2` — fix(ci): adicionar no-build-package para evitar build do pacote jobpilot-ai |
 | **Testes** | verdes (4 passed) |
-| **CI** | workflow em .github/workflows/ci.yml; erro do build corrigido (project.scripts removido) — aguardando execucao no GitHub via PR |
+| **CI** | workflow em .github/workflows/ci.yml; build corrigido (no-build-package adicionado) — aguardando execucao no GitHub via PR |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 01:00 (UTC) — branch `phase/00-fundacao` + tag `fase-00` |
+| **Último push** | 2026-11-14 01:10 (UTC) — branch `phase/00-fundacao` + tag `fase-00` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
