@@ -27,21 +27,41 @@ class Settings(BaseSettings):
     )
 
     # Ambiente da aplicação
-    app_env: str = Field(default="development", description="Ambiente: development, staging, production")
-    log_level: str = Field(default="INFO", description="Nível de log: DEBUG, INFO, WARNING, ERROR")
+    app_env: str = Field(
+        default="development", description="Ambiente: development, staging, production"
+    )
+    log_level: str = Field(
+        default="INFO", description="Nível de log: DEBUG, INFO, WARNING, ERROR"
+    )
 
     # LLM (Fase 3+)
-    llm_provider: str | None = Field(default=None, description="Provedor LLM: openai, anthropic, etc.")
+    llm_provider: str | None = Field(
+        default=None, description="Provedor LLM: openai, anthropic, etc."
+    )
     llm_model: str | None = Field(default=None, description="Modelo LLM a usar")
-    llm_api_key: str | None = Field(default=None, description="Chave da API do provedor LLM")
-    llm_timeout: int = Field(default=30, description="Timeout em segundos para chamadas LLM")
-    llm_max_tokens: int = Field(default=4096, description="Máximo de tokens por resposta LLM")
-    llm_budget_usd: float = Field(default=10.0, description="Orçamento máximo em USD por execução")
+    llm_api_key: str | None = Field(
+        default=None, description="Chave da API do provedor LLM"
+    )
+    llm_timeout: int = Field(
+        default=30, description="Timeout em segundos para chamadas LLM"
+    )
+    llm_max_tokens: int = Field(
+        default=4096, description="Máximo de tokens por resposta LLM"
+    )
+    llm_budget_usd: float = Field(
+        default=10.0, description="Orçamento máximo em USD por execução"
+    )
 
     # Embeddings (Fase 2+)
-    embedding_provider: str | None = Field(default=None, description="Provedor de embeddings")
-    embedding_model: str | None = Field(default=None, description="Modelo de embeddings")
-    embedding_api_key: str | None = Field(default=None, description="Chave da API de embeddings")
+    embedding_provider: str | None = Field(
+        default=None, description="Provedor de embeddings"
+    )
+    embedding_model: str | None = Field(
+        default=None, description="Modelo de embeddings"
+    )
+    embedding_api_key: str | None = Field(
+        default=None, description="Chave da API de embeddings"
+    )
 
 
 # Instância global de configuração (carregada uma vez no startup)
