@@ -35,3 +35,6 @@ exclude = [".agents"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.uv]
+no-build-package = ["jobpilot-ai"]
