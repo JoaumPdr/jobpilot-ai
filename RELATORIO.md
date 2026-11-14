@@ -27,6 +27,13 @@
 - **Testes adicionados / cobertura:** Testes manuais de carregamento de config e validação de erro; lint limpo.
 - **Pendências / dívida técnica:** Subir Docker daemon no ambiente para testes de integração completos.
 
+### F0-T04 — Esqueleto FastAPI: /health, logging estruturado, tratamento de erros (2026-11-13)
+- **O que foi feito:** Criado `app/main.py` com instância FastAPI, middleware de `request_id` (injetado via `contextvars` do structlog e retornado no cabeçalho `X-Request-ID`), handler global de exceções com formato JSON padronizado, e eventos de startup/shutdown com logging. Criado `app/api/routes/health.py` com rota `GET /health` que retorna status da aplicação e verifica conexão com o banco via psycopg. Criado `app/core/logging.py` com configuração structlog (JSON, timestamp, nível, stack trace). Criado `app/__init__.py`, `app/api/__init__.py`, `app/api/routes/__init__.py`. Testes de API em `tests/api/test_health.py` (3 testes: status 200, schema da resposta, cabeçalho X-Request-ID).
+- **Decisões e motivos:** FastAPI escolhido por ser leve e assíncrono; structlog para logs estruturados JSON; psycopg diretamente para verificação de banco (SQLAlchemy vem na F0-T05); `/health` sempre retorna 200 com status `healthy` ou `degradado` do banco, nunca 500 por falha de conexão.
+- **Problemas encontrados e soluções:** Módulo `app` não encontrado pelo pytest inicialmente — resolvido criando `app/__init__.py` e configurando `pythonpath = ["."]` no `pyproject.toml`.
+- **Testes adicionados / cobertura:** 3 testes de API em `tests/api/test_health.py`; total de 4 testes passando (incluindo `test_sanity.py`); lint limpo.
+- **Pendências / dívida técnica:** Docker daemon não disponível no ambiente para teste de integração com banco real; testado com `docker compose config` para validar sintaxe.
+
 ---
 
 ## Fases 1–7

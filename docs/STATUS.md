@@ -10,25 +10,25 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-13 21:50 (UTC) |
+| **Última atualização** | 2026-11-13 23:00 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T04 — Esqueleto FastAPI: `/health`, logging, erros |
+| **Tarefa atual** | F0-T05 — SQLAlchemy + Alembic: conexão, sessão, migração inicial |
 | **Branch da tarefa** | `phase/00-fundacao` |
 | **Estado da tarefa** | não iniciada |
-| **Último commit** | `7fe5972` — feat(infra): Docker Compose PostgreSQL e config tipada (F0-T03) |
-| **Testes** | verdes |
+| **Último commit** | `41c87f6` — feat(api): esqueleto FastAPI com /health, logging estruturado e tratamento de erros (F0-T04) |
+| **Testes** | verdes (4 passed) |
 | **CI** | não configurado |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-13 21:45 (UTC) — branch `phase/00-fundacao` |
+| **Último push** | 2026-11-13 23:00 (UTC) — branch `phase/00-fundacao` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Adicionar `fastapi` e `uvicorn` ao projeto, implementar `/health` que verifica a conexão com o banco, configurar logging estruturado com `structlog` e tratamento global de exceções.
+> Adicionar `sqlalchemy` e `alembic` ao projeto, criar `app/models/` e `app/repositories/`, configurar sessão por requisição, gerar migração inicial e decidir tipo de ID (int vs UUID) em ADR.
 
 ---
 
@@ -36,18 +36,19 @@
 
 - F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
 - F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
-- F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 criado, `.env.example` atualizado, dependências `pydantic-settings` e `psycopg[binary]` adicionadas, módulo `app.core.config` implementado com validação de ambiente via Pydantic. Verificado que a app falha corretamente sem `.env` e funciona com ele.
+- F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 criado, `.env.example` atualizado, dependências `pydantic-settings` e `psycopg[binary]` adicionadas, módulo `app.core.config` implementado com validação de ambiente via Pydantic.
+- F0-T04 concluída: `app/main.py` com FastAPI, middleware `request_id`, handler global de exceções; `app/api/routes/health.py` com `GET /health`; `app/core/logging.py` com structlog JSON; `tests/api/test_health.py` com 3 testes de API. 4 testes passando, lint limpo.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Adicionar `fastapi`, `uvicorn` e `structlog` como dependências de produção
-- [ ] Criar `app/main.py` com a instância FastAPI
-- [ ] Implementar rota `GET /health` que retorna status do app e verifica se o banco está acessível (usando psycopg)
-- [ ] Configurar middleware para injetar `request_id` em cada log
-- [ ] Implementar handler global de exceções para garantir formato de erro único
-- [ ] Criar teste de API para `/health` usando `httpx` e `pytest`
+- [ ] Adicionar `sqlalchemy` e `alembic` como dependências de produção via `uv add`
+- [ ] Criar `app/models/base.py` e `app/repositories/` base
+- [ ] Configurar sessão SQLAlchemy por requisição (middleware ou dependency)
+- [ ] Gerar migração inicial com Alembic (`alembic init migrations`, `alembic revision --autogenerate`)
+- [ ] Decidir tipo de ID (int vs UUID) e registrar ADR
+- [ ] Criar teste de integração conectando no banco (upgrade/downgrade)
 
 ---
 
