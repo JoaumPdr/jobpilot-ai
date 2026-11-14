@@ -10,36 +10,53 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | AAAA-MM-DD HH:MM (UTC) |
-| **Fase atual** | Fase 0 — Fundação |
-| **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T01 — Criar repositório e estrutura de docs |
-| **Branch da tarefa** | `feat/f0-t01-repositorio-e-docs` |
-| **Estado da tarefa** | não iniciada · em andamento · bloqueada · concluída |
-| **Último commit** | `<hash curto> — <mensagem>` |
-| **Testes** | verdes · vermelhos (detalhar em §5) |
-| **CI** | verde · vermelho · não configurado |
-| **Repositório remoto** | `https://github.com/<usuário>/jobpilot-ai` (preencher na F0-T01) |
-| **Sincronização com o remoto** | em dia · à frente N commits · atrás N commits · divergente |
-| **Último push** | AAAA-MM-DD HH:MM (UTC) — branch `<nome>` |
-| **PR aberto** | nenhum · #N tarefa → fase (link) |
-| **Última tag publicada** | ex.: `fase-00` · nenhuma |
-| **MCP do GitHub** | funcionando · sem permissão · indisponível (usando git local) |
+| **Última atualização** | 2026-11-14 02:10 (UTC) |
+| **Fase atual** | Fase 0 — Fundação **concluída** (gate fechado) |
+| **Branch da fase** | `phase/00-fundacao` (mesclada em `develop`) |
+| **Tarefa atual** | F0-GATE — **concluído**; próxima tarefa F1-T01 (modelos do perfil) |
+| **Branch da tarefa** | `docs/f0-gate-encerrado` (fechamento documental) |
+| **Estado da tarefa** | concluída |
+| **Último commit** | `cbbeb65` — Merge pull request #4 from JoaumPdr/phase/00-fundacao |
+| **Testes** | verdes (4 passed) |
+| **CI** | verde no GitHub no PR #4 (execução completa: `uv sync --locked`, ruff, pytest com PostgreSQL, migração Alembic) |
+| **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
+| **Sincronização com o remoto** | em dia |
+| **Último push** | 2026-11-14 02:05 (UTC) — tag `fase-00` recriada no merge commit `cbbeb65` |
+| **PR aberto** | nenhum (PR #4 mesclado) |
+| **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (merge commit em `develop`, CI verde) |
+| **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ex.: "Abrir `app/services/job_service.py` e implementar `normalize_work_mode()` conforme critério 2 de F1-T04; teste já escrito em `tests/unit/test_normalization.py` (falhando)."
+> Criar a branch `phase/01-nucleo-sem-ia` a partir de `develop` atualizado e iniciar F1-T01 (modelos e migração do perfil).
 
 ---
 
 ## 2. O que foi feito na última sessão
 
-- ...
+- F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
+- F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
+- F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 (porta 5433 no host devido a conflito com Docker Desktop backend na 5432), `.env.example` e `alembic.ini` atualizados para porta 5433, `app/core/config.py` com validação de ambiente, `app/api/routes/health.py` com conversão de URL SQLAlchemy para psycopg v3. Verificado com banco real: container saudável, `alembic upgrade head` + `downgrade -1` funcionam, `/health` retorna 200 com database.status = healthy.
+- F0-T04 concluída: `app/main.py` com FastAPI, middleware `request_id`, handler global de exceções; `app/api/routes/health.py` com `GET /health`; `app/core/logging.py` com structlog JSON; `tests/api/test_health.py` com 3 testes de API. 4 testes passando, lint limpo.
+- F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado, ADR 0010 (UUID) registrado.
+- F0-T06 concluída: `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com serviço PostgreSQL, teste de migração Alembic.
+- F0-T07 concluída: ADRs 0001–0007 e 0009 criados (total de 10 ADRs incluindo 0008 e 0010), `docs/privacy-and-sources.md` criado, README revisado e completo conforme GUIA_DOCS_E_GIT.md.
+- F0-GATE **concluído**: PR #4 (`phase/00-fundacao` → `develop`) mesclado com CI verde e merge commit `cbbeb65`; tag `fase-00` recriada nesse commit (a tag anterior apontava para `3df13a3`, que falhou no CI); `PR_BODY_F0.md` removido da raiz.
+
+---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] ...
-- [ ] ...
+- [x] Abrir PR `phase/00-fundacao` → `develop` ✅
+- [x] Conferir CI verde no GitHub antes de mesclar ✅
+- [x] Mesclar com **"Create a merge commit"** (PR #4 → `cbbeb65`) ✅
+- [x] Tag `fase-00` recriada no merge commit e publicada no remoto ✅
+- [x] Seção da Fase 0 no `RELATORIO.md` ✅
+- [ ] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e iniciar F1-T01
+
+### Itens fora do escopo da Fase 0 (deixar como estão por ora)
+
+- `skills-lock.json` modificado e `.agents/skills/git-create-repo/` não versionado: artefatos de skill instalados nesta sessão, não são trabalho da Fase 0. Decidir depois se entram ou vão para o `.gitignore`.
 
 ---
 
@@ -47,7 +64,7 @@
 
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
-| 0 — Fundação | em andamento | — | — |
+| 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | não iniciada | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
@@ -74,20 +91,22 @@
 
 | Data | Decisão | Motivo | ADR |
 |------|---------|--------|-----|
-| — | — | — | — |
+| 2026-11-10 | Repositório GitHub: `JoaumPdr/jobpilot-ai` privado | Nome sugerido no PLANO.md, conta do JP | — |
+| 2026-11-10 | Branch strategy: `main` → `develop` → `phase/*` | Modularidade, resiliência, gates por fase | 0009 (sincronização GitHub) |
+| 2026-11-13 | Gerenciador de dependências: `uv` | Performance, lock file, grupos de dependências | 0008 |
 
 ---
 
 ## 7. Perguntas pendentes para o JP
 
-- [ ] ...
+- [ ] Confirmar se deseja configurar proteção de branch no GitHub (requer plano pago ou settings de admin) ou seguir por disciplina registrada no STATUS.md
 
 ---
 
 ## 8. Observações
 
-- Divergências entre este arquivo e o estado do Git (se houver): ...
-- Variáveis de ambiente novas desde a última sessão: ...
+- Divergências entre este arquivo e o estado do Git (se houver): STATUS.md estava desatualizado (mostrava F0-T01 como não iniciada), corrigido agora para refletir o estado real do Git.
+- Variáveis de ambiente novas desde a última sessão: nenhuma (`.env.example` já existe).
 
 ---
 
