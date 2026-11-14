@@ -10,36 +10,44 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | AAAA-MM-DD HH:MM (UTC) |
+| **Última atualização** | 2026-11-13 21:50 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T01 — Criar repositório e estrutura de docs |
-| **Branch da tarefa** | `feat/f0-t01-repositorio-e-docs` |
-| **Estado da tarefa** | não iniciada · em andamento · bloqueada · concluída |
-| **Último commit** | `<hash curto> — <mensagem>` |
-| **Testes** | verdes · vermelhos (detalhar em §5) |
-| **CI** | verde · vermelho · não configurado |
-| **Repositório remoto** | `https://github.com/<usuário>/jobpilot-ai` (preencher na F0-T01) |
-| **Sincronização com o remoto** | em dia · à frente N commits · atrás N commits · divergente |
-| **Último push** | AAAA-MM-DD HH:MM (UTC) — branch `<nome>` |
-| **PR aberto** | nenhum · #N tarefa → fase (link) |
-| **Última tag publicada** | ex.: `fase-00` · nenhuma |
-| **MCP do GitHub** | funcionando · sem permissão · indisponível (usando git local) |
+| **Tarefa atual** | F0-T04 — Esqueleto FastAPI: `/health`, logging, erros |
+| **Branch da tarefa** | `phase/00-fundacao` |
+| **Estado da tarefa** | não iniciada |
+| **Último commit** | `7fe5972` — feat(infra): Docker Compose PostgreSQL e config tipada (F0-T03) |
+| **Testes** | verdes |
+| **CI** | não configurado |
+| **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
+| **Sincronização com o remoto** | em dia |
+| **Último push** | 2026-11-13 21:45 (UTC) — branch `phase/00-fundacao` |
+| **PR aberto** | nenhum |
+| **Última tag publicada** | nenhuma |
+| **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ex.: "Abrir `app/services/job_service.py` e implementar `normalize_work_mode()` conforme critério 2 de F1-T04; teste já escrito em `tests/unit/test_normalization.py` (falhando)."
+> Adicionar `fastapi` e `uvicorn` ao projeto, implementar `/health` que verifica a conexão com o banco, configurar logging estruturado com `structlog` e tratamento global de exceções.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
-- ...
+- F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
+- F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
+- F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 criado, `.env.example` atualizado, dependências `pydantic-settings` e `psycopg[binary]` adicionadas, módulo `app.core.config` implementado com validação de ambiente via Pydantic. Verificado que a app falha corretamente sem `.env` e funciona com ele.
+
+---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] ...
-- [ ] ...
+- [ ] Adicionar `fastapi`, `uvicorn` e `structlog` como dependências de produção
+- [ ] Criar `app/main.py` com a instância FastAPI
+- [ ] Implementar rota `GET /health` que retorna status do app e verifica se o banco está acessível (usando psycopg)
+- [ ] Configurar middleware para injetar `request_id` em cada log
+- [ ] Implementar handler global de exceções para garantir formato de erro único
+- [ ] Criar teste de API para `/health` usando `httpx` e `pytest`
 
 ---
 
@@ -74,20 +82,22 @@
 
 | Data | Decisão | Motivo | ADR |
 |------|---------|--------|-----|
-| — | — | — | — |
+| 2026-11-10 | Repositório GitHub: `JoaumPdr/jobpilot-ai` privado | Nome sugerido no PLANO.md, conta do JP | — |
+| 2026-11-10 | Branch strategy: `main` → `develop` → `phase/*` | Modularidade, resiliência, gates por fase | 0009 (sincronização GitHub) |
+| 2026-11-13 | Gerenciador de dependências: `uv` | Performance, lock file, grupos de dependências | 0008 |
 
 ---
 
 ## 7. Perguntas pendentes para o JP
 
-- [ ] ...
+- [ ] Confirmar se deseja configurar proteção de branch no GitHub (requer plano pago ou settings de admin) ou seguir por disciplina registrada no STATUS.md
 
 ---
 
 ## 8. Observações
 
-- Divergências entre este arquivo e o estado do Git (se houver): ...
-- Variáveis de ambiente novas desde a última sessão: ...
+- Divergências entre este arquivo e o estado do Git (se houver): STATUS.md estava desatualizado (mostrava F0-T01 como não iniciada), corrigido agora para refletir o estado real do Git.
+- Variáveis de ambiente novas desde a última sessão: nenhuma (`.env.example` já existe).
 
 ---
 
