@@ -10,18 +10,18 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 00:45 (UTC) |
+| **Última atualização** | 2026-11-14 00:55 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-GATE — Gate da fase (PR phase/00 → develop, tag fase-00) |
+| **Tarefa atual** | F0-GATE — Gate da fase (PR phase/00 → develop, tag fase-00 publicada) |
 | **Branch da tarefa** | `phase/00-fundacao` |
-| **Estado da tarefa** | não iniciada |
-| **Último commit** | `a8387df` — docs: atualizar STATUS, BACKLOG e RELATORIO com conclusao da F0-T06 |
+| **Estado da tarefa** | em andamento |
+| **Último commit** | `3df13a3` — docs: F0-T07 concluída - ADRs 0001-0007 e 0009, privacy-and-sources, README revisado |
 | **Testes** | verdes (4 passed) |
 | **CI** | workflow criado em .github/workflows/ci.yml (não testado no GitHub ainda) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 00:40 (UTC) — branch `phase/00-fundacao` |
+| **Último push** | 2026-11-14 00:50 (UTC) — branch `phase/00-fundacao` + tag `fase-00` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
@@ -46,9 +46,9 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Abrir PR `phase/00-fundacao` → `develop` pelo MCP do GitHub
+- [ ] Abrir PR `phase/00-fundacao` → `develop` pelo MCP do GitHub (ou via VS Code)
 - [ ] Conferir CI verde no GitHub antes de mesclar
-- [ ] Criar tag `fase-00` e publicar no remoto
+- [x] Tag `fase-00` publicada no remoto ✅
 - [ ] Adicionar seção da Fase 0 no `RELATORIO.md`
 
 ---

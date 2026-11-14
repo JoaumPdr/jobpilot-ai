@@ -57,6 +57,22 @@
 
 ---
 
+## Fase 0 — Fundação (concluída)
+
+**Gate de saída:** Todos os critérios do `PLANO.md` §11 atendidos:
+- [x] Repositório GitHub privado (`JoaumPdr/jobpilot-ai`) com branches `main`, `develop`, `phase/00-fundacao`
+- [x] Ambiente Python com `uv` (`pyproject.toml`, `.python-version`, `uv.lock` versionado)
+- [x] Docker Compose PostgreSQL 16 funcionando (porta 5433 no host)
+- [x] FastAPI `/health` respondendo 200 com verificação de banco
+- [x] SQLAlchemy + Alembic com UUID, migração inicial
+- [x] CI GitHub Actions com `uv sync --locked`, ruff, pytest, Alembic
+- [x] ADRs 0001–0010 criados
+- [x] Tag `fase-00` publicada no remoto
+
+**Próximo:** PR `phase/00-fundacao` → `develop`, mesclar com CI verde, iniciar Fase 1.
+
+---
+
 ## Fases 1–7
 
 *(A serem preenchidas conforme avanço das fases)*
