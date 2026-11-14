@@ -10,25 +10,25 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-13 23:00 (UTC) |
+| **Última atualização** | 2026-11-13 23:45 (UTC) |
 | **Fase atual** | Fase 0 — Fundação |
 | **Branch da fase** | `phase/00-fundacao` |
-| **Tarefa atual** | F0-T05 — SQLAlchemy + Alembic: conexão, sessão, migração inicial |
+| **Tarefa atual** | F0-T06 — CI no GitHub Actions usando `uv` |
 | **Branch da tarefa** | `phase/00-fundacao` |
 | **Estado da tarefa** | não iniciada |
-| **Último commit** | `41c87f6` — feat(api): esqueleto FastAPI com /health, logging estruturado e tratamento de erros (F0-T04) |
+| **Último commit** | `67ba14d` — feat(db): SQLAlchemy + Alembic com UUID e migração inicial (F0-T05) |
 | **Testes** | verdes (4 passed) |
 | **CI** | não configurado |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-13 23:00 (UTC) — branch `phase/00-fundacao` |
+| **Último push** | 2026-11-13 23:40 (UTC) — branch `phase/00-fundacao` |
 | **PR aberto** | nenhum |
 | **Última tag publicada** | nenhuma |
 | **MCP do GitHub** | indisponível (usando git local) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Adicionar `sqlalchemy` e `alembic` ao projeto, criar `app/models/` e `app/repositories/`, configurar sessão por requisição, gerar migração inicial e decidir tipo de ID (int vs UUID) em ADR.
+> Criar `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com PostgreSQL service, teste de migração Alembic.
 
 ---
 
@@ -38,17 +38,13 @@
 - F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
 - F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 criado, `.env.example` atualizado, dependências `pydantic-settings` e `psycopg[binary]` adicionadas, módulo `app.core.config` implementado com validação de ambiente via Pydantic.
 - F0-T04 concluída: `app/main.py` com FastAPI, middleware `request_id`, handler global de exceções; `app/api/routes/health.py` com `GET /health`; `app/core/logging.py` com structlog JSON; `tests/api/test_health.py` com 3 testes de API. 4 testes passando, lint limpo.
+- F0-T05 concluída: `app/models/base.py` com Base declarativa (UUID, __tablename__ automático), `app/core/database.py` com engine/SessionLocal/get_db, Alembic inicializado (`alembic.ini`, `migrations/env.py`, migração `000000000001`), ADR 0010 (tipo de ID: UUID) registrado.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-- [ ] Adicionar `sqlalchemy` e `alembic` como dependências de produção via `uv add`
-- [ ] Criar `app/models/base.py` e `app/repositories/` base
-- [ ] Configurar sessão SQLAlchemy por requisição (middleware ou dependency)
-- [ ] Gerar migração inicial com Alembic (`alembic init migrations`, `alembic revision --autogenerate`)
-- [ ] Decidir tipo de ID (int vs UUID) e registrar ADR
-- [ ] Criar teste de integração conectando no banco (upgrade/downgrade)
+- [ ] Criar `.github/workflows/ci.yml` com `uv sync --locked`, ruff, pytest com PostgreSQL service, teste de migração Alembic
 
 ---
 

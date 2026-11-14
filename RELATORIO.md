@@ -34,6 +34,13 @@
 - **Testes adicionados / cobertura:** 3 testes de API em `tests/api/test_health.py`; total de 4 testes passando (incluindo `test_sanity.py`); lint limpo.
 - **Pendências / dívida técnica:** Docker daemon não disponível no ambiente para teste de integração com banco real; testado com `docker compose config` para validar sintaxe.
 
+### F0-T05 — SQLAlchemy + Alembic com UUID e migração inicial (2026-11-13)
+- **O que foi feito:** Criado `app/models/base.py` com Base declarativa SQLAlchemy (id UUID, `__tablename__` automático em snake_case), `app/core/database.py` com engine, SessionLocal e dependency `get_db()`, inicializado Alembic (`alembic.ini` com DATABASE_URL, `migrations/env.py` importando `Base.metadata`), migração inicial `000000000001` criada, ADR 0010 registrado em `docs/adr/0010-tipo-de-id-uuid.md`. Adicionadas dependências de produção `sqlalchemy` e `alembic`.
+- **Decisões e motivos:** UUID escolhido como tipo de chave primária (segurança contra enumeração, fusão de dados facilitada). SQLAlchemy 2.x com estilo DeclarativeBase e `mapped_column`. Alembic para migrações versionadas.
+- **Problemas encontrados e soluções:** `alembic revision --autogenerate` falhou por tentar conectar ao banco (Docker não disponível). Solução: criada migração inicial manualmente vazia; `alembic history` confirma que a migração é reconhecida.
+- **Testes adicionados / cobertura:** Nenhum teste novo (banco não disponível para teste de integração). Lint limpo, testes existentes (4) continuam passando.
+- **Pendências / dívida técnica:** Teste de integração com `upgrade`/`downgrade` contra banco real depende do Docker daemon estar disponível.
+
 ---
 
 ## Fases 1–7
