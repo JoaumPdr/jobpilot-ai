@@ -13,23 +13,23 @@
 | **Última atualização** | 2026-11-16 (UTC) |
 | **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02-a implementada**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**implementada; PR a abrir**) |
+| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**PR #9 aberto, aguardando merge**) |
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-a.md` (F1-T02-b será detalhada quando começar) |
 | **Branch da tarefa** | `feat/f1-t02-perfil-api` (publicada) |
-| **Estado da tarefa** | implementada e testada; falta CI/merge do PR |
-| **Último commit** | `f464ef2` — test(perfil): cobrir servico e API de candidato e preferencias |
-| **Testes** | verdes (70 passed: 31 unitários/schemas + 20 de API + 17 de constraint + sanity/health) |
-| **CI** | a verificar no PR da F1-T02-a |
+| **Estado da tarefa** | implementada e testada; CI verde; falta mesclar o PR #9 |
+| **Último commit de código** | `d97495a` — docs(api): documentar endpoints de candidato e preferencias |
+| **Testes** | verdes (70 passed: 31 unitários/schemas + 18 de API + 17 de constraint + sanity/health) |
+| **CI** | verde no PR #9 (run 43955199020): lint, formatação, pytest e migração |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-16 20:40 (UTC) — branch `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum |
+| **Último push** | 2026-11-16 21:00 (UTC) — branch `feat/f1-t02-perfil-api` |
+| **PR aberto** | #9 `feat/f1-t02-perfil-api` → `phase/01-nucleo-sem-ia` (CI verde; aguardando autorização para mesclar) |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Implementar a F1-T02-a (schemas → erros → repositórios → serviço → rotas → testes → `docs/api.md`), seguindo `docs/tasks/FASE-01/F1-T02-a.md`.
+> Com autorização do JP, mesclar o PR #9 (merge commit), marcar a F1-T02-a no `BACKLOG.md` e iniciar a F1-T02-b (habilidades e experiências).
 
 ---
 
