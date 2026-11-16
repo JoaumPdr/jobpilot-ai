@@ -53,6 +53,11 @@ cp .env.example .env
 
 # Editar .env com suas configurações
 # (pelo menos DATABASE_URL para o PostgreSQL)
+
+# Opcional: banco de testes isolado.
+# Se omitido, os testes usam DATABASE_URL com o sufixo "_test"
+# (ex.: jobpilot_test), recriado automaticamente pela suíte.
+# TEST_DATABASE_URL=postgresql+psycopg://jobpilot:jobpilot@localhost:5433/jobpilot_test
 ```
 
 ## Execução
@@ -83,6 +88,12 @@ uv run ruff format
 # Tipagem (quando adotada)
 uv run mypy
 ```
+
+Os testes de integração usam um banco **isolado** (`jobpilot_test`): a fixture
+recria o banco, aplica `alembic upgrade head` e o remove no fim. Se
+`TEST_DATABASE_URL` não estiver definida, o nome é derivado de `DATABASE_URL`
+acrescentando `_test`; a suíte aborta se o alvo não terminar em `_test` ou for
+igual ao banco de desenvolvimento.
 
 ## Arquitetura Resumida
 
