@@ -58,7 +58,8 @@
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
 | [x] F1-T01 | Modelos e migração do **perfil**: `candidates`, `candidate_preferences`, `skills`, `candidate_skills`, `candidate_experiences` | F0-GATE | Migração reversível; constraints (únicos, FKs) testadas; `docs/data-model.md` criado |
-| [ ] F1-T02 | Serviço e rotas do **perfil** (CRUD de candidato, preferências, skills, experiências; `education`/`languages` como JSONB validado) | F1-T01 | Validações Pydantic; erros 404/422 padronizados; testes unitários e de API; `docs/api.md` criado |
+| [x] F1-T02-a | Serviço e rotas do **perfil — candidato e preferências**: CRUD de candidato, upsert 1:1 de preferências, erros padronizados, base de `docs/api.md` | F1-T01 | Validações Pydantic (incl. `education`/`languages` como JSONB estruturado); erros 404/415/409/422 padronizados; testes unitários e de API; `docs/api.md` criado |
+| [ ] F1-T02-b | Serviço e rotas do **perfil — habilidades e experiências**: catálogo (`POST /skills`), vínculo candidato/skill e CRUD de experiências | F1-T02-a | Validações Pydantic (`level`, `years >= 0`, datas); erros 404/409/422 padronizados; testes unitários e de API; `docs/api.md` atualizado |
 | [ ] F1-T03 | Modelos e migração de **vagas**: `jobs`, `import_batches` (com enums de modalidade e senioridade) | F0-GATE | Único `(source, external_id)` só quando `external_id` existe; índices em `fingerprint` e `canonical_url`; testes de constraint |
 | [ ] F1-T04 | **Normalização** e canonização (texto, modalidade, senioridade, URL, fingerprint) — funções puras | F1-T03 | Testes unitários cobrindo acentos, caixa, espaços, URLs com parâmetros de rastreio; sem acesso a banco |
 | [ ] F1-T05 | **Cadastro manual** de vaga (serviço + rota) usando normalização e dedup | F1-T04 | Vaga manual salva normalizada; duplicata certa/provável retorna aviso claro (não erro cego); testes |
@@ -169,4 +170,4 @@
 
 | Tarefa original | Subtarefas | Motivo | Data |
 |-----------------|-----------|--------|------|
-| — | — | — | — |
+| F1-T02 | F1-T02-a (candidato + preferências + erros + `api.md`), F1-T02-b (skills + experiências) | Estimativa de ~11 arquivos e 900–1300 linhas, acima do limite de ~8 arquivos/400 linhas; a divisão separa unidades coesas (perfil base vs. relacionamentos) e permite revisão e CI por etapa. `-b` depende de `-a` para reaproveitar erros, schemas e fixtures. | 2026-11-16 |

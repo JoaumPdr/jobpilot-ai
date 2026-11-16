@@ -1,4 +1,4 @@
-"""Fixtures de banco para os testes de integração (PostgreSQL real).
+"""Fixtures compartilhadas: banco isolado e cliente de API.
 
 POR QUÊ: testar constraints (UNIQUE, FK, CHECK, CASCADE) só é confiável no
 mesmo banco usado em produção. O banco de teste é **isolado** do banco de
@@ -20,13 +20,16 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.engine import URL, make_url
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
+from app.core.database import get_db
+from app.main import app
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 # Aceita apenas nomes simples para poder interpolar com segurança no DDL
 # (CREATE/DROP DATABASE não aceitam parâmetros vinculados).
 _SAFE_IDENTIFIER = re.compile(r"^[A-Za-z0-9_]+$")
@@ -152,3 +155,46 @@ def db_session(test_engine: Engine) -> Iterator[Session]:
             # desassociada pela sessão; rollback só se ainda estiver ativa.
             if transaction.is_active:
                 transaction.rollback()
+
+
+# As tabelas do perfil em ordem irrelevante para `TRUNCATE ... CASCADE`.
+_PROFILE_TABLES = (
+    "candidates",
+    "candidate_preferences",
+    "candidate_skills",
+    "candidate_experiences",
+    "skills",
+)
+
+
+@pytest.fixture
+def api_client(test_engine: Engine) -> Iterator[TestClient]:
+    """Cliente de API usando o banco isolado, com limpeza entre testes.
+
+    Cada requisição recebe uma sessão nova (como em produção); como o serviço
+    confirma a transação, a limpeza é feita por `TRUNCATE` ao fim do teste.
+    """
+    testing_session = sessionmaker(
+        bind=test_engine,
+        autocommit=False,
+        autoflush=False,
+        expire_on_commit=False,
+    )
+
+    def override_get_db() -> Iterator[Session]:
+        session = testing_session()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+    try:
+        with TestClient(app) as client:
+            yield client
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+        with test_engine.begin() as connection:
+            connection.execute(
+                text(f"TRUNCATE TABLE {', '.join(_PROFILE_TABLES)} CASCADE")
+            )
