@@ -11,12 +11,12 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02 planejada**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (**concluída; integrada pelo PR #8**) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento e notas de retomada) |
-| **Branch da tarefa** | `feat/f1-t01-modelos-perfil` (mesclada no PR #8; preservada) |
-| **Estado da tarefa** | concluída — modelos, migração, testes e documentação integrados; CI verde |
+| **Tarefa atual** | F1-T02 — Serviço e rotas do perfil (**ficha pronta; não iniciada**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02.md` |
+| **Branch da tarefa** | `feat/f1-t02-perfil-api` (criada; sem implementação) |
+| **Estado da tarefa** | não iniciada — aguardando confirmação de endpoints, JSONB e divisão |
 | **Último commit** | `7326d67` — Merge pull request #8 (F1-T01) |
 | **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
 | **CI** | verde no PR #8 (run 43950994777); lint, formatação, pytest e migração |
