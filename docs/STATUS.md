@@ -11,25 +11,25 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 implementada**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (**PR #8 aberto, aguardando merge**) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento detalhado; estado atualizado) |
-| **Branch da tarefa** | `feat/f1-t01-modelos-perfil` (publicada) |
-| **Estado da tarefa** | implementada e testada; CI verde; falta mesclar o PR |
-| **Último commit** | `05ea6a3` — docs(status): registrar F1-T01 implementada e PR #8 |
+| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (**concluída; integrada pelo PR #8**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento e notas de retomada) |
+| **Branch da tarefa** | `feat/f1-t01-modelos-perfil` (mesclada no PR #8; preservada) |
+| **Estado da tarefa** | concluída — modelos, migração, testes e documentação integrados; CI verde |
+| **Último commit** | `a01d5e4` — docs(perfil): documentar modelo de dados e banco de teste |
 | **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
-| **CI** | verde no PR #8 (run 43950487896); verifica lint, formatação, pytest e migração |
+| **CI** | verde no PR #8 (run 43950994777); lint, formatação, pytest e migração |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-16 20:31 (UTC) — branch `feat/f1-t01-modelos-perfil` |
-| **PR aberto** | #8 `feat/f1-t01-modelos-perfil` → `phase/01-nucleo-sem-ia` (CI verde; aguardando merge) |
+| **Último push** | 2026-11-16 20:36 (UTC) — branch `feat/f1-t01-modelos-perfil` |
+| **PR aberto** | nenhum após a integração do PR #8 (merge commit autorizado) |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Mesclar o PR #8 (`feat/f1-t01-modelos-perfil` → `phase/01-nucleo-sem-ia`, CI verde), marcar a F1-T01 no `BACKLOG.md` e iniciar a F1-T02 (serviço e rotas do perfil).
+> Iniciar a F1-T02 (serviço e rotas do perfil), após autorização do JP: criar a ficha a partir do BACKLOG e seguir o ciclo da §3.
 
 ---
 
@@ -45,13 +45,13 @@
 - F0-GATE **concluído**: PR #4 (`phase/00-fundacao` → `develop`) mesclado com CI verde e merge commit `cbbeb65`; tag `fase-00` recriada nesse commit (a tag anterior apontava para `3df13a3`, que falhou no CI); `PR_BODY_F0.md` removido da raiz.
 - Higiene pós-gate: skill de terceiros ignorado no `.gitignore` (permanece instalado localmente), `skills-lock.json` restaurado, baseline de `ruff format` aplicado e `ruff format --check` adicionado ao CI. Preparação da F1-T01 documentada, sem código.
 - Sessão de padronização documental (2026-11-16): divisão de responsabilidades entre `BACKLOG.md` (fonte canônica), `STATUS.md` (retomada) e fichas `docs/tasks/` (execução); política de fichas just-in-time formalizada em `ALETHE_INSTRUCOES.md` §3A; ficha `docs/tasks/FASE-01/F1-T01.md` criada com o plano antes detalhado aqui. PR #7 aberto (docs → `phase/01`) com CI verde. Nenhum código alterado.
-- **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 com CI verde.
+- **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 integrado por merge commit com CI verde.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T01 — modelos e migração do perfil · **implementada** · PR #8 aberto com CI verde, aguardando merge.
+**Tarefa atual:** F1-T01 — modelos e migração do perfil · **concluída** · integrada pelo PR #8 (CI verde).
 **Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T01.md`](tasks/FASE-01/F1-T01.md). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T01.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
@@ -61,8 +61,8 @@
 - [x] Executar a ficha: modelos, migração, `migrations/env.py`, fixture e testes ✅
 - [x] `docs/data-model.md` (Mermaid) e `TEST_DATABASE_URL` documentados ✅
 - [x] Suíte verde (21 passed), lint/formatação limpos, migração upgrade/downgrade ✅
-- [ ] Mesclar o PR #8 (tarefa → fase) e marcar a F1-T01 no `BACKLOG.md`
-- [ ] Iniciar a F1-T02 (serviço e rotas do perfil)
+- [x] Mesclar o PR #8 (tarefa → fase) e marcar a F1-T01 no `BACKLOG.md` ✅
+- [ ] Iniciar a F1-T02 (serviço e rotas do perfil) — aguardando autorização do JP
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -75,7 +75,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 implementada; PR #8) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 concluída; próxima F1-T02) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |

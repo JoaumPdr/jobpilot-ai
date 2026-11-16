@@ -57,7 +57,7 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] F1-T01 | Modelos e migração do **perfil**: `candidates`, `candidate_preferences`, `skills`, `candidate_skills`, `candidate_experiences` | F0-GATE | Migração reversível; constraints (únicos, FKs) testadas; `docs/data-model.md` criado |
+| [x] F1-T01 | Modelos e migração do **perfil**: `candidates`, `candidate_preferences`, `skills`, `candidate_skills`, `candidate_experiences` | F0-GATE | Migração reversível; constraints (únicos, FKs) testadas; `docs/data-model.md` criado |
 | [ ] F1-T02 | Serviço e rotas do **perfil** (CRUD de candidato, preferências, skills, experiências; `education`/`languages` como JSONB validado) | F1-T01 | Validações Pydantic; erros 404/422 padronizados; testes unitários e de API; `docs/api.md` criado |
 | [ ] F1-T03 | Modelos e migração de **vagas**: `jobs`, `import_batches` (com enums de modalidade e senioridade) | F0-GATE | Único `(source, external_id)` só quando `external_id` existe; índices em `fingerprint` e `canonical_url`; testes de constraint |
 | [ ] F1-T04 | **Normalização** e canonização (texto, modalidade, senioridade, URL, fingerprint) — funções puras | F1-T03 | Testes unitários cobrindo acentos, caixa, espaços, URLs com parâmetros de rastreio; sem acesso a banco |
