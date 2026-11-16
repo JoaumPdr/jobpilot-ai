@@ -17,7 +17,7 @@
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento detalhado; estado atualizado) |
 | **Branch da tarefa** | `feat/f1-t01-modelos-perfil` (publicada) |
 | **Estado da tarefa** | implementada e testada; CI verde; falta mesclar o PR |
-| **Último commit** | `a01d5e4` — docs(perfil): documentar modelo de dados e banco de teste |
+| **Último commit** | `05ea6a3` — docs(status): registrar F1-T01 implementada e PR #8 |
 | **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
 | **CI** | verde no PR #8 (run 43950487896); verifica lint, formatação, pytest e migração |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
