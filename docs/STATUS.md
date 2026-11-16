@@ -11,15 +11,15 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02-a em implementação**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02-a implementada**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**em implementação**) |
+| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**implementada; PR a abrir**) |
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-a.md` (F1-T02-b será detalhada quando começar) |
 | **Branch da tarefa** | `feat/f1-t02-perfil-api` (publicada) |
-| **Estado da tarefa** | em implementação — endpoints, JSONB e divisão confirmados pelo JP |
-| **Último commit** | `26b75b4` — docs(f1-t02): criar ficha e planejar servico e rotas do perfil |
-| **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
-| **CI** | verde no PR #8 (run 43950994777); lint, formatação, pytest e migração |
+| **Estado da tarefa** | implementada e testada; falta CI/merge do PR |
+| **Último commit** | `f464ef2` — test(perfil): cobrir servico e API de candidato e preferencias |
+| **Testes** | verdes (70 passed: 31 unitários/schemas + 20 de API + 17 de constraint + sanity/health) |
+| **CI** | a verificar no PR da F1-T02-a |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
 | **Último push** | 2026-11-16 20:40 (UTC) — branch `phase/01-nucleo-sem-ia` |
@@ -47,12 +47,13 @@
 - Sessão de padronização documental (2026-11-16): divisão de responsabilidades entre `BACKLOG.md` (fonte canônica), `STATUS.md` (retomada) e fichas `docs/tasks/` (execução); política de fichas just-in-time formalizada em `ALETHE_INSTRUCOES.md` §3A; ficha `docs/tasks/FASE-01/F1-T01.md` criada com o plano antes detalhado aqui. PR #7 aberto (docs → `phase/01`) com CI verde. Nenhum código alterado.
 - **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 integrado por merge commit com CI verde.
 - **F1-T02 dividida (2026-11-16):** decisões do JP — rotas REST por `candidate_id`, JSONB estruturado validado por Pydantic, `POST /skills` permitido (na `-b`) e divisão em `F1-T02-a` (candidato + preferências + erros + `api.md`) e `F1-T02-b` (habilidades + experiências). Divisão registrada no `BACKLOG.md`.
+- **F1-T02-a implementada (2026-11-16):** schemas com `education`/`languages` estruturados, exceções de domínio com handlers 404/409/422 e `request_id`, repositórios, serviço (e-mail único, upsert 1:1) e rotas REST de candidato/preferências. Fixtures de banco movidas para `tests/conftest.py` com cliente de API; 18 testes de API, 31 unitários, `docs/api.md` e `email-validator`. Suíte: 70 passed.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T02-a — candidato e preferências · **em implementação**.
+**Tarefa atual:** F1-T02-a — candidato e preferências · **implementada** · PR tarefa → fase a abrir.
 **Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T02-a.md`](tasks/FASE-01/F1-T02-a.md). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-a.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
@@ -60,11 +61,13 @@
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
 - [x] F1-T01 concluída: modelos, migração, testes de constraint e `data-model.md` (PR #8) ✅
 - [x] F1-T02 dividida em `-a`/`-b` e decisões confirmadas (REST, JSONB, `POST /skills` na `-b`) ✅
-- [ ] Schemas Pydantic (candidato, preferências, `education`/`languages`) + dependência de e-mail
-- [ ] `app/core/errors.py` e handlers padronizados (404/409/422)
-- [ ] Repositórios e serviço de perfil + testes unitários
-- [ ] Rotas `/candidates` e `/candidates/{id}/preferences` + testes de API
-- [ ] `docs/api.md`, atualização de BACKLOG/STATUS e PR tarefa → fase com CI verde
+- [x] Schemas Pydantic (candidato, preferências, `education`/`languages`) + `email-validator` ✅
+- [x] `app/core/errors.py` e handlers padronizados (404/409/422) ✅
+- [x] Repositórios e serviço de perfil + testes unitários ✅
+- [x] Rotas `/candidates` e `/candidates/{id}/preferences` + testes de API ✅
+- [x] `docs/api.md` e fixtures de banco movidas para `tests/conftest.py` ✅
+- [ ] Abrir PR tarefa → fase, conferir CI verde e mesclar (com autorização)
+- [ ] Iniciar a F1-T02-b (habilidades e experiências)
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
