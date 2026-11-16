@@ -10,25 +10,26 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-14 03:05 (UTC) |
+| **Última atualização** | 2026-11-16 (UTC) |
 | **Fase atual** | Fase 1 — Núcleo sem IA (**terreno pronto, F1-T01 não iniciada**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (aguardando sinal verde do JP) |
+| **Tarefa atual** | F1-T01 — Modelos e migração do perfil (**aguardando autorização do JP para executar**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento detalhado) |
 | **Branch da tarefa** | a criar: `feat/f1-t01-modelos-perfil` |
-| **Estado da tarefa** | não iniciada (desenho e ambiente prontos) |
-| **Último commit** | `ff60748` — Merge pull request #6 from JoaumPdr/chore/f0-higiene-desenvolvimento |
+| **Estado da tarefa** | não iniciada (ficha pronta; nenhum código escrito) |
+| **Último commit** | `9bc62d1` — docs: registrar criacao da phase/01 e terreno pronto para a F1-T01 |
 | **Testes** | verdes (4 passed) |
-| **CI** | verde no PR #4; verifica lint **e** `ruff format --check` (GUIA §B.8) |
+| **CI** | verde no HEAD de `phase/01` (run 43567810203); verifica lint **e** `ruff format --check` (GUIA §B.8) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-14 03:05 (UTC) — branch `phase/01-nucleo-sem-ia` |
+| **Último push** | 2026-11-14 06:44 (UTC) — branch `phase/01-nucleo-sem-ia` |
 | **PR aberto** | nenhum |
-| **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (merge commit em `develop`, CI verde) |
-| **MCP do GitHub** | indisponível (usando git local) |
+| **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
+| **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar `feat/f1-t01-modelos-perfil` a partir de `phase/01-nucleo-sem-ia` e implementar os modelos, a migração e os testes de constraint do perfil.
+> Com autorização do JP, criar `feat/f1-t01-modelos-perfil` a partir de `phase/01-nucleo-sem-ia` e executar a ficha `docs/tasks/FASE-01/F1-T01.md` (modelos, migração, testes de constraint e `docs/data-model.md`).
 
 ---
 
@@ -43,10 +44,14 @@
 - F0-T07 concluída: ADRs 0001–0007 e 0009 criados (total de 10 ADRs incluindo 0008 e 0010), `docs/privacy-and-sources.md` criado, README revisado e completo conforme GUIA_DOCS_E_GIT.md.
 - F0-GATE **concluído**: PR #4 (`phase/00-fundacao` → `develop`) mesclado com CI verde e merge commit `cbbeb65`; tag `fase-00` recriada nesse commit (a tag anterior apontava para `3df13a3`, que falhou no CI); `PR_BODY_F0.md` removido da raiz.
 - Higiene pós-gate: skill de terceiros ignorado no `.gitignore` (permanece instalado localmente), `skills-lock.json` restaurado, baseline de `ruff format` aplicado e `ruff format --check` adicionado ao CI. Preparação da F1-T01 documentada, sem código.
+- Sessão de padronização documental (2026-11-16): divisão de responsabilidades entre `BACKLOG.md` (fonte canônica), `STATUS.md` (retomada) e fichas `docs/tasks/` (execução); política de fichas just-in-time formalizada em `ALETHE_INSTRUCOES.md` §3A; ficha `docs/tasks/FASE-01/F1-T01.md` criada com o plano antes detalhado aqui. Nenhum código alterado.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
+
+**Tarefa atual:** F1-T01 — modelos e migração do perfil · **não iniciada** · aguardando autorização do JP.
+**Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T01.md`](tasks/FASE-01/F1-T01.md) (9 arquivos, decisões, testes e riscos). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T01.
 
 - [x] Abrir PR `phase/00-fundacao` → `develop` ✅
 - [x] Conferir CI verde no GitHub antes de mesclar ✅
@@ -58,29 +63,9 @@
 - [x] Mesclar a higiene em `develop` ✅ (PR #6 entrou em `main`; `develop` foi fast-forwarded para `ff60748`)
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
 - [x] Verificar ambiente (uv sync, ruff, pytest, Alembic) e banco na porta 5433 ✅
-- [ ] Iniciar F1-T01 (modelos e migração do perfil) — **aguardando sinal verde do JP**
-
-### Plano da F1-T01 (desenho pronto; nenhum código escrito)
-
-**Arquivos previstos**
-- `app/models/candidate.py` — `Candidate` (`name`, `email` opcional, `resume_text`, `headline`, `education` JSONB, `languages` JSONB, timestamps)
-- `app/models/preferences.py` — `CandidatePreference` (1:1 por `candidate_id` único)
-- `app/models/skill.py` — `Skill` (`canonical_name` único, `category`, `aliases` JSONB) e `CandidateSkill` (único `(candidate_id, skill_id)`)
-- `app/models/experience.py` — `CandidateExperience` (FK, `start_date`/`end_date`, `description`, `skills_used` JSONB)
-- `app/models/__init__.py` — exportar modelos para o Alembic enxergar o metadata
-- `migrations/versions/000000000002_profile_tables.py` — migração reversível
-- `tests/db/conftest.py` — fixture de banco de teste dedicado (`jobpilot_test`)
-- `tests/db/test_profile_constraints.py` — constrains (únicos, FKs, CHECK)
-- `docs/data-model.md` — tabelas, relações, constraints, enums, diagrama
-
-**Decisões de desenho já tomadas**
-- `candidate_skills.level`: `VARCHAR` + `CHECK` (iniciante/intermediário/avançado) — evita `ALTER TYPE` do ENUM nativo em evoluções
-- `min_salary`: `Numeric(12, 2)`; sem coluna de moeda por ora (registrado no data-model)
-- `skills.category`: texto livre até a taxonomia da F2-T01
-- FKs com `ON DELETE CASCADE`; `end_date >= start_date` via CHECK; `years >= 0`
-- Banco de teste dedicado `jobpilot_test`, criado por fixture a partir de `TEST_DATABASE_URL` (default derivado de `DATABASE_URL`), com `alembic upgrade head` na sessão
-
-**Fora do escopo da F1-T01:** rotas, serviços e validação Pydantic dos JSONB (F1-T02) e tabelas de vagas (F1-T03).
+- [ ] Autorização do JP para iniciar a F1-T01
+- [ ] Criar `feat/f1-t01-modelos-perfil` e executar a ficha (modelos → migração + fixture → testes + `data-model.md`)
+- [ ] Abrir PR tarefa → fase e mesclar com CI verde
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -93,7 +78,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em preparação (F1-T01 não iniciada) | — | — |
+| 1 — Núcleo sem IA | em preparação (F1-T01 não iniciada; ficha pronta) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -126,6 +111,7 @@
 | 2026-11-13 | Gerenciador de dependências: `uv` | Performance, lock file, grupos de dependências | 0008 |
 | 2026-11-14 | Skills de agentes: versionar apenas o Alethe; skills de terceiros ficam fora do repo (`.gitignore`) | plugin de terceiros criava repositórios **públicos** por padrão e fixava outra conta do GitHub, inadequado a repo privado | — |
 | 2026-11-14 | `ruff format --check` passa a rodar no CI | GUIA §B.8 exige lint **e** formatação; baseline aplicado antes de iniciar a F1 | — |
+| 2026-11-16 | Divisão de responsabilidades documental: BACKLOG é fonte canônica das tarefas/critérios; ficha (`docs/tasks/`) detalha a execução; STATUS registra estado e retomada. Fichas são just-in-time e opcionais por complexidade; sem fichas retroativas para a F0 | eliminar ambiguidade e duplicação (o STATUS acumulava o plano da F1-T01) | — |
 
 ---
 
@@ -138,8 +124,9 @@
 
 ## 8. Observações
 
-- Divergências entre este arquivo e o estado do Git (se houver): STATUS.md estava desatualizado (mostrava F0-T01 como não iniciada), corrigido agora para refletir o estado real do Git.
-- Variáveis de ambiente novas desde a última sessão: nenhuma (`.env.example` já existe).
+- **Divergência corrigida em 2026-11-16:** o §1 mostrava último commit `ff60748` e push 03:05 UTC; o Git/GitHub confirmam `9bc62d1` em `phase/01-nucleo-sem-ia`, push às 06:44 UTC (CI verde, run 43567810203). Corrigido; nenhum outro campo divergia.
+- **MCP do GitHub:** indisponível nesta sessão; operações de consulta (PRs e CI) feitas com `gh` CLI autenticado. Git local segue como via de commits/push.
+- Variáveis de ambiente novas desde a última sessão: nenhuma ainda. `TEST_DATABASE_URL` foi aprovada como variável de teste documentada (com default derivado) e será adicionada ao `.env.example` e ao README na execução da F1-T01.
 
 ---
 
@@ -151,6 +138,7 @@
 - [ ] Campos de sincronização da §1 atualizados (remoto, último push, PR aberto, CI no GitHub)
 - [ ] §1 e §3 atualizados com a próxima ação exata
 - [ ] `BACKLOG.md` marcado
+- [ ] Ficha da tarefa atual atualizada (se existir)
 - [ ] `RELATORIO.md` com nota curta da tarefa (se concluída)
 - [ ] `.env.example` sincronizado (se houve nova variável)
 - [ ] `uv.lock` commitado junto com o `pyproject.toml` (se houve mudança de dependência)

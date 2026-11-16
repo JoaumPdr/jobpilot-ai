@@ -1,7 +1,9 @@
 # JobPilot AI — Backlog e Tasks
 
 > Vira `docs/BACKLOG.md`. Marque `[x]` ao concluir. Estado vivo e retomada ficam em `docs/STATUS.md`.
-> **Planejamento just-in-time:** as fichas detalhadas (`docs/tasks/FASE-XX/Fx-Tyy.md`) são criadas só quando a tarefa vai começar.
+> **Planejamento just-in-time:** a ficha detalhada (`docs/tasks/FASE-XX/Fx-Tyy.md`) é criada só quando a tarefa vai começar e **somente quando ela exigir planejamento detalhado** (várias etapas, decisão arquitetural, vários arquivos, risco relevante ou plano de testes não trivial). Tarefas pequenas e diretas são planejadas no próprio BACKLOG.
+> **Sem fichas retroativas:** tarefas já concluídas (Fase 0) não recebem ficha.
+> **Divisão de responsabilidade:** o BACKLOG decide **o que** fazer e **quando** está pronto (critérios canônicos); a ficha explica **como** executar e verificar; o `STATUS.md` registra **onde estamos** e como retomar.
 
 ---
 
@@ -12,8 +14,9 @@
 - **Branch:** sempre a partir da branch da fase, **enviada ao GitHub logo após o primeiro commit**.
 - **Sincronização:** toda tarefa termina com push feito e verificado; todo gate de fase só fecha com PR mesclado no GitHub, CI verde no remoto e tag publicada (rotina na seção 4A do `ALETHE_INSTRUCOES.md` e B.9 do `GUIA_DOCS_E_GIT.md`).
 - **Aceitação:** condições objetivas e verificáveis; todas precisam ser atendidas.
+- **Ficha:** quando existir em `docs/tasks/FASE-XX/`, complementa a linha da tabela; os critérios de aceitação canônicos continuam sendo os desta tabela.
 
-## Modelo de ficha de tarefa (`docs/tasks/FASE-XX/Fx-Tyy.md`)
+## Modelo de ficha de tarefa (quando aplicável)
 
 ```text
 # Fx-Tyy — Título
@@ -24,7 +27,7 @@
 - Escopo (o que entra) / Fora de escopo (o que NÃO entra):
 - Arquivos prováveis:
 - Passos sugeridos:
-- Critérios de aceitação:
+- Critérios de aceitação (referência ao BACKLOG; detalhar apenas como verificar):
   - [ ] ...
 - Plano de testes (unit / integração / API):
 - Docs a atualizar:
@@ -162,6 +165,7 @@
 ## Registro de divisões de tarefas
 
 *(A Alethe registra aqui qualquer tarefa dividida: ID original → subtarefas e motivo.)*
+*(Dividir só quando a separação preservar unidades coesas; caso contrário, manter a tarefa inteira e justificar na ficha.)*
 
 | Tarefa original | Subtarefas | Motivo | Data |
 |-----------------|-----------|--------|------|

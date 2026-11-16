@@ -40,7 +40,7 @@ Copie os arquivos para o repositório com estes nomes:
 
 1. Ler `docs/STATUS.md` (onde estamos, próxima ação, bloqueios).
 2. Ler `docs/ALETHE_INSTRUCOES.md` (este arquivo) se for a primeira vez na sessão.
-3. Ler a **seção da fase atual** em `docs/BACKLOG.md` e o **arquivo da tarefa atual** em `docs/tasks/FASE-XX/` (se existir).
+3. Ler a **seção da fase atual** em `docs/BACKLOG.md` e, **quando existir**, a ficha da tarefa atual em `docs/tasks/FASE-XX/Fx-Tyy.md`. Sem ficha, os critérios de aceitação do BACKLOG bastam para começar.
 4. Rodar `git fetch --all --prune`, `git status -sb` e `git branch --show-current`; confirmar que está na branch correta da tarefa **e em dia com o remoto** (ver §4A).
 5. Rodar `uv sync` (garante o ambiente igual ao `uv.lock`) e depois os testes existentes via `uv run pytest` para confirmar que o ponto de partida está verde.
 6. **Declarar em 3 linhas** (no chat): fase atual, tarefa atual, o que fará nesta sessão.
@@ -53,7 +53,7 @@ Se `STATUS.md` e o estado do Git divergirem, **confie no Git**, corrija o `STATU
 
 Para cada tarefa do backlog:
 
-1. **Preparar** — se `docs/tasks/FASE-XX/Fx-Tyy.md` não existir, criá-lo a partir do modelo do `BACKLOG.md` (objetivo, arquivos prováveis, critérios de aceitação, plano de testes, riscos).
+1. **Preparar** — decidir se a tarefa precisa de ficha, seguindo a política da §3A. Se precisar e ela ainda não existir, criá-la a partir do modelo do `BACKLOG.md`. Se não precisar, o planejamento fica no próprio BACKLOG e a implementação pode começar.
 2. **Branch** — criar a branch da tarefa a partir da branch da fase (convenção no `GUIA_DOCS_E_GIT.md`).
 3. **Testes primeiro** (ou junto) — especialmente para regras determinísticas.
 4. **Implementar o mínimo** que faz os testes passarem; sem abstração prematura.
@@ -61,23 +61,40 @@ Para cada tarefa do backlog:
 6. **Documentar** — atualizar docs afetadas (ver tabela de gatilhos no `GUIA_DOCS_E_GIT.md`), comentários didáticos que expliquem o *porquê*.
 7. **Commit(s)** — pequenos, em PT-BR, formato convencional.
 8. **Push** da branch para o GitHub e conferir que o remoto recebeu (o remoto é o backup; ver §4A).
-9. **Atualizar `docs/STATUS.md`** e marcar a tarefa no `BACKLOG.md`.
+9. **Atualizar `docs/STATUS.md`**, marcar a tarefa no `BACKLOG.md` e atualizar a ficha da tarefa (se existir).
 10. **Integrar** — abrir PR da branch da tarefa para a branch da fase (pelo MCP do GitHub), conferir o CI e mesclar quando os critérios de aceitação estiverem todos atendidos e o CI estiver verde.
 
 Nada de "quase pronto": ou a tarefa fecha com critérios atendidos, ou o estado parcial é registrado no `STATUS.md` (ver §6).
+
+### 3A. Política de fichas de tarefa (`docs/tasks/FASE-XX/Fx-Tyy.md`)
+
+A ficha é o **planejamento detalhado da execução** de uma tarefa. Ela é **opcional e just-in-time** — não é etapa burocrática obrigatória para toda tarefa. A regra de ouro:
+
+- **BACKLOG** decide **o que** fazer e **quando** a tarefa está pronta (critérios canônicos).
+- **Ficha** explica **como** executar e verificar.
+- **STATUS** registra **onde estamos** e como retomar.
+
+Regras de criação:
+
+1. **Sem fichas retroativas.** Tarefas já concluídas (Fase 0) não recebem ficha; o histórico delas vive no `BACKLOG.md`, no `RELATORIO.md` e nos commits.
+2. Criar a ficha **quando a tarefa estiver prestes a começar**, nunca antecipadamente para todas as tarefas futuras da fase.
+3. **Criar ficha quando** a tarefa envolver múltiplas etapas técnicas, decisão arquitetural, vários arquivos, risco relevante ou plano de testes não trivial.
+4. **Tarefa pequena e direta** → o planejamento permanece no próprio `BACKLOG.md`, desde que os critérios de aceitação sejam suficientes para orientar a execução.
+5. Se uma tarefa inicialmente simples **revelar complexidade** durante a preparação, criar a ficha **antes** de iniciar a implementação.
+6. Ficha existente é **complemento**, não substituta: os critérios de aceitação canônicos continuam no BACKLOG; a ficha referencia e detalha como verificá-los, sem alterar escopo por conta própria.
 
 ---
 
 ## 4. Regras de tamanho e foco (proteção contra falta de tokens)
 
 - **Uma tarefa por vez.** Não começar outra com a anterior aberta.
-- **Tamanho máximo de tarefa:** ~8 arquivos tocados ou ~400 linhas de diff. Passou disso → **dividir** em subtarefas (`Fx-Tyy-a`, `Fx-Tyy-b`) e registrar no backlog.
+- **Tamanho máximo de tarefa:** ~8 arquivos tocados ou ~400 linhas de diff. Passou disso → **avaliar** a divisão em subtarefas (`Fx-Tyy-a`, `Fx-Tyy-b`) e registrar no backlog. O limite é um alerta, não uma regra cega: se dividir quebrar uma unidade coesa (ex.: um esquema e a migração que o cria), manter a tarefa inteira e justificar na ficha ou no `STATUS.md`.
 - **Commit a cada ciclo verde** (testes passando) e pelo menos a cada ~30–45 minutos de trabalho. Nunca acumular trabalho grande sem commit.
 - **Push após todo commit significativo** para o GitHub e sempre antes de encerrar a sessão (ver §4A).
 - **Não ler o repositório inteiro.** Ler só o necessário para a tarefa; usar o `design.md` e o `STATUS.md` como mapa.
 - **Não implementar fases futuras** nem "já deixar pronto" funcionalidades fora da tarefa atual.
 - **Não reescrever arquivos grandes por completo** para pequenas mudanças — editar pontualmente.
-- **Planejamento just-in-time:** detalhar tarefas só da fase que está começando.
+- **Planejamento just-in-time:** detalhar a tarefa só quando ela for começar (ficha quando aplicável, §3A); não detalhar a fase inteira antecipadamente.
 
 ---
 

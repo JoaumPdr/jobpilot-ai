@@ -26,7 +26,7 @@
 | `docs/evaluation.md` | Golden set, métricas, resultados comparativos | Fases 2, 3 e 4 |
 | `docs/pipeline.md` | Grafo LangGraph: estado, nós, transições, falhas | Fase 4 em diante |
 | `docs/privacy-and-sources.md` | Privacidade (LGPD), política de fontes de vagas e checklist de termos de uso | Fase 0 (base) e a cada nova fonte |
-| `docs/tasks/FASE-XX/Fx-Tyy.md` | Ficha de cada tarefa | Criada no início da tarefa |
+| `docs/tasks/FASE-XX/Fx-Tyy.md` | Ficha de cada tarefa | Ao iniciar tarefa que exija planejamento detalhado (política no `BACKLOG.md`) |
 | `CHANGELOG.md` | Mudanças por versão (tags) | Ao criar tag |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Modelo de PR (seção B.5) | F0-T01; raramente depois |
 
