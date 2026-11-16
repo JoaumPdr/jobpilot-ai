@@ -14,6 +14,9 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
+# POR QUÊ: importar o pacote `app.models` registra todas as tabelas na Base;
+# importar só `base` deixaria o autogenerate cego para os modelos.
+import app.models  # noqa: F401
 from app.models.base import Base
 
 target_metadata = Base.metadata
