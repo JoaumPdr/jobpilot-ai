@@ -17,13 +17,13 @@
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T01.md` (planejamento e notas de retomada) |
 | **Branch da tarefa** | `feat/f1-t01-modelos-perfil` (mesclada no PR #8; preservada) |
 | **Estado da tarefa** | concluída — modelos, migração, testes e documentação integrados; CI verde |
-| **Último commit** | `a01d5e4` — docs(perfil): documentar modelo de dados e banco de teste |
+| **Último commit** | `7326d67` — Merge pull request #8 (F1-T01) |
 | **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
 | **CI** | verde no PR #8 (run 43950994777); lint, formatação, pytest e migração |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-16 20:36 (UTC) — branch `feat/f1-t01-modelos-perfil` |
-| **PR aberto** | nenhum após a integração do PR #8 (merge commit autorizado) |
+| **Último push** | 2026-11-16 20:40 (UTC) — branch `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
