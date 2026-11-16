@@ -11,13 +11,13 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02 planejada**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02-a em implementação**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T02 — Serviço e rotas do perfil (**ficha pronta; não iniciada**) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02.md` |
-| **Branch da tarefa** | `feat/f1-t02-perfil-api` (criada; sem implementação) |
-| **Estado da tarefa** | não iniciada — aguardando confirmação de endpoints, JSONB e divisão |
-| **Último commit** | `7326d67` — Merge pull request #8 (F1-T01) |
+| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**em implementação**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-a.md` (F1-T02-b será detalhada quando começar) |
+| **Branch da tarefa** | `feat/f1-t02-perfil-api` (publicada) |
+| **Estado da tarefa** | em implementação — endpoints, JSONB e divisão confirmados pelo JP |
+| **Último commit** | `26b75b4` — docs(f1-t02): criar ficha e planejar servico e rotas do perfil |
 | **Testes** | verdes (21 passed: 4 API/sanidade + 17 de constraint) |
 | **CI** | verde no PR #8 (run 43950994777); lint, formatação, pytest e migração |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
@@ -29,7 +29,7 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Iniciar a F1-T02 (serviço e rotas do perfil), após autorização do JP: criar a ficha a partir do BACKLOG e seguir o ciclo da §3.
+> Implementar a F1-T02-a (schemas → erros → repositórios → serviço → rotas → testes → `docs/api.md`), seguindo `docs/tasks/FASE-01/F1-T02-a.md`.
 
 ---
 
@@ -46,23 +46,25 @@
 - Higiene pós-gate: skill de terceiros ignorado no `.gitignore` (permanece instalado localmente), `skills-lock.json` restaurado, baseline de `ruff format` aplicado e `ruff format --check` adicionado ao CI. Preparação da F1-T01 documentada, sem código.
 - Sessão de padronização documental (2026-11-16): divisão de responsabilidades entre `BACKLOG.md` (fonte canônica), `STATUS.md` (retomada) e fichas `docs/tasks/` (execução); política de fichas just-in-time formalizada em `ALETHE_INSTRUCOES.md` §3A; ficha `docs/tasks/FASE-01/F1-T01.md` criada com o plano antes detalhado aqui. PR #7 aberto (docs → `phase/01`) com CI verde. Nenhum código alterado.
 - **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 integrado por merge commit com CI verde.
+- **F1-T02 dividida (2026-11-16):** decisões do JP — rotas REST por `candidate_id`, JSONB estruturado validado por Pydantic, `POST /skills` permitido (na `-b`) e divisão em `F1-T02-a` (candidato + preferências + erros + `api.md`) e `F1-T02-b` (habilidades + experiências). Divisão registrada no `BACKLOG.md`.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T01 — modelos e migração do perfil · **concluída** · integrada pelo PR #8 (CI verde).
-**Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T01.md`](tasks/FASE-01/F1-T01.md). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T01.
+**Tarefa atual:** F1-T02-a — candidato e preferências · **em implementação**.
+**Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T02-a.md`](tasks/FASE-01/F1-T02-a.md). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-a.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
-- [x] Verificar ambiente (uv sync, ruff, pytest, Alembic) e banco na porta 5433 ✅
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
-- [x] Executar a ficha: modelos, migração, `migrations/env.py`, fixture e testes ✅
-- [x] `docs/data-model.md` (Mermaid) e `TEST_DATABASE_URL` documentados ✅
-- [x] Suíte verde (21 passed), lint/formatação limpos, migração upgrade/downgrade ✅
-- [x] Mesclar o PR #8 (tarefa → fase) e marcar a F1-T01 no `BACKLOG.md` ✅
-- [ ] Iniciar a F1-T02 (serviço e rotas do perfil) — aguardando autorização do JP
+- [x] F1-T01 concluída: modelos, migração, testes de constraint e `data-model.md` (PR #8) ✅
+- [x] F1-T02 dividida em `-a`/`-b` e decisões confirmadas (REST, JSONB, `POST /skills` na `-b`) ✅
+- [ ] Schemas Pydantic (candidato, preferências, `education`/`languages`) + dependência de e-mail
+- [ ] `app/core/errors.py` e handlers padronizados (404/409/422)
+- [ ] Repositórios e serviço de perfil + testes unitários
+- [ ] Rotas `/candidates` e `/candidates/{id}/preferences` + testes de API
+- [ ] `docs/api.md`, atualização de BACKLOG/STATUS e PR tarefa → fase com CI verde
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -75,7 +77,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 concluída; próxima F1-T02) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 concluída; F1-T02-a em implementação) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
