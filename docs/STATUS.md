@@ -11,25 +11,25 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 concluída; F1-T02-a implementada**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 e F1-T02-a concluídas; F1-T02-b em preparação**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T02-a — Serviço e rotas do perfil: candidato e preferências (**PR #9 aberto, aguardando merge**) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-a.md` (F1-T02-b será detalhada quando começar) |
-| **Branch da tarefa** | `feat/f1-t02-perfil-api` (publicada) |
-| **Estado da tarefa** | implementada e testada; CI verde; falta mesclar o PR #9 |
-| **Último commit de código** | `d97495a` — docs(api): documentar endpoints de candidato e preferencias |
+| **Tarefa atual** | F1-T02-b — Serviço e rotas: habilidades e experiências (**não iniciada; ficha a criar**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-b.md` (a criar ao iniciar) |
+| **Branch da tarefa** | `feat/f1-t02b-skills-experiencias` (a criar a partir da fase) |
+| **Estado da tarefa** | não iniciada — aguardando ficha e branch |
+| **Último commit** | `359fbfa` — Merge pull request #9 (F1-T02-a) |
 | **Testes** | verdes (70 passed: 31 unitários/schemas + 18 de API + 17 de constraint + sanity/health) |
-| **CI** | verde no PR #9 (run 43955199020): lint, formatação, pytest e migração |
+| **CI** | verde no merge do PR #9; a verificar na `phase/01-nucleo-sem-ia` |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-16 21:00 (UTC) — branch `feat/f1-t02-perfil-api` |
-| **PR aberto** | #9 `feat/f1-t02-perfil-api` → `phase/01-nucleo-sem-ia` (CI verde; aguardando autorização para mesclar) |
+| **Último push** | 2026-11-16 21:05 (UTC) — branch `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum após a integração do PR #9 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Com autorização do JP, mesclar o PR #9 (merge commit), marcar a F1-T02-a no `BACKLOG.md` e iniciar a F1-T02-b (habilidades e experiências).
+> Criar a ficha `docs/tasks/FASE-01/F1-T02-b.md` e a branch `feat/f1-t02b-skills-experiencias` a partir da fase, e implementar catálogo de skills, vínculo candidato/skill e CRUD de experiências.
 
 ---
 
@@ -47,27 +47,28 @@
 - Sessão de padronização documental (2026-11-16): divisão de responsabilidades entre `BACKLOG.md` (fonte canônica), `STATUS.md` (retomada) e fichas `docs/tasks/` (execução); política de fichas just-in-time formalizada em `ALETHE_INSTRUCOES.md` §3A; ficha `docs/tasks/FASE-01/F1-T01.md` criada com o plano antes detalhado aqui. PR #7 aberto (docs → `phase/01`) com CI verde. Nenhum código alterado.
 - **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 integrado por merge commit com CI verde.
 - **F1-T02 dividida (2026-11-16):** decisões do JP — rotas REST por `candidate_id`, JSONB estruturado validado por Pydantic, `POST /skills` permitido (na `-b`) e divisão em `F1-T02-a` (candidato + preferências + erros + `api.md`) e `F1-T02-b` (habilidades + experiências). Divisão registrada no `BACKLOG.md`.
-- **F1-T02-a implementada (2026-11-16):** schemas com `education`/`languages` estruturados, exceções de domínio com handlers 404/409/422 e `request_id`, repositórios, serviço (e-mail único, upsert 1:1) e rotas REST de candidato/preferências. Fixtures de banco movidas para `tests/conftest.py` com cliente de API; 18 testes de API, 31 unitários, `docs/api.md` e `email-validator`. Suíte: 70 passed.
+- **F1-T02-a implementada (2026-11-16):** schemas com `education`/`languages` estruturados, exceções de domínio com handlers 404/409/422 e `request_id`, repositórios, serviço (e-mail único, upsert 1:1) e rotas REST de candidato/preferências. Fixtures de banco movidas para `tests/conftest.py` com cliente de API; 18 testes de API, 31 unitários, `docs/api.md` e `email-validator`. Suíte: 70 passed. **PR #9 integrado por merge commit (`359fbfa`) com CI verde.**
+- **F1-T02-b iniciada (2026-11-16):** ficha e branch a criar; escopo = catálogo de skills, vínculo candidato/skill e CRUD de experiências.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T02-a — candidato e preferências · **implementada** · PR tarefa → fase a abrir.
-**Planejamento detalhado:** [`docs/tasks/FASE-01/F1-T02-a.md`](tasks/FASE-01/F1-T02-a.md). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-a.
+**Tarefa atual:** F1-T02-b — habilidades e experiências · **não iniciada**.
+**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T02-b.md` (a criar). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-b.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
 - [x] F1-T01 concluída: modelos, migração, testes de constraint e `data-model.md` (PR #8) ✅
 - [x] F1-T02 dividida em `-a`/`-b` e decisões confirmadas (REST, JSONB, `POST /skills` na `-b`) ✅
-- [x] Schemas Pydantic (candidato, preferências, `education`/`languages`) + `email-validator` ✅
-- [x] `app/core/errors.py` e handlers padronizados (404/409/422) ✅
-- [x] Repositórios e serviço de perfil + testes unitários ✅
-- [x] Rotas `/candidates` e `/candidates/{id}/preferences` + testes de API ✅
-- [x] `docs/api.md` e fixtures de banco movidas para `tests/conftest.py` ✅
-- [ ] Abrir PR tarefa → fase, conferir CI verde e mesclar (com autorização)
-- [ ] Iniciar a F1-T02-b (habilidades e experiências)
+- [x] F1-T02-a concluída: candidato/preferências, erros padronizados, testes e `api.md` (PR #9) ✅
+- [ ] Criar ficha `F1-T02-b.md` e branch `feat/f1-t02b-skills-experiencias`
+- [ ] Schemas e repositórios de `skills`, vínculo candidato/skill e experiências
+- [ ] Serviços (catálogo, vínculo, experiências) + testes unitários
+- [ ] Rotas `/skills`, `/candidates/{id}/skills` e `/candidates/{id}/experiences` + testes de API
+- [ ] Estender `CandidateRead` com skills/experiências; atualizar `docs/api.md`
+- [ ] PR tarefa → fase, CI verde e merge (com autorização)
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -80,7 +81,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 concluída; F1-T02-a em implementação) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 e F1-T02-a concluídas; F1-T02-b em preparação) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
