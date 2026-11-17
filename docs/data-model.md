@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Última atualização: 2026-11-16 (F1-T01).
+> Última atualização: 2026-11-17 (F1-T03).
 
 ## Visão geral
 
@@ -16,8 +16,12 @@
   interna é validada por Pydantic na camada de serviço (F1-T02).
 - **Exclusão em cascata:** tudo que pertence ao candidato é removido junto
   (`ON DELETE CASCADE`). O catálogo `skills` **não** é apagado em cascata.
-- **Migração:** `migrations/versions/000000000002_profile_tables.py`
-  (`upgrade`/`downgrade` reversíveis).
+- **Vagas:** `jobs` guarda a vaga já normalizada; `import_batches` registra a
+  origem e os contadores de cada lote. Apagar um lote ou a vaga original de uma
+  duplicata usa `ON DELETE SET NULL` — nada é perdido em cascata.
+- **Migrações:** `migrations/versions/000000000002_profile_tables.py` (perfil) e
+  `000000000003_job_tables.py` (vagas), ambas com `upgrade`/`downgrade`
+  reversíveis.
 
 ## Diagrama
 
@@ -27,6 +31,8 @@ erDiagram
     candidates ||--o{ candidate_skills : "declara"
     candidates ||--o{ candidate_experiences : "possui"
     skills ||--o{ candidate_skills : "classifica"
+    import_batches ||--o{ jobs : "origina"
+    jobs ||--o| jobs : "duplicata confirmada"
 
     candidates {
         uuid id PK
@@ -80,6 +86,46 @@ erDiagram
         text description
         jsonb skills_used
         integer years ">= 0 ou NULL"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    import_batches {
+        uuid id PK
+        varchar source
+        varchar kind "csv/manual/api"
+        varchar filename
+        timestamptz started_at
+        timestamptz finished_at "NULL = em andamento"
+        integer total_rows
+        integer inserted
+        integer duplicates
+        integer rejected
+        jsonb errors
+    }
+
+    jobs {
+        uuid id PK
+        varchar title
+        varchar company
+        text description
+        varchar location
+        varchar work_mode
+        varchar seniority
+        varchar employment_type
+        numeric salary_min
+        numeric salary_max
+        varchar currency "ISO 4217"
+        varchar source
+        varchar external_id "opcional"
+        text url
+        text canonical_url
+        varchar fingerprint "SHA-256"
+        timestamptz posted_at
+        timestamptz collected_at
+        uuid import_batch_id FK "opcional"
+        boolean is_archived
+        uuid duplicate_of_job_id FK "opcional"
         timestamptz created_at
         timestamptz updated_at
     }
@@ -161,6 +207,59 @@ Perfil principal; no MVP é single-user, mas o esquema já é multiusuário.
 | `years` | `integer` | opcional; CHECK `years >= 0` (anos naquela função) |
 | `created_at`, `updated_at` | `timestamptz` | default `now()` |
 
+### `import_batches`
+
+Lote de importação (CSV, manual ou API). Um lote pode falhar por linha sem
+abortar o restante; os erros ficam no JSONB `errors`.
+
+| Coluna | Tipo | Regras |
+|--------|------|--------|
+| `id` | `UUID` | PK |
+| `source` | `varchar(100)` | obrigatório |
+| `kind` | `varchar(20)` | obrigatório; CHECK: `csv`, `manual`, `api` |
+| `filename` | `varchar(255)` | opcional |
+| `started_at` | `timestamptz` | default `now()` |
+| `finished_at` | `timestamptz` | opcional (`NULL` = em andamento); CHECK `finished_at >= started_at` |
+| `total_rows`, `inserted`, `duplicates`, `rejected` | `integer` | default `0`; CHECK `>= 0` |
+| `errors` | `jsonb` | lista por linha, default `[]` |
+
+**Semântica:** apagar o lote **não** apaga as vagas; `jobs.import_batch_id`
+passa a `NULL` (`ON DELETE SET NULL`).
+
+### `jobs`
+
+Vaga já normalizada. `url`, `canonical_url` e `fingerprint` são obrigatórios:
+a vaga só é gravada depois da normalização (F1-T04/T05).
+
+| Coluna | Tipo | Regras |
+|--------|------|--------|
+| `id` | `UUID` | PK |
+| `title` | `varchar(300)` | obrigatório |
+| `company` | `varchar(200)` | obrigatório |
+| `description` | `text` | opcional |
+| `location` | `varchar(200)` | opcional |
+| `work_mode` | `varchar(20)` | NOT NULL, default `desconhecido`; CHECK: `remoto`, `híbrido`, `presencial`, `desconhecido` |
+| `seniority` | `varchar(20)` | NOT NULL, default `desconhecido`; CHECK: `estágio`, `júnior`, `pleno`, `sênior`, `especialista`, `desconhecido` |
+| `employment_type` | `varchar(100)` | opcional (texto livre: CLT, PJ, etc.) |
+| `salary_min`, `salary_max` | `numeric(12,2)` | opcionais; CHECK `>= 0` e `max >= min` |
+| `currency` | `varchar(3)` | opcional (ISO 4217); sem conversão nesta fase |
+| `source` | `varchar(100)` | obrigatório (ex.: `manual`, nome do portal) |
+| `external_id` | `varchar(200)` | opcional; único **por fonte** quando presente |
+| `url` | `text` | obrigatório |
+| `canonical_url` | `text` | obrigatório; normalizada, sem parâmetros de rastreamento |
+| `fingerprint` | `varchar(64)` | obrigatório; SHA-256 de empresa + título + localização normalizados |
+| `posted_at` | `timestamptz` | opcional (data de publicação) |
+| `collected_at` | `timestamptz` | default `now()` |
+| `import_batch_id` | `UUID` | FK → `import_batches.id`, `ON DELETE SET NULL` |
+| `is_archived` | `boolean` | default `false` |
+| `duplicate_of_job_id` | `UUID` | FK → `jobs.id`, `ON DELETE SET NULL`; CHECK `<> id` |
+| `created_at`, `updated_at` | `timestamptz` | default `now()` |
+
+**Deduplicação (camadas 1–3, detalhe na F1-T07):** o índice único parcial
+`(source, external_id)` cobre a duplicata certa; `fingerprint` e `canonical_url`
+têm índices próprios para as camadas seguintes. Duplicata provável **sinaliza**,
+nunca apaga: `duplicate_of_job_id` só é preenchido quando o usuário confirma.
+
 ## Constraints nomeadas
 
 | Nome | Tabela | Regra |
@@ -173,6 +272,17 @@ Perfil principal; no MVP é single-user, mas o esquema já é multiusuário.
 | `ck_candidate_skills_years_non_negative` | `candidate_skills` | `years >= 0` |
 | `ck_candidate_experiences_date_range` | `candidate_experiences` | `end_date` não anterior ao início |
 | `ck_candidate_experiences_years_non_negative` | `candidate_experiences` | `years >= 0` |
+| `uq_jobs_source_external_id` | `jobs` | índice único **parcial** em `(source, external_id) WHERE external_id IS NOT NULL` |
+| `ix_jobs_fingerprint` | `jobs` | índice para a camada 3 da dedup |
+| `ix_jobs_canonical_url` | `jobs` | índice para a camada 2 da dedup |
+| `ck_jobs_work_mode` | `jobs` | valores de modalidade permitidos |
+| `ck_jobs_seniority` | `jobs` | valores de senioridade permitidos |
+| `ck_jobs_salary_non_negative` | `jobs` | `salary_min`/`salary_max >= 0` |
+| `ck_jobs_salary_range` | `jobs` | `salary_max >= salary_min` quando ambos existem |
+| `ck_jobs_duplicate_not_self` | `jobs` | a vaga não aponta para si como duplicata |
+| `ck_import_batches_kind` | `import_batches` | `csv`, `manual` ou `api` |
+| `ck_import_batches_counters_non_negative` | `import_batches` | contadores `>= 0` |
+| `ck_import_batches_finished_after_started` | `import_batches` | `finished_at >= started_at` quando informado |
 
 ## Testes do esquema
 
@@ -184,6 +294,17 @@ Perfil principal; no MVP é single-user, mas o esquema já é multiusuário.
 - CHECKs de nível (incluindo `NULL`), intervalo de datas e anos negativos;
 - `Numeric(12,2)` preservando duas casas.
 
+`tests/db/test_job_constraints.py` cobre as tabelas de vagas (F1-T03):
+
+- único parcial `(source, external_id)`: repetido com ID falha; vários `NULL` e
+  mesmo ID em fontes diferentes são aceitos;
+- defaults `desconhecido` para modalidade/senioridade e CHECKs de enum;
+- salários negativos e faixa invertida;
+- auto-duplicata, FK de lote inexistente e `SET NULL` ao apagar lote/vaga
+  original;
+- contadores negativos e `finished_at` anterior a `started_at`;
+- presença dos índices de `fingerprint` e `canonical_url`.
+
 O banco de teste é isolado (`jobpilot_test`), criado pela fixture a partir de
 `TEST_DATABASE_URL` (default derivado de `DATABASE_URL`), com
 `alembic upgrade head` na sessão. A fixture **aborta** se o alvo não terminar
@@ -191,9 +312,9 @@ em `_test` ou for igual ao banco de desenvolvimento.
 
 ## Próximas tabelas (fora desta tarefa)
 
-`jobs`/`import_batches` (F1-T03), `applications`/`application_status_history`
-(F1-T09) e, nas fases seguintes, `job_skills`, `job_matches`, `llm_cache`,
-`pipeline_runs`, `resume_versions` e `interviews` (ver `PLANO.md` §5).
+`applications`/`application_status_history` (F1-T09) e, nas fases seguintes,
+`job_skills`, `job_matches`, `llm_cache`, `pipeline_runs`, `resume_versions` e
+`interviews` (ver `PLANO.md` §5).
 
 ## Pendência registrada
 
