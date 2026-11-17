@@ -13,71 +13,9 @@ from decimal import Decimal
 import pytest
 
 from app.core.errors import ConflictError, NotFoundError
-from app.models import Candidate, CandidatePreference
 from app.schemas.profile import CandidateCreate, CandidateUpdate, PreferencesPut
 from app.services.profile import ProfileService
-
-
-class FakeCandidateRepository:
-    """Repositório em memória com o contrato usado pelo serviço."""
-
-    def __init__(self) -> None:
-        self.items: dict[uuid.UUID, Candidate] = {}
-        self.commits = 0
-        self.rollbacks = 0
-
-    def get(self, candidate_id: uuid.UUID) -> Candidate | None:
-        return self.items.get(candidate_id)
-
-    def get_by_email(self, email: str) -> Candidate | None:
-        normalized = email.strip().lower()
-        return next(
-            (
-                candidate
-                for candidate in self.items.values()
-                if (candidate.email or "").lower() == normalized
-            ),
-            None,
-        )
-
-    def add(self, candidate: Candidate) -> Candidate:
-        if candidate.id is None:
-            candidate.id = uuid.uuid4()
-        self.items[candidate.id] = candidate
-        return candidate
-
-    def delete(self, candidate: Candidate) -> None:
-        self.items.pop(candidate.id, None)
-
-    def commit(self) -> None:
-        self.commits += 1
-
-    def rollback(self) -> None:
-        self.rollbacks += 1
-
-
-class FakePreferenceRepository:
-    """Repositório em memória de preferências (1:1 por candidato)."""
-
-    def __init__(self) -> None:
-        self.items: dict[uuid.UUID, CandidatePreference] = {}
-        self.commits = 0
-        self.rollbacks = 0
-
-    def get(self, candidate_id: uuid.UUID) -> CandidatePreference | None:
-        return self.items.get(candidate_id)
-
-    def add(self, preference: CandidatePreference) -> CandidatePreference:
-        if preference.id is None:
-            preference.id = uuid.uuid4()
-        self.items[preference.candidate_id] = preference
-        return preference
-
-    def commit(self) -> None:
-        self.commits += 1
-
-    def rollback(self) -> None:
-        self.rollbacks += 1
+from tests.unit.fakes import FakeCandidateRepository, FakePreferenceRepository
 
 
 @pytest.fixture

@@ -8,13 +8,10 @@ serviço e os erros viram 404/409/422 pelos handlers globais.
 from __future__ import annotations
 
 import uuid
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Response, status
 
-from app.core.database import get_db
-from app.repositories.profile import CandidateRepository, PreferenceRepository
+from app.api.dependencies import ProfileServiceDep
 from app.schemas.profile import (
     CandidateCreate,
     CandidateRead,
@@ -22,19 +19,8 @@ from app.schemas.profile import (
     PreferencesPut,
     PreferencesRead,
 )
-from app.services.profile import ProfileService
 
 router = APIRouter(tags=["perfil"])
-
-DbSession = Annotated[Session, Depends(get_db)]
-
-
-def get_profile_service(db: DbSession) -> ProfileService:
-    """Monta o serviço de perfil com os repositórios da requisição."""
-    return ProfileService(CandidateRepository(db), PreferenceRepository(db))
-
-
-ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 
 
 @router.post(
