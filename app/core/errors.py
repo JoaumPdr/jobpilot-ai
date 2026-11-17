@@ -84,6 +84,14 @@ class ConflictError(DomainError):
     default_message = "Conflito com o estado atual do recurso."
 
 
+class InvalidDataError(DomainError):
+    """Regra de consistência que só pode ser checada com o estado atual → 422."""
+
+    status_code = 422
+    error = "invalid_data"
+    default_message = "Dados inconsistentes com o estado atual do recurso."
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """Registra os handlers de erro padronizados na aplicação."""
 

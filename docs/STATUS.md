@@ -10,26 +10,26 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-16 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 e F1-T02-a concluídas; F1-T02-b em preparação**) |
+| **Última atualização** | 2026-11-17 (UTC) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01, F1-T02-a e F1-T02-b concluídas; PR #10 aguardando merge**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T02-b — Serviço e rotas: habilidades e experiências (**não iniciada; ficha a criar**) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-b.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t02b-skills-experiencias` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada — aguardando ficha e branch |
-| **Último commit** | `359fbfa` — Merge pull request #9 (F1-T02-a) |
-| **Testes** | verdes (70 passed: 31 unitários/schemas + 18 de API + 17 de constraint + sanity/health) |
-| **CI** | verde no merge do PR #9; a verificar na `phase/01-nucleo-sem-ia` |
+| **Tarefa atual** | F1-T02-b — Serviço e rotas: habilidades e experiências (**implementada, testada e documentada; PR #10 aberto com CI verde**) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T02-b.md` |
+| **Branch da tarefa** | `feat/f1-t02b-skills-experiencias` |
+| **Estado da tarefa** | PR #10 → `phase/01-nucleo-sem-ia` aguardando autorização do JP para merge |
+| **Último commit** | `eb7481d` — docs(api): documentar habilidades e experiencias |
+| **Testes** | verdes (119 passed: unitários/schemas + API + constraints + sanity/health, contra PostgreSQL real) |
+| **CI** | verde no PR #10 (run `44187596274`); a verificar após o push do STATUS |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-16 21:05 (UTC) — branch `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum após a integração do PR #9 |
+| **Último push** | 2026-11-17 — branch `feat/f1-t02b-skills-experiencias` |
+| **PR aberto** | #10 — `feat/f1-t02b-skills-experiencias` → `phase/01-nucleo-sem-ia` (CI verde) |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha `docs/tasks/FASE-01/F1-T02-b.md` e a branch `feat/f1-t02b-skills-experiencias` a partir da fase, e implementar catálogo de skills, vínculo candidato/skill e CRUD de experiências.
+> Com a autorização do JP, mesclar o PR #10 na `phase/01-nucleo-sem-ia`, atualizar o STATUS e iniciar a F1-T03 (modelos e migração de vagas) criando a ficha e a branch `feat/f1-t03-vagas`. 
 
 ---
 
@@ -48,14 +48,15 @@
 - **F1-T01 implementada (2026-11-16):** 5 tabelas do perfil + migração reversível `000000000002`, `migrations/env.py` registrando todos os modelos, 17 testes de constraint contra PostgreSQL real com banco isolado `jobpilot_test` (salvaguarda `_test`), `docs/data-model.md` com Mermaid e `TEST_DATABASE_URL` documentada. PR #8 integrado por merge commit com CI verde.
 - **F1-T02 dividida (2026-11-16):** decisões do JP — rotas REST por `candidate_id`, JSONB estruturado validado por Pydantic, `POST /skills` permitido (na `-b`) e divisão em `F1-T02-a` (candidato + preferências + erros + `api.md`) e `F1-T02-b` (habilidades + experiências). Divisão registrada no `BACKLOG.md`.
 - **F1-T02-a implementada (2026-11-16):** schemas com `education`/`languages` estruturados, exceções de domínio com handlers 404/409/422 e `request_id`, repositórios, serviço (e-mail único, upsert 1:1) e rotas REST de candidato/preferências. Fixtures de banco movidas para `tests/conftest.py` com cliente de API; 18 testes de API, 31 unitários, `docs/api.md` e `email-validator`. Suíte: 70 passed. **PR #9 integrado por merge commit (`359fbfa`) com CI verde.**
-- **F1-T02-b iniciada (2026-11-16):** ficha e branch a criar; escopo = catálogo de skills, vínculo candidato/skill e CRUD de experiências.
+- **F1-T02-b implementada (2026-11-17):** a sessão retomou com o trabalho já escrito e não commitado (13 arquivos novos + 7 modificados). Revisão do diff, suíte completa contra PostgreSQL real (**119 passed**), lint e formatação limpos. Commits `d6513a6` (código + testes) e `eb7481d` (`docs/api.md`, BACKLOG e ficha); branch publicada e **PR #10 aberto** com CI verde (run `44187596274`). Escopo entregue: catálogo com busca `q`, `POST /skills`, vínculo por `skill_id`/`canonical_name`, `PATCH`/`DELETE` do vínculo, CRUD de experiências, `InvalidDataError` (422) para faixa de datas no `PATCH`, `CandidateRead` com `skills`/`experiences` e `selectinload` contra N+1.
+- **Ambiente da sessão (2026-11-17):** Docker Desktop estava desligado, o que gerou 63 erros de conexão na primeira execução dos testes (falso vermelho). Subido o container `jobpilot-postgres` via `docker compose up -d`; suíte completa ficou verde.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T02-b — habilidades e experiências · **não iniciada**.
-**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T02-b.md` (a criar). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-b.
+**Tarefa atual:** F1-T02-b — habilidades e experiências · **implementada; PR #10 aguardando merge**.
+**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T02-b.md` (resultado e notas de retomada preenchidos). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T02-b.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -63,12 +64,13 @@
 - [x] F1-T01 concluída: modelos, migração, testes de constraint e `data-model.md` (PR #8) ✅
 - [x] F1-T02 dividida em `-a`/`-b` e decisões confirmadas (REST, JSONB, `POST /skills` na `-b`) ✅
 - [x] F1-T02-a concluída: candidato/preferências, erros padronizados, testes e `api.md` (PR #9) ✅
-- [ ] Criar ficha `F1-T02-b.md` e branch `feat/f1-t02b-skills-experiencias`
-- [ ] Schemas e repositórios de `skills`, vínculo candidato/skill e experiências
-- [ ] Serviços (catálogo, vínculo, experiências) + testes unitários
-- [ ] Rotas `/skills`, `/candidates/{id}/skills` e `/candidates/{id}/experiences` + testes de API
-- [ ] Estender `CandidateRead` com skills/experiências; atualizar `docs/api.md`
-- [ ] PR tarefa → fase, CI verde e merge (com autorização)
+- [x] Criar ficha `F1-T02-b.md` e branch `feat/f1-t02b-skills-experiencias` ✅
+- [x] Schemas e repositórios de `skills`, vínculo candidato/skill e experiências ✅
+- [x] Serviços (catálogo, vínculo, experiências) + testes unitários ✅
+- [x] Rotas `/skills`, `/candidates/{id}/skills` e `/candidates/{id}/experiences` + testes de API ✅
+- [x] Estender `CandidateRead` com skills/experiências; atualizar `docs/api.md` ✅
+- [ ] Mesclar PR #10 (tarefa → fase) com autorização do JP — CI já verde
+- [ ] Iniciar F1-T03 (modelos e migração de vagas) após o merge
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -81,7 +83,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 e F1-T02-a concluídas; F1-T02-b em preparação) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01, F1-T02-a e F1-T02-b concluídas; PR #10 aguardando merge) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -100,6 +102,8 @@
 | 2026-11-14 | processo | PRs #5 e #6 foram abertos com base `main` em vez de `develop` (o GitHub mantém `main` como base padrão); corrigido por fast-forward de `develop` até `main`. **Mitigação:** abrir PRs sempre pela URL com base explícita (`/compare/develop...branch`) | F0-GATE | resolvido |
 | 2026-11-14 | dívida | `app/main.py` usa `@app.on_event` (depreciado no FastAPI); migrar para `lifespan` | F1 | aberto |
 | 2026-11-14 | dívida | `.agents/skills/alethe` versionado (~1,5 MB de assets) infla o repositório; reavaliar se precisa ficar versionado | — | aberto |
+| 2026-11-17 | dívida | `skills.canonical_name` é único case-sensitive no banco; a API compara em minúsculas, mas concorrência ainda pode criar variações de caixa | F2-T01 | aberto |
+| 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -116,6 +120,8 @@
 | 2026-11-14 | `ruff format --check` passa a rodar no CI | GUIA §B.8 exige lint **e** formatação; baseline aplicado antes de iniciar a F1 | — |
 | 2026-11-16 | Divisão de responsabilidades documental: BACKLOG é fonte canônica das tarefas/critérios; ficha (`docs/tasks/`) detalha a execução; STATUS registra estado e retomada. Fichas são just-in-time e opcionais por complexidade; sem fichas retroativas para a F0 | eliminar ambiguidade e duplicação (o STATUS acumulava o plano da F1-T01) | — |
 | 2026-11-16 | Perfil: e-mail único case-insensitive via `lower(email)`; `level` NULL = desconhecido; `years` em `candidate_skills` e `candidate_experiences` com CHECK; timestamps `TIMESTAMPTZ` com `now()` do servidor; `TEST_DATABASE_URL` isolada | decisões aprovadas pelo JP na preparação da F1-T01 | — |
+| 2026-11-17 | `PATCH` de experiência revalida a faixa de datas combinando estado atual + payload e responde `422 invalid_data` (novo `InvalidDataError`) | a regra depende do estado gravado, não só do payload; separar `validation_error` (schema) de `invalid_data` (consistência) deixa o erro diagnosticável | — |
+| 2026-11-17 | Vínculo por `canonical_name` cria a habilidade no catálogo quando ela não existe | permite registrar habilidades sem um passo prévio de curadoria; a duplicidade é fechada pela comparação case-insensitive na API | — |
 
 ---
 
@@ -128,6 +134,7 @@
 
 ## 8. Observações
 
+- **Divergência corrigida em 2026-11-17:** o §1 dizia "F1-T02-b não iniciada; ficha a criar", mas o Git já tinha a ficha (`186b575`), a branch publicada e ~1.900 linhas de implementação não commitadas. Confiado o Git; STATUS corrigido e o trabalho revisado, testado e commitado (`d6513a6`, `eb7481d`). Nenhum outro campo divergia do remoto.
 - **Divergência corrigida em 2026-11-16:** o §1 mostrava último commit `ff60748` e push 03:05 UTC; o Git/GitHub confirmam `9bc62d1` em `phase/01-nucleo-sem-ia`, push às 06:44 UTC (CI verde, run 43567810203). Corrigido; nenhum outro campo divergia.
 - **MCP do GitHub:** indisponível nesta sessão; operações de consulta (PRs e CI) feitas com `gh` CLI autenticado. Git local segue como via de commits/push.
 - Variáveis de ambiente novas desde a última sessão: `TEST_DATABASE_URL` (opcional; default deriva de `DATABASE_URL` + `_test`), documentada no `.env.example` e no README.

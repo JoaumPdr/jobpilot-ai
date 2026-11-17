@@ -28,28 +28,9 @@ from pydantic import (
     model_validator,
 )
 
-# Limite defensivo para itens de listas livres (títulos, locais, aliases).
-_MAX_LIST_ITEM_LENGTH = 200
-
-
-def _clean_string_list(value: list[str]) -> list[str]:
-    """Remove espaços nas pontas e descarta itens vazios.
-
-    POR QUÊ: listas de preferências chegam de UI/CSV; sem normalização,
-    `[" Remoto ", ""]` viraria dois valores distintos no JSONB e quebraria
-    filtros futuros.
-    """
-    cleaned: list[str] = []
-    for item in value:
-        text = item.strip()
-        if not text:
-            continue
-        if len(text) > _MAX_LIST_ITEM_LENGTH:
-            raise ValueError(
-                f"Item de lista excede {_MAX_LIST_ITEM_LENGTH} caracteres."
-            )
-        cleaned.append(text)
-    return cleaned
+from app.schemas.common import clean_string_list
+from app.schemas.experiences import ExperienceRead
+from app.schemas.skills import CandidateSkillRead
 
 
 class LanguageLevel(StrEnum):
@@ -114,7 +95,7 @@ class PreferencesBase(BaseModel):
     @field_validator("desired_titles", "locations", "work_modes", "seniority_levels")
     @classmethod
     def _normalize_lists(cls, value: list[str]) -> list[str]:
-        return _clean_string_list(value)
+        return clean_string_list(value)
 
 
 class PreferencesPut(PreferencesBase):
@@ -201,6 +182,8 @@ class CandidateRead(BaseModel):
     headline: str | None
     education: list[EducationEntry]
     languages: list[LanguageEntry]
+    skills: list[CandidateSkillRead]
+    experiences: list[ExperienceRead]
     created_at: datetime
     updated_at: datetime
     preferences: PreferencesRead | None = None
