@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T02-a** — candidato e preferências.
-> Habilidades e experiências entram na F1-T02-b.
+> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T02-b** — candidato, preferências,
+> habilidades e experiências.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** JSON (`Content-Type: application/json`)
@@ -37,8 +37,9 @@ dos erros, permitindo correlacionar com os logs estruturados.
 | `error` | HTTP | Quando |
 |---------|------|--------|
 | `validation_error` | 422 | payload/path inválido (Pydantic) |
-| `not_found` | 404 | candidato ou preferências inexistentes |
-| `conflict` | 409 | e-mail já usado por outro candidato |
+| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência) |
+| `not_found` | 404 | candidato, preferências, habilidade ou experiência inexistentes |
+| `conflict` | 409 | e-mail, nome de habilidade ou par candidato/habilidade já usados |
 | `bad_request` / `method_not_allowed` / … | 4xx | erros HTTP do próprio FastAPI, padronizados |
 | `internal_server_error` | 500 | falha inesperada (sem detalhes internos) |
 
@@ -111,6 +112,8 @@ Campos desconhecidos são rejeitados (`extra="forbid"`) em todos os níveis.
   "headline": "Engenheira de Dados",
   "education": [ { "institution": "USP", "degree": "Bacharelado em Ciência da Computação", "field_of_study": "Computação", "start_date": "2018-02-01", "end_date": "2022-12-15", "description": "TCC em recuperação de informação." } ],
   "languages": [ { "name": "Português", "level": "nativo" }, { "name": "Inglês", "level": "fluente" } ],
+  "skills": [],
+  "experiences": [],
   "created_at": "2026-11-16T20:00:00Z",
   "updated_at": "2026-11-16T20:00:00Z",
   "preferences": null
@@ -121,8 +124,9 @@ Campos desconhecidos são rejeitados (`extra="forbid"`) em todos os níveis.
 
 ### `GET /candidates/{candidate_id}`
 
-Retorna o candidato e as preferências (ou `null`). **Erros:** `404`, `422`
-(UUID inválido).
+Retorna o candidato com `preferences` (ou `null`), `skills` e `experiences`.
+As listas são carregadas em uma consulta por relação (`selectinload`), sem N+1.
+**Erros:** `404`, `422` (UUID inválido).
 
 ### `PATCH /candidates/{candidate_id}`
 
@@ -197,6 +201,193 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
 
 ---
 
+## Habilidades
+
+O catálogo `skills` é compartilhado entre perfis (e, na Fase 2, entre vagas).
+O vínculo `candidate_skills` guarda nível, anos e evidência do candidato para
+aquela habilidade.
+
+### `GET /skills?q=`
+
+Lista o catálogo em ordem alfabética (sem diferenciar caixa). `q` é opcional e
+filtra o nome canônico por trecho.
+
+**Resposta `200`**
+
+```json
+[
+  {
+    "id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f",
+    "canonical_name": "Python",
+    "category": "linguagem",
+    "aliases": ["py", "python3"]
+  }
+]
+```
+
+### `POST /skills`
+
+Cria uma habilidade canônica. Nome repetido (sem diferenciar caixa) → `409`.
+
+```json
+{
+  "canonical_name": "Python",
+  "category": "linguagem",
+  "aliases": ["py", "python3"]
+}
+```
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `canonical_name` | string | sim | 1–200 caracteres; nome aparado |
+| `category` | string | não | até 100 caracteres; texto livre até a F2-T01 |
+| `aliases` | lista de strings | não (default `[]`) | itens aparados; vazios descartados; até 200 caracteres |
+
+**Resposta `201`:** o registro criado (mesmo formato do `GET /skills`).
+**Erros:** `409 conflict`, `422 validation_error`.
+
+### `GET /candidates/{candidate_id}/skills`
+
+Lista os vínculos do candidato, com a habilidade canônica aninhada.
+**Erros:** `404` (candidato inexistente), `422`.
+
+```json
+[
+  {
+    "id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "candidate_id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12",
+    "skill_id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f",
+    "skill": { "id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f", "canonical_name": "Python", "category": "linguagem", "aliases": ["py", "python3"] },
+    "level": "intermediário",
+    "years": 3,
+    "evidence_note": "Projeto de ingestão em produção.",
+    "created_at": "2026-11-16T20:10:00Z"
+  }
+]
+```
+
+### `POST /candidates/{candidate_id}/skills`
+
+Vincula uma habilidade ao candidato. Informe **exatamente um** entre `skill_id`
+e `canonical_name`:
+
+- `skill_id`: busca no catálogo; inexistente → `404`.
+- `canonical_name`: reaproveita a habilidade pelo nome (sem diferenciar caixa)
+  ou **cria** no catálogo se ela ainda não existir.
+
+```json
+{ "canonical_name": "Python", "level": "intermediário", "years": 3 }
+```
+
+| Campo | Tipo | Regras |
+|-------|------|--------|
+| `skill_id` | UUID | alternativa a `canonical_name` |
+| `canonical_name` | string | 1–200 caracteres; alternativa a `skill_id` |
+| `level` | string | `iniciante`, `intermediário` ou `avançado`; `null` = desconhecido |
+| `years` | inteiro | `>= 0` |
+| `evidence_note` | string | livre |
+
+**Resposta `201`:** o vínculo criado (formato acima).
+**Erros:** `404` (candidato/habilidade), `409` (par já vinculado ou nome
+duplicado), `422 validation_error`.
+
+### `PATCH /candidates/{candidate_id}/skills/{skill_id}`
+
+Atualiza **apenas** os campos enviados do vínculo. `null` limpa `level`,
+`years` ou `evidence_note`.
+
+```json
+{ "years": 5 }
+```
+
+**Resposta `200`:** o vínculo atualizado.
+**Erros:** `404` (candidato ou vínculo inexistente), `422 validation_error`.
+
+### `DELETE /candidates/{candidate_id}/skills/{skill_id}`
+
+Remove o vínculo; a habilidade **permanece** no catálogo.
+**Resposta:** `204` sem corpo. **Erros:** `404`, `422`.
+
+---
+
+## Experiências
+
+`end_date` nula representa o vínculo atual.
+
+### `GET /candidates/{candidate_id}/experiences`
+
+Lista as experiências da mais recente para a mais antiga (`start_date` desc).
+**Erros:** `404` (candidato inexistente), `422`.
+
+```json
+[
+  {
+    "id": "5e4d3c2b-1a0f-4e9d-8c7b-6a5f4e3d2c1b",
+    "candidate_id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12",
+    "company": "Empresa X",
+    "role": "Engenheira de Dados",
+    "start_date": "2020-01-01",
+    "end_date": "2022-12-31",
+    "description": "Construção de pipelines.",
+    "skills_used": ["Python", "SQL"],
+    "years": 3,
+    "created_at": "2026-11-16T20:15:00Z",
+    "updated_at": "2026-11-16T20:15:00Z"
+  }
+]
+```
+
+### `POST /candidates/{candidate_id}/experiences`
+
+```json
+{
+  "company": "Empresa X",
+  "role": "Engenheira de Dados",
+  "start_date": "2020-01-01",
+  "end_date": "2022-12-31",
+  "description": "Construção de pipelines.",
+  "skills_used": ["Python", "SQL"],
+  "years": 3
+}
+```
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `company` | string | sim | 1–200 caracteres |
+| `role` | string | sim | 1–200 caracteres |
+| `start_date` | data | sim | `YYYY-MM-DD` |
+| `end_date` | data ou `null` | não | `>= start_date`; `null` = vínculo atual |
+| `description` | string | não | livre |
+| `skills_used` | lista de strings | não (default `[]`) | itens aparados; vazios descartados |
+| `years` | inteiro | não | `>= 0` (anos naquela função) |
+
+**Resposta `201`:** a experiência criada.
+**Erros:** `404` (candidato inexistente), `422 validation_error` (inclui
+`end_date` anterior a `start_date`).
+
+### `PATCH /candidates/{candidate_id}/experiences/{experience_id}`
+
+Atualiza **apenas** os campos enviados.
+
+- `null` explícito em `company`, `role`, `start_date` ou `skills_used` → `422`.
+- `"end_date": null` marca o vínculo como atual.
+- A faixa de datas é revalidada combinando o estado atual com o payload; se
+  ficar inválida → `422 invalid_data`.
+
+```json
+{ "role": "Tech Lead", "end_date": null }
+```
+
+**Resposta `200`:** a experiência atualizada.
+**Erros:** `404` (candidato/experiência inexistentes), `422 validation_error`
+ou `422 invalid_data`.
+
+### `DELETE /candidates/{candidate_id}/experiences/{experience_id}`
+
+**Resposta:** `204` sem corpo. **Erros:** `404`, `422`.
+
+---
+
 ## Saúde
 
 `GET /health` retorna `200` com o status da aplicação e do banco
@@ -204,5 +395,4 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
 
 ## Fora desta versão
 
-- `POST /skills`, vínculo de habilidades e CRUD de experiências (F1-T02-b).
 - Vagas, importação, matching, candidaturas, LLM e pipeline (fases seguintes).
