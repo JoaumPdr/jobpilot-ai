@@ -16,25 +16,26 @@
 | **Tarefa atual** | F1-T08 — Listagem e filtros de vagas + paginação |
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T08.md` (a criar ao iniciar) |
 | **Branch da tarefa** | `feat/f1-t08-listagem-filtros` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `4d1ba61` — registro do PR #15 e da próxima tarefa. Último merge funcional: `430dc17` (F1-T07) |
-| **Testes** | **253 passed** com PostgreSQL na sessão de adequação da orquestração. Ruff e formatação verdes |
-| **CI** | verde no merge do PR #15 (run `44443291243`). Adequação documental validada localmente |
+| **Estado da tarefa** | não iniciada — aguarda decisão sobre a dependência do filtro por status de candidatura |
+| **Último commit** | `deef8b5` — merge do PR #16, seguido pelo registro deste status. Último merge funcional: `430dc17` (F1-T07) |
+| **Testes** | **253 passed** com PostgreSQL na validação da adequação documental |
+| **CI** | verde no PR #16 (run `44461724414`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` confirmada em `4d1ba61` local e remoto. Alterações de orquestração em `docs/f1-orquestracao-codex`, branch local pendente de commit e publicação |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), ponta de `phase/01-nucleo-sem-ia` em `4d1ba61` |
-| **PR aberto** | nenhum após a integração do PR #15 |
+| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #16 |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `deef8b5` do PR #16 na fase |
+| **PR aberto** | nenhum para a tarefa atual |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
-| **GitHub** | `gh` CLI autenticado. Sincronização da fase conferida com `git ls-remote` |
+| **GitHub** | MCP indisponível nesta sessão. `gh` autenticado usado para abrir, conferir o CI e mesclar o PR #16 |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha `docs/tasks/FASE-01/F1-T08.md` e a branch `feat/f1-t08-listagem-filtros` a partir da fase, e implementar a listagem paginada de vagas com filtros combináveis, ocultando arquivadas e duplicadas por padrão.
+> Confirmar com o JP se o filtro por status de candidatura será entregue após a F1-T09 ou se o modelo de candidaturas deve ser antecipado, antes de criar a ficha e a branch da F1-T08.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **Adequação documental integrada (2026-11-19 UTC):** alterações commitadas em `05fe43a`, publicadas e mescladas na fase pelo PR #16 (`deef8b5`), com CI verde. A suíte local passou com 253 testes. A F1-T08 foi conferida contra o backlog e o plano mestre, e aguarda a decisão sobre o filtro por status de candidatura.
 - **Adequação ao Codex CLI e à Alethe (2026-11-19 UTC):** login do Codex via ChatGPT confirmado. Política local isolada com perfil Base, teto de dois workers simultâneos, alerta de cota em 80% e bloqueio em 90%. `doctor`, `policy show`, `playbook --pick` e `usage` validados. `validate` e `dry-run` confirmaram os três tiers, o modo de leitura para revisão, o isolamento das escritas e a rejeição de `custom` em somente leitura. A cota semanal do Codex foi medida em 2%. A janela de 5 h segue desconhecida. Codex é o único provedor inicialmente habilitado e nenhum worker foi iniciado. Ponto de entrada em `AGENTS.md` e ativação da política em `docs/ALETHE_INSTRUCOES.md` §7A. A F1-T08 continua por iniciar.
 - F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
 - F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
@@ -128,6 +129,7 @@
 | 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
 | 2026-11-18 | dívida | `canonical_url` não tem índice único: concorrência extrema pode criar duas vagas com a mesma URL canônica (a checagem do serviço é best-effort) | F1-T07 | aberto |
 | 2026-11-19 | dívida | revisão de duplicatas varre no máximo 5 000 vagas por chamada (`truncated` avisa); catálogo maior exigirá varredura incremental ou paginação | F1-T08+ | aberto |
+| 2026-11-19 | bloqueio | O BACKLOG inclui status na F1-T08 e o PLANO §6.4 especifica status da candidatura. A tabela `applications` pertence à F1-T09 e ainda não existe | F1-T08 | aguarda decisão do JP |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -177,8 +179,7 @@
 ## 9. Checklist de encerramento de sessão (conferir antes de parar)
 
 - [x] Testes verdes **ou** falhas isoladas e listadas em §5
-- [ ] Commit da adequação documental em `docs/f1-orquestracao-codex` pendente
-- [ ] Publicar a adequação documental e integrar o PR autorizado após o CI verde
+- [x] Adequação documental commitada, publicada e integrada pelo PR #16 com CI verde
 - [x] Campos de sincronização da §1 atualizados (remoto, último push, PR aberto, CI no GitHub)
 - [x] §1 e §3 atualizados com a próxima ação exata
 - [x] `BACKLOG.md` marcado
