@@ -102,7 +102,7 @@
 - **O que foi feito.** `GET /jobs` com filtros combináveis e paginação. Arquivadas e duplicatas confirmadas ficam ocultas por padrão e podem ser incluídas separadamente.
 - **Decisões e motivos.** A ordenação por data de cadastro e UUID desempata vagas do mesmo lote. Buscar um item adicional permite calcular `has_more` na mesma consulta da página.
 - **Testes.** 23 testes de API cobrem filtros, paginação, validação e a meta de 500 ms com 10 mil vagas em PostgreSQL.
-- **Pendência.** O filtro por status de candidatura está previsto para a F1-T10, depois do modelo criado pela F1-T09.
+- **Continuação.** A F1-T10 acrescentou o filtro por status de candidatura sobre o modelo criado pela F1-T09.
 
 ### F1-T09 — Modelos e migração de candidaturas (2026-11-19)
 - **O que foi feito.** Modelos de candidatura e histórico de status com a migração reversível `000000000004`.
@@ -120,6 +120,16 @@
 - O arquivamento usa o campo `is_archived` e preserva as candidaturas vinculadas. A listagem continua ocultando vagas arquivadas por padrão.
 - O atalho de salvar reutiliza o serviço de candidaturas, que grava o estado `salva` e a primeira entrada do histórico na mesma transação.
 - Três testes de integração verificam o arquivamento, o fluxo `salva` → `planejada` → `aplicada` e a resposta para referências ausentes. A suíte completa passou com 359 testes em PostgreSQL.
+
+### F1-T12 — Fluxo de ponta a ponta e cobertura (2026-11-19)
+
+- Um teste com PostgreSQL verifica o fluxo pela API desde a criação do perfil até a consulta do histórico da candidatura. Reimportar o mesmo CSV produz zero vagas novas.
+- O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44604854927) passou com 360 testes, 96,60% de cobertura global e 95,33% nos serviços. Os mínimos no CI são 70% e 85%, respectivamente.
+
+### F1-T13 — Documentação da Fase 1 (2026-11-19)
+
+- O [README](README.md#fluxo-da-fase-1) reúne um roteiro local com dados fictícios, importação e reimportação de CSV, filtros e acompanhamento de candidaturas. A [API](docs/api.md) e o [modelo de dados](docs/data-model.md) detalham o contrato e a persistência.
+- O [changelog](CHANGELOG.md) registra as entregas já implementadas para a Fase 1 em desenvolvimento. O gate de saída continua registrado no [backlog](docs/BACKLOG.md).
 
 ## Fases 2–7
 
