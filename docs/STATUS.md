@@ -11,25 +11,25 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T06 concluídas e integradas; próxima: F1-T07**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T07 concluídas e integradas; próxima: F1-T08**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T07 — Deduplicação em camadas + revisão humana |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T07.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t07-dedup-revisao` (a criar a partir da fase) |
+| **Tarefa atual** | F1-T08 — Listagem e filtros de vagas + paginação |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T08.md` (a criar ao iniciar) |
+| **Branch da tarefa** | `feat/f1-t08-listagem-filtros` (a criar a partir da fase) |
 | **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `528a872` — merge do PR #14 (F1-T06); o commit deste arquivo é posterior e só ajusta estes campos |
-| **Testes** | verdes (**219 passed** no merge da F1-T06) |
-| **CI** | verde no merge do PR #14 (run `44441646029`) |
+| **Último commit** | `430dc17` — merge do PR #15 (F1-T07); o commit deste arquivo é posterior e só ajusta estes campos |
+| **Testes** | verdes (**253 passed** no merge da F1-T07) |
+| **CI** | verde no merge do PR #15 (run `44443291243`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-19 02:05 (UTC) — merge do PR #14 na `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum após a integração do PR #14 |
+| **Último push** | 2026-11-19 02:18 (UTC) — merge do PR #15 na `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum após a integração do PR #15 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha `docs/tasks/FASE-01/F1-T07.md` e a branch `feat/f1-t07-dedup-revisao` a partir da fase, e implementar as camadas de deduplicação restantes com os endpoints de listar, confirmar e desfazer duplicatas.
+> Criar a ficha `docs/tasks/FASE-01/F1-T08.md` e a branch `feat/f1-t08-listagem-filtros` a partir da fase, e implementar a listagem paginada de vagas com filtros combináveis, ocultando arquivadas e duplicadas por padrão.
 
 ---
 
@@ -58,13 +58,15 @@
 - **F1-T05 integrada (2026-11-19 UTC):** commit `3279f7b`, **PR #13 mesclado** em `phase/01-nucleo-sem-ia` (`0a3ca2b`) com CI verde (run `44439397111`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t05-cadastro-manual` preservada no remoto. Ponto de retomada: F1-T06.
 - **F1-T06 implementada (2026-11-19 UTC):** ficha criada, branch `feat/f1-t06-importacao-csv`; `POST /jobs/import` em `multipart/form-data` com `file` + `source` opcional, `JobImportService` com validação por linha (erro com `row`/`field`/`message` sem abortar o lote), `ImportBatch` com contadores e `finished_at`, dedup pelas camadas 1/2 com pré-carga em blocos de 500 e um único `commit`, `prepare_job` extraído do `create_manual` e `docs/import-csv.md` criado. Suíte **219 passed**; o teste de 5 mil linhas fica em ~5 s (RNF-09).
 - **F1-T06 integrada (2026-11-19 UTC):** commit `5af3d20`, **PR #14 mesclado** em `phase/01-nucleo-sem-ia` (`528a872`) com CI verde (run `44441646029`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t06-importacao-csv` preservada no remoto. Ponto de retomada: F1-T07.
+- **F1-T07 implementada (2026-11-19 UTC):** ficha criada, branch `feat/f1-t07-dedup-revisao`; camada 4 com RapidFuzz (`token_set_ratio`, limiar 85, só na mesma empresa), `JobDedupService` agrupando fingerprint e similaridade com a vaga mais antiga como referência, `GET /jobs/duplicates` (filtro por camada, limite e `truncated` com teto de 5 000 vagas), `POST /jobs/{job_id}/duplicate` (idempotente, 404/409/422) e `DELETE` para desfazer. Nada é apagado ou mesclado; nenhuma migração foi necessária. **34 testes novos**, suíte **253 passed**.
+- **F1-T07 integrada (2026-11-19 UTC):** commit `7a8e4a7`, **PR #15 mesclado** em `phase/01-nucleo-sem-ia` (`430dc17`) com CI verde (run `44443291243`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t07-dedup-revisao` preservada no remoto. Ponto de retomada: F1-T08.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T06 — concluída e integrada (PR #14). **Próxima:** F1-T07 — deduplicação e revisão humana.
-**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T06.md` encerrada; a ficha da F1-T07 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T07.
+**Tarefa atual:** F1-T07 — concluída e integrada (PR #15). **Próxima:** F1-T08 — listagem e filtros de vagas.
+**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T07.md` encerrada; a ficha da F1-T08 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T08.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -85,6 +87,11 @@
 - [x] Idempotência (reimportar = 0 inserções) e 5 mil linhas dentro do RNF-09 ✅
 - [x] `docs/import-csv.md`, `docs/api.md` e testes unitários/de API ✅
 - [x] Commit da branch, CI verde e merge do PR #14 (com autorização) ✅
+- [x] Criar ficha `F1-T07.md` e branch `feat/f1-t07-dedup-revisao` ✅
+- [x] Camada 4 (similaridade) e agrupamento de fingerprint para revisão ✅
+- [x] Endpoints de listar, confirmar (`duplicate_of_job_id`) e desfazer, sem apagar nada ✅
+- [x] `docs/api.md`, ficha e testes unitários/de API ✅
+- [x] Commit da branch, CI verde e merge do PR #15 (com autorização) ✅
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -97,7 +104,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T06 integradas; próxima: F1-T07) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T07 integradas; próxima: F1-T08) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -119,6 +126,7 @@
 | 2026-11-17 | dívida | `skills.canonical_name` é único case-sensitive no banco; a API compara em minúsculas, mas concorrência ainda pode criar variações de caixa | F2-T01 | aberto |
 | 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
 | 2026-11-18 | dívida | `canonical_url` não tem índice único: concorrência extrema pode criar duas vagas com a mesma URL canônica (a checagem do serviço é best-effort) | F1-T07 | aberto |
+| 2026-11-19 | dívida | revisão de duplicatas varre no máximo 5 000 vagas por chamada (`truncated` avisa); catálogo maior exigirá varredura incremental ou paginação | F1-T08+ | aberto |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -141,6 +149,8 @@
 | 2026-11-19 | Importação CSV usa `multipart/form-data` em `POST /jobs/import`, exige `title`/`company`/`description`/`url` e só aceita UTF-8 com vírgula | `url` é NOT NULL e base da dedup; adivinhar separador/codificação trocaria colunas silenciosamente (desvio do `PLANO.md` §6.1 documentado em `docs/import-csv.md`) | — |
 | 2026-11-19 | Dedup da importação usa só as camadas 1 e 2 (contam em `duplicates`); o lote ignora a camada 3 | garante "reimportar o mesmo arquivo = 0 inserções"; o fingerprint provável continua na revisão humana da F1-T07 | — |
 | 2026-11-19 | Importação em duas passadas com pré-carga de chaves em blocos de 500 e um único `commit` | uma consulta de dedup por linha levava ~32 s em 5 mil linhas; o alvo do RNF-09 é < 30 s (agora ~5 s) | — |
+| 2026-11-19 | Camada 4 da dedup com RapidFuzz `token_set_ratio` (limiar 85) comparando títulos **na mesma empresa**, com grupos calculados sob demanda | implementa o `PLANO.md` §6.3 sem coluna nova; bloquear pela empresa evita ruído de cargos homônimos em empresas diferentes | — |
+| 2026-11-19 | Revisão com `GET /jobs/duplicates`, `POST`/`DELETE /jobs/{job_id}/duplicate`; confirmação idempotente, `409` para trocar referência e `422` para cadeia/auto-referência | grava só `duplicate_of_job_id`, nunca apaga nem mescla; estados inconsistentes ficam diagnosticáveis | — |
 
 ---
 
@@ -174,4 +184,4 @@
 - [x] Ficha da tarefa atual atualizada (se existir)
 - [x] `RELATORIO.md` com nota curta da tarefa (se concluída) — a seção da Fase 1 será preenchida no gate da fase
 - [x] `.env.example` sincronizado (se houve nova variável) — nenhuma variável nova
-- [x] `uv.lock` commitado junto com o `pyproject.toml` (se houve mudança de dependência) — `python-multipart` adicionado na F1-T06
+- [x] `uv.lock` commitado junto com o `pyproject.toml` (se houve mudança de dependência) — `python-multipart` (F1-T06) e `rapidfuzz` (F1-T07)
