@@ -14,27 +14,28 @@
 | **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T08 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-T09 — Modelos e migração de candidaturas |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T09.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t09-modelos-candidaturas` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T09.md` |
+| **Branch da tarefa** | `feat/f1-t09-modelos-candidaturas` |
+| **Estado da tarefa** | implementada, pendente de integração |
 | **Último merge funcional da fase** | `f612b3f` — PR #18 (F1-T08), seguido pelo registro desta integração |
-| **Testes** | **276 passed** com PostgreSQL. São 23 testes novos, incluindo a medição do RNF-09 com 10 mil vagas. Ruff e formatação verdes |
+| **Testes** | **289 passed** com PostgreSQL, incluindo 13 testes novos. Ciclo de migração validado. Ruff e formatação verdes |
 | **CI** | verde no PR #18 (run `44464938086`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #18 |
 | **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `f612b3f` do PR #18 na fase |
-| **PR atual** | nenhum para a F1-T09 |
+| **PR atual** | F1-T09 para `phase/01-nucleo-sem-ia` |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha e a branch da F1-T09 e implementar os modelos e a migração reversível de `applications` e `application_status_history`.
+> Integrar a F1-T09 com CI verde e preparar a F1-T10, que entregará a máquina de estados e o filtro por status de candidatura.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-T09 implementada (2026-11-19 UTC):** modelos de candidaturas e histórico, com unicidade por par candidato/vaga, FKs e validação de status na migração `000000000004`. Suíte com 289 testes e ciclo de migração validado em PostgreSQL.
 - **F1-T08 implementada (2026-11-19 UTC):** `GET /jobs` com filtros combináveis, paginação estável por data de cadastro e UUID, e opções independentes para incluir arquivadas e duplicatas confirmadas. O JP aprovou entregar o filtro por status de candidatura na F1-T10, após o modelo da F1-T09.
 - **F1-T08 integrada (2026-11-19 UTC):** PR #18 mesclado com CI verde (`f612b3f`). Suíte local com 276 testes, incluindo o RNF-09 em PostgreSQL com 10 mil vagas.
 - **Planejamento da v1.0.0 integrado (2026-11-19 UTC):** PR #17 mesclado em `18dd9be`. ADR 0011 aceito, tarefas de distribuição local registradas na Fase 7.
@@ -70,8 +71,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada:** F1-T08 (PR #18). **Próxima:** F1-T09 — modelos e migração de candidaturas.
-**Planejamento detalhado:** ficha da F1-T08 encerrada. Criar a ficha da F1-T09 ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T09.
+**Última tarefa integrada:** F1-T08 (PR #18). **Tarefa atual:** F1-T09 — modelos e migração de candidaturas, pendente de integração.
+**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T09.md`. Critérios canônicos: `docs/BACKLOG.md` → F1-T09.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -99,6 +100,8 @@
 - [x] Commit da branch, CI verde e merge do PR #15 (com autorização) ✅
 - [x] Ficha, branch, endpoint de listagem, testes de API e documentação da F1-T08
 - [x] Integrar a F1-T08 com CI verde (PR #18)
+- [x] Modelos, migração, testes e documentação da F1-T09
+- [ ] Integrar a F1-T09 com CI verde
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -134,6 +137,7 @@
 | 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
 | 2026-11-18 | dívida | `canonical_url` não tem índice único: concorrência extrema pode criar duas vagas com a mesma URL canônica (a checagem do serviço é best-effort) | F1-T07 | aberto |
 | 2026-11-19 | dívida | revisão de duplicatas varre no máximo 5 000 vagas por chamada (`truncated` avisa); catálogo maior exigirá varredura incremental ou paginação | F1-T08+ | aberto |
+| 2026-11-19 | dívida | O Alembic detecta os índices `ix_candidate_experiences_candidate_id` e `ix_candidate_skills_skill_id` no banco, ausentes dos metadados ORM desde a revisão 002. A comparação antes e depois da F1-T09 apontou as mesmas diferenças | F1 | aberto |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 

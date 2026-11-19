@@ -104,6 +104,11 @@
 - **Testes.** 23 testes de API cobrem filtros, paginação, validação e a meta de 500 ms com 10 mil vagas em PostgreSQL.
 - **Pendência.** O filtro por status de candidatura está previsto para a F1-T10, depois do modelo criado pela F1-T09.
 
+### F1-T09 — Modelos e migração de candidaturas (2026-11-19)
+- **O que foi feito.** Modelos de candidatura e histórico de status com a migração reversível `000000000004`.
+- **Decisões e motivos.** A unicidade por candidato e vaga evita registros concorrentes duplicados. A exclusão de perfil remove seus históricos, e as vagas vinculadas podem ser arquivadas com o histórico preservado.
+- **Testes.** 13 testes de constraints e 289 testes na suíte completa. O ciclo de migração validou a preservação de registros de perfil e vaga em PostgreSQL. A comparação do schema detectou somente duas diferenças de índices já presentes na revisão anterior.
+
 ## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*
