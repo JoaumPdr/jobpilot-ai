@@ -96,7 +96,7 @@
 
 ---
 
-## Fase 1 — Núcleo sem IA
+## Fase 1 — Núcleo sem IA (concluída)
 
 ### F1-T08 — Listagem e filtros de vagas (2026-11-19)
 - **O que foi feito.** `GET /jobs` com filtros combináveis e paginação. Arquivadas e duplicatas confirmadas ficam ocultas por padrão e podem ser incluídas separadamente.
@@ -129,13 +129,13 @@
 ### F1-T13 — Documentação da Fase 1 (2026-11-19)
 
 - O [README](README.md#fluxo-da-fase-1) reúne um roteiro local com dados fictícios, importação e reimportação de CSV, filtros e acompanhamento de candidaturas. A [API](docs/api.md) e o [modelo de dados](docs/data-model.md) detalham o contrato e a persistência.
-- O [changelog](CHANGELOG.md) registra as entregas já implementadas para a Fase 1 em desenvolvimento. O gate de saída continua registrado no [backlog](docs/BACKLOG.md).
+- O [changelog](CHANGELOG.md) registra as entregas da Fase 1. O [backlog](docs/BACKLOG.md) registra a conclusão do gate.
 
 ### F1-GATE — Validação de saída (2026-11-19)
 
 - A [ficha do gate](docs/tasks/FASE-01/F1-GATE.md) relaciona RF-01 a RF-06 aos testes da fase, incluindo a reimportação de CSV sem novas vagas e o histórico de candidaturas.
 - A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
-- A integração em `develop` está em revisão no [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26).
+- O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) integrou a fase em `develop` com histórico no commit `bbea363`. Depois do [CI verde em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327), a tag anotada [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) foi publicada nesse commit.
 
 ## Fases 2–7
 

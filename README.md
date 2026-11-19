@@ -16,11 +16,11 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 ## Status Atual
 
-**Fase 1 — Núcleo sem IA** (em andamento). A branch da fase já permite cadastrar perfil, importar e filtrar vagas, revisar duplicatas e acompanhar candidaturas pela API. Veja o [roteiro de uso](#fluxo-da-fase-1).
+**Fase 1 — Núcleo sem IA** concluída e integrada em `develop`. A API permite cadastrar perfil, importar e filtrar vagas, revisar duplicatas e acompanhar candidaturas. Veja o [roteiro de uso](#fluxo-da-fase-1) e o [marco `fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01).
 
 Roadmap:
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
-- [ ] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
+- [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
 - [ ] Fase 2: Matching (taxonomia, extração, score explicável, golden set)
 - [ ] Fase 3: Camada LLM (provedor abstrato, cache, análise validada)
 - [ ] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**

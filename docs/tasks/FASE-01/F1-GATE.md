@@ -1,6 +1,7 @@
 # F1-GATE — Gate de saída da Fase 1
 
 - Integração de `phase/01-nucleo-sem-ia` em `develop` pelo [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26).
+- Estado. Concluído no merge `bbea363`, marcado com a tag anotada [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01).
 - Critérios no [backlog](../../BACKLOG.md) e no [plano mestre](../../PLANO.md), §11.
 - Revisão de referência validada localmente. `8c852a7`.
 
@@ -20,8 +21,8 @@
 - [x] [Roteiro do README](../../../README.md#fluxo-da-fase-1), [API](../../api.md) e [modelo de dados](../../data-model.md) revisados na F1-T13.
 - [x] [CI da branch da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) verde na revisão de referência, incluindo Ruff e ciclo de migração Alembic.
 - [x] PR da fase aberto para `develop`.
-- [ ] Confirmar CI no head do PR, obter autorização e mesclar com histórico.
-- [ ] Confirmar CI em `develop` e publicar a tag anotada `fase-01` para o merge validado.
+- [x] Confirmar [CI no head do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610207227) e mesclar com histórico após autorização.
+- [x] Confirmar [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327), publicar a tag anotada e conferir o apontamento para `bbea363` no GitHub.
 
 ```shell
 uv run coverage run --source=app -m pytest
