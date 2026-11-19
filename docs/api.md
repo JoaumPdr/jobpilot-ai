@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T02-b** — candidato, preferências,
-> habilidades e experiências.
+> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T05** — perfil e cadastro
+> manual de vagas.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** JSON (`Content-Type: application/json`)
@@ -39,11 +39,12 @@ dos erros, permitindo correlacionar com os logs estruturados.
 | `validation_error` | 422 | payload/path inválido (Pydantic) |
 | `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência) |
 | `not_found` | 404 | candidato, preferências, habilidade ou experiência inexistentes |
-| `conflict` | 409 | e-mail, nome de habilidade ou par candidato/habilidade já usados |
+| `conflict` | 409 | e-mail, nome de habilidade, par candidato/habilidade ou vaga já existentes |
 | `bad_request` / `method_not_allowed` / … | 4xx | erros HTTP do próprio FastAPI, padronizados |
 | `internal_server_error` | 500 | falha inesperada (sem detalhes internos) |
 
-`details` só aparece em 422.
+`details` aparece em `422` (campos inválidos) e no `409` de vaga duplicada
+(camada que detectou e dados da vaga existente).
 
 ### UUIDs
 
@@ -388,6 +389,135 @@ ou `422 invalid_data`.
 
 ---
 
+## Vagas
+
+Nesta versão existe apenas o cadastro manual. Listagem, filtros e revisão de
+duplicatas chegam nas F1-T07/F1-T08.
+
+### `POST /jobs`
+
+Cadastra uma vaga. O texto é guardado normalizado para exibição (acentos e caixa
+preservados, espaços colapsados), `work_mode`/`seniority` são convertidos para
+os valores internos e a URL gera `canonical_url` (sem parâmetros de rastreio,
+fragmento, barra final ou porta padrão).
+
+```json
+{
+  "title": "Engenheira de Dados",
+  "company": "Empresa X",
+  "url": "https://empresa.com/vagas/123?utm_source=linkedin",
+  "location": "São Paulo",
+  "work_mode": "home office",
+  "seniority": "Sênior",
+  "description": "Texto livre.",
+  "source": "manual",
+  "external_id": null,
+  "salary_min": "12000.00",
+  "salary_max": "18000.00",
+  "currency": "brl",
+  "posted_at": "2026-11-10T09:00:00Z"
+}
+```
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `title` | string | sim | 1–300 caracteres; espaços colapsados |
+| `company` | string | sim | 1–200 caracteres |
+| `description` | string | não | texto livre; `null` se vazia |
+| `location` | string | não | até 200 caracteres |
+| `work_mode` | string | não | livre (`remoto`, `home office`, `híbrido`, `presencial`…); desconhecido vira `desconhecido` |
+| `seniority` | string | não | livre (`júnior`, `sr`, `estágio`…); desconhecido vira `desconhecido` |
+| `employment_type` | string | não | até 100 caracteres |
+| `salary_min`, `salary_max` | decimal | não | `>= 0`, até 2 casas; `max >= min` |
+| `currency` | string | não | ISO 4217 (3 letras); `brl` vira `BRL` |
+| `source` | string | não (default `manual`) | até 100 caracteres |
+| `external_id` | string | não | até 200 caracteres; vazio vira `null` |
+| `url` | string | sim | `http`/`https` (sem esquema assume `https`) |
+| `posted_at` | data/hora | não | sem fuso é interpretado como UTC |
+
+**Deduplicação em camadas** (`PLANO.md` §6.3):
+
+1. `(source, external_id)` igual → **`409 conflict`** com `details[0].layer = "external_id"`.
+2. `canonical_url` igual → **`409 conflict`** com `details[0].layer = "canonical_url"`.
+3. `fingerprint` igual (empresa + título + localização normalizados) → **`201`**
+   com a vaga criada e `duplicates[]` listando as parecidas (`layer = "fingerprint"`).
+
+Nada é apagado nem marcado automaticamente: a confirmação via
+`duplicate_of_job_id` é da F1-T07.
+
+**Resposta `201`**
+
+```json
+{
+  "job": {
+    "id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12",
+    "title": "Engenheira de Dados",
+    "company": "Empresa X",
+    "description": "Texto livre.",
+    "location": "São Paulo",
+    "work_mode": "remoto",
+    "seniority": "sênior",
+    "employment_type": null,
+    "salary_min": "12000.00",
+    "salary_max": "18000.00",
+    "currency": "BRL",
+    "source": "manual",
+    "external_id": null,
+    "url": "https://empresa.com/vagas/123?utm_source=linkedin",
+    "canonical_url": "https://empresa.com/vagas/123",
+    "fingerprint": "9c1f...64 caracteres hexadecimais",
+    "posted_at": "2026-11-10T09:00:00Z",
+    "collected_at": "2026-11-18T12:00:00Z",
+    "import_batch_id": null,
+    "is_archived": false,
+    "duplicate_of_job_id": null,
+    "created_at": "2026-11-18T12:00:00Z",
+    "updated_at": "2026-11-18T12:00:00Z"
+  },
+  "duplicates": []
+}
+```
+
+Exemplo de `duplicates[]` (duplicata provável):
+
+```json
+[
+  {
+    "job_id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f",
+    "title": "Engenheira de Dados",
+    "company": "Empresa X",
+    "source": "manual",
+    "canonical_url": "https://empresa.com/vagas/123",
+    "layer": "fingerprint"
+  }
+]
+```
+
+Exemplo de `409`:
+
+```json
+{
+  "error": "conflict",
+  "message": "Já existe uma vaga com a mesma URL canônica.",
+  "request_id": "5f0c2a3e-7f4b-4a59-9a0e-3f3f5b0f2f11",
+  "details": [
+    {
+      "job_id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f",
+      "layer": "canonical_url",
+      "title": "Engenheira de Dados",
+      "company": "Empresa X",
+      "source": "manual",
+      "canonical_url": "https://empresa.com/vagas/123"
+    }
+  ]
+}
+```
+
+**Erros:** `409 conflict` (duplicata certa/quase certa), `422 validation_error`
+(URL inválida, faixa de salário invertida, moeda fora do ISO, campo desconhecido).
+
+---
+
 ## Saúde
 
 `GET /health` retorna `200` com o status da aplicação e do banco
@@ -395,4 +525,5 @@ ou `422 invalid_data`.
 
 ## Fora desta versão
 
-- Vagas, importação, matching, candidaturas, LLM e pipeline (fases seguintes).
+- Listagem/filtros de vagas, importação CSV, revisão de duplicatas, matching,
+  candidaturas, LLM e pipeline (fases seguintes).

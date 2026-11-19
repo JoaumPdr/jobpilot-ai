@@ -14,7 +14,7 @@ import structlog
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.api.routes import experiences, health, profile, skills
+from app.api.routes import experiences, health, jobs, profile, skills
 from app.core.config import settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging, get_logger
@@ -35,6 +35,7 @@ app.include_router(health.router, prefix="")
 app.include_router(profile.router, prefix="")
 app.include_router(skills.router, prefix="")
 app.include_router(experiences.router, prefix="")
+app.include_router(jobs.router, prefix="")
 
 
 @app.middleware("http")

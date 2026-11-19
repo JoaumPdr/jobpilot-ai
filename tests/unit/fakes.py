@@ -14,6 +14,7 @@ from app.models import (
     CandidateExperience,
     CandidatePreference,
     CandidateSkill,
+    Job,
     Skill,
 )
 
@@ -197,3 +198,49 @@ class FakeExperienceRepository:
 
     def commit(self) -> None:
         self.commits += 1
+
+
+class FakeJobRepository:
+    """Repositório em memória de vagas, com as consultas de dedup."""
+
+    def __init__(self) -> None:
+        self.items: dict[uuid.UUID, Job] = {}
+        self.commits = 0
+        self.rollbacks = 0
+        # Permite simular a corrida em que o índice único do banco rejeita o
+        # INSERT depois de uma checagem que não encontrou duplicata.
+        self.commit_error: Exception | None = None
+
+    def get_by_source_external_id(self, source: str, external_id: str) -> Job | None:
+        return next(
+            (
+                job
+                for job in self.items.values()
+                if job.source == source and job.external_id == external_id
+            ),
+            None,
+        )
+
+    def get_by_canonical_url(self, canonical_url: str) -> Job | None:
+        # A ordem de inserção do dublê faz o papel do `ORDER BY created_at`.
+        return next(
+            (job for job in self.items.values() if job.canonical_url == canonical_url),
+            None,
+        )
+
+    def list_by_fingerprint(self, fingerprint: str) -> list[Job]:
+        return [job for job in self.items.values() if job.fingerprint == fingerprint]
+
+    def add(self, job: Job) -> Job:
+        if job.id is None:
+            job.id = uuid.uuid4()
+        self.items[job.id] = job
+        return job
+
+    def commit(self) -> None:
+        if self.commit_error is not None:
+            raise self.commit_error
+        self.commits += 1
+
+    def rollback(self) -> None:
+        self.rollbacks += 1
