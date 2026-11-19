@@ -12,6 +12,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.repositories.imports import ImportBatchRepository
 from app.repositories.jobs import JobRepository
 from app.repositories.profile import (
     CandidateRepository,
@@ -21,6 +22,7 @@ from app.repositories.profile import (
     SkillRepository,
 )
 from app.services.experiences import ExperienceService
+from app.services.job_import import JobImportService
 from app.services.jobs import JobService
 from app.services.profile import ProfileService
 from app.services.skills import SkillService
@@ -52,7 +54,16 @@ def get_job_service(db: DbSession) -> JobService:
     return JobService(JobRepository(db))
 
 
+def get_job_import_service(db: DbSession) -> JobImportService:
+    """Monta o importador CSV compartilhando a mesma sessão para tudo."""
+    jobs_repository = JobRepository(db)
+    return JobImportService(
+        JobService(jobs_repository), jobs_repository, ImportBatchRepository(db)
+    )
+
+
 ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 SkillServiceDep = Annotated[SkillService, Depends(get_skill_service)]
 ExperienceServiceDep = Annotated[ExperienceService, Depends(get_experience_service)]
 JobServiceDep = Annotated[JobService, Depends(get_job_service)]
+JobImportServiceDep = Annotated[JobImportService, Depends(get_job_import_service)]

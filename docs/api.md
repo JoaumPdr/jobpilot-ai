@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T05** — perfil e cadastro
-> manual de vagas.
+> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T06** — perfil, cadastro manual e
+> importação CSV de vagas.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** JSON (`Content-Type: application/json`)
@@ -37,7 +37,7 @@ dos erros, permitindo correlacionar com os logs estruturados.
 | `error` | HTTP | Quando |
 |---------|------|--------|
 | `validation_error` | 422 | payload/path inválido (Pydantic) |
-| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência) |
+| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência) ou problema do arquivo inteiro na importação CSV |
 | `not_found` | 404 | candidato, preferências, habilidade ou experiência inexistentes |
 | `conflict` | 409 | e-mail, nome de habilidade, par candidato/habilidade ou vaga já existentes |
 | `bad_request` / `method_not_allowed` / … | 4xx | erros HTTP do próprio FastAPI, padronizados |
@@ -391,8 +391,8 @@ ou `422 invalid_data`.
 
 ## Vagas
 
-Nesta versão existe apenas o cadastro manual. Listagem, filtros e revisão de
-duplicatas chegam nas F1-T07/F1-T08.
+Nesta versão existem o cadastro manual e a importação CSV. Listagem, filtros e
+revisão de duplicatas chegam nas F1-T07/F1-T08.
 
 ### `POST /jobs`
 
@@ -516,6 +516,74 @@ Exemplo de `409`:
 **Erros:** `409 conflict` (duplicata certa/quase certa), `422 validation_error`
 (URL inválida, faixa de salário invertida, moeda fora do ISO, campo desconhecido).
 
+### `POST /jobs/import`
+
+Importa um arquivo CSV em um lote auditável. **Linha inválida não derruba o
+lote:** ela entra em `errors` com o número da linha e o campo, e o restante é
+processado normalmente. O modelo do arquivo (colunas, formatos e armadilhas)
+está em [`docs/import-csv.md`](import-csv.md).
+
+- **Corpo:** `multipart/form-data`.
+  - `file` (obrigatório): arquivo `.csv` em UTF-8 (com ou sem BOM), separado por
+    vírgula, com cabeçalho.
+  - `source` (opcional): origem usada quando a linha não traz a coluna `source`.
+    Sem ele e sem a coluna, o lote usa `csv`.
+- **Limite:** 5 MB por arquivo.
+
+```bash
+curl -X POST http://localhost:8000/jobs/import \
+  -F "file=@vagas.csv" \
+  -F "source=portal-a"
+```
+
+**Deduplicação:** usa as camadas 1 (`source` + `external_id`) e 2
+(`canonical_url`). Linha repetida — em relação ao banco ou a outra linha do
+mesmo arquivo — **não insere** e conta em `duplicates`. A camada 3
+(`fingerprint`) não bloqueia importação. Consequência prática: reimportar o
+mesmo arquivo resulta em `inserted = 0`.
+
+**Resposta `201`**
+
+```json
+{
+  "id": "9a8b7c6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d",
+  "source": "portal-a",
+  "kind": "csv",
+  "filename": "vagas.csv",
+  "started_at": "2026-11-19T02:00:00Z",
+  "finished_at": "2026-11-19T02:00:04Z",
+  "total_rows": 3,
+  "inserted": 1,
+  "duplicates": 1,
+  "rejected": 1,
+  "errors": [
+    { "row": 4, "field": "url", "message": "URL inválida: Esquema de URL não suportado: 'ftp'." }
+  ]
+}
+```
+
+| Campo | Significado |
+|-------|-------------|
+| `total_rows` | linhas de dados lidas (sem o cabeçalho) |
+| `inserted` | vagas criadas; ficam ligadas ao lote por `import_batch_id` |
+| `duplicates` | linhas puladas pela dedup (camadas 1/2) |
+| `rejected` | linhas rejeitadas por erro de validação |
+| `errors[]` | um item por problema: `row` (linha física, cabeçalho = 1), `field` e `message` |
+
+`total_rows = inserted + duplicates + rejected`. Uma linha pode gerar mais de um
+item em `errors`, mas conta uma única vez em `rejected`.
+
+**Erros:**
+
+| Situação | Resposta |
+|----------|----------|
+| arquivo > 5 MB, bytes não UTF-8, sem cabeçalho ou sem coluna obrigatória | `422 invalid_data` com `details[0].field = "file"` — **nenhum lote é criado** |
+| `file` ausente no formulário | `422 validation_error` (FastAPI) |
+| linha com coluna obrigatória vazia, URL inválida, salário/data malformados | `201` com a linha em `errors` e contada em `rejected` |
+
+O problema do arquivo inteiro é distinguido do problema de linha justamente por
+não criar lote: nada foi importado, e o usuário corrige o arquivo e reenvia.
+
 ---
 
 ## Saúde
@@ -525,5 +593,5 @@ Exemplo de `409`:
 
 ## Fora desta versão
 
-- Listagem/filtros de vagas, importação CSV, revisão de duplicatas, matching,
-  candidaturas, LLM e pipeline (fases seguintes).
+- Listagem/filtros de vagas, revisão de duplicatas, matching, candidaturas, LLM
+  e pipeline (fases seguintes).

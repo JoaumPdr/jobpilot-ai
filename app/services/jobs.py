@@ -11,6 +11,7 @@ O serviço não conhece HTTP: levanta `ConflictError` e o handler padroniza.
 
 from __future__ import annotations
 
+import uuid
 from typing import Protocol
 
 from sqlalchemy.exc import IntegrityError
@@ -58,6 +59,38 @@ class JobService:
         Levanta `ConflictError` (409) quando a vaga já existe pelas camadas
         certas (identificador externo ou URL canônica).
         """
+        job, probable = self.prepare_job(data)
+        try:
+            self._jobs.commit()
+        except IntegrityError as exc:
+            # Corrida entre a checagem e o INSERT: o índice único parcial
+            # `(source, external_id)` é a última linha de defesa.
+            self._jobs.rollback()
+            raise self._integrity_conflict() from exc
+
+        return job, probable
+
+    def prepare_job(
+        self,
+        data: JobCreate,
+        *,
+        import_batch_id: uuid.UUID | None = None,
+        include_probable: bool = True,
+        check_exact: bool = True,
+    ) -> tuple[Job, list[Job]]:
+        """Normaliza, checa duplicatas certas e adiciona a vaga **sem commit**.
+
+        POR QUÊ: o cadastro manual confirma a transação na hora, mas a
+        importação CSV precisa de um único commit para o lote inteiro. Separar
+        "preparar" de "confirmar" evita duplicar a regra de dedup e mantém a
+        importação rápida (sem 5 mil commits).
+
+        `include_probable=False` pula a consulta de fingerprint: no lote ela só
+        geraria aviso, e a camada 3 é revisada na F1-T07.
+
+        `check_exact=False` pula as consultas das camadas 1 e 2: o importador
+        já as pré-carregou em bloco. Use apenas quando a checagem foi feita.
+        """
         canonical_url = canonicalize_url(data.url)
         # Limpa antes de calcular o fingerprint: o hash usa a forma comparável,
         # mas título/empresa exibidos também não devem ter espaços duplicados.
@@ -66,11 +99,14 @@ class JobService:
         location = clean_text(data.location) or None
         fingerprint = job_fingerprint(company, title, location)
 
-        self._ensure_not_exact_duplicate(data, canonical_url)
+        if check_exact:
+            self._ensure_not_exact_duplicate(data, canonical_url)
 
         # Camada 3: só sinaliza. A vaga é criada mesmo assim porque duas vagas
         # reais podem compartilhar empresa, título e localidade.
-        probable = self._jobs.list_by_fingerprint(fingerprint)
+        probable = (
+            self._jobs.list_by_fingerprint(fingerprint) if include_probable else []
+        )
 
         job = Job(
             title=title,
@@ -91,25 +127,9 @@ class JobService:
             canonical_url=canonical_url,
             fingerprint=fingerprint,
             posted_at=data.posted_at,
+            import_batch_id=import_batch_id,
         )
         self._jobs.add(job)
-        try:
-            self._jobs.commit()
-        except IntegrityError as exc:
-            # Corrida entre a checagem e o INSERT: o índice único parcial
-            # `(source, external_id)` é a última linha de defesa.
-            self._jobs.rollback()
-            raise ConflictError(
-                "Já existe uma vaga com este identificador externo.",
-                details=[
-                    {
-                        "field": "external_id",
-                        "layer": DuplicateLayer.EXTERNAL_ID.value,
-                        "message": "Identificador externo já cadastrado.",
-                    }
-                ],
-            ) from exc
-
         return job, probable[:MAX_FINGERPRINT_MATCHES]
 
     def _ensure_not_exact_duplicate(self, data: JobCreate, canonical_url: str) -> None:
@@ -152,6 +172,19 @@ class JobService:
                     "company": job.company,
                     "source": job.source,
                     "canonical_url": job.canonical_url,
+                }
+            ],
+        )
+
+    def _integrity_conflict(self) -> ConflictError:
+        """Converte a violação do índice único em 409 com a camada 1."""
+        return ConflictError(
+            "Já existe uma vaga com este identificador externo.",
+            details=[
+                {
+                    "field": "external_id",
+                    "layer": DuplicateLayer.EXTERNAL_ID.value,
+                    "message": "Identificador externo já cadastrado.",
                 }
             ],
         )

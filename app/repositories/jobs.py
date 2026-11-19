@@ -7,7 +7,9 @@ dublê em memória e a otimização (índice, limite, ordenação) mora em um s�
 
 from __future__ import annotations
 
-from sqlalchemy import select
+from collections.abc import Sequence
+
+from sqlalchemy import select, tuple_
 
 from app.models import Job
 from app.repositories.base import BaseRepository
@@ -51,6 +53,28 @@ class JobRepository(BaseRepository):
             .limit(MAX_FINGERPRINT_MATCHES)
         )
         return list(self._db.scalars(stmt))
+
+    def find_existing_canonical_urls(self, urls: Sequence[str]) -> set[str]:
+        """Camada 2 em bloco: quais URLs canônicas já existem no catálogo.
+
+        POR QUÊ: a importação CSV pré-carrega as chaves de um bloco de linhas
+        em **uma** consulta, em vez de uma por linha (RNF-09).
+        """
+        if not urls:
+            return set()
+        stmt = select(Job.canonical_url).where(Job.canonical_url.in_(urls))
+        return {url for url in self._db.scalars(stmt) if url is not None}
+
+    def find_existing_external_ids(
+        self, keys: Sequence[tuple[str, str]]
+    ) -> set[tuple[str, str]]:
+        """Camada 1 em bloco: pares `(source, external_id)` já existentes."""
+        if not keys:
+            return set()
+        stmt = select(Job.source, Job.external_id).where(
+            tuple_(Job.source, Job.external_id).in_(keys)
+        )
+        return {(source, external_id) for source, external_id in self._db.execute(stmt)}
 
     def add(self, job: Job) -> Job:
         """Adiciona a vaga à sessão."""

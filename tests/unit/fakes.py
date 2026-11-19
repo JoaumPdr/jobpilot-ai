@@ -8,12 +8,14 @@ para que os testes possam afirmar que a transação foi confirmada.
 from __future__ import annotations
 
 import uuid
+from datetime import UTC, datetime
 
 from app.models import (
     Candidate,
     CandidateExperience,
     CandidatePreference,
     CandidateSkill,
+    ImportBatch,
     Job,
     Skill,
 )
@@ -207,6 +209,7 @@ class FakeJobRepository:
         self.items: dict[uuid.UUID, Job] = {}
         self.commits = 0
         self.rollbacks = 0
+        self.flushes = 0
         # Permite simular a corrida em que o índice único do banco rejeita o
         # INSERT depois de uma checagem que não encontrou duplicata.
         self.commit_error: Exception | None = None
@@ -231,6 +234,24 @@ class FakeJobRepository:
     def list_by_fingerprint(self, fingerprint: str) -> list[Job]:
         return [job for job in self.items.values() if job.fingerprint == fingerprint]
 
+    def find_existing_canonical_urls(self, urls: list[str]) -> set[str]:
+        wanted = set(urls)
+        return {
+            job.canonical_url
+            for job in self.items.values()
+            if job.canonical_url in wanted
+        }
+
+    def find_existing_external_ids(
+        self, keys: list[tuple[str, str]]
+    ) -> set[tuple[str, str]]:
+        wanted = set(keys)
+        return {
+            (job.source, job.external_id)
+            for job in self.items.values()
+            if job.external_id is not None and (job.source, job.external_id) in wanted
+        }
+
     def add(self, job: Job) -> Job:
         if job.id is None:
             job.id = uuid.uuid4()
@@ -240,6 +261,36 @@ class FakeJobRepository:
     def commit(self) -> None:
         if self.commit_error is not None:
             raise self.commit_error
+        self.commits += 1
+
+    def rollback(self) -> None:
+        self.rollbacks += 1
+
+    def flush(self) -> None:
+        self.flushes += 1
+
+
+class FakeImportBatchRepository:
+    """Repositório em memória de lotes de importação."""
+
+    def __init__(self) -> None:
+        self.items: dict[uuid.UUID, ImportBatch] = {}
+        self.commits = 0
+        self.rollbacks = 0
+        self.flushes = 0
+
+    def add(self, batch: ImportBatch) -> ImportBatch:
+        if batch.id is None:
+            batch.id = uuid.uuid4()
+        if batch.started_at is None:
+            batch.started_at = datetime.now(UTC)
+        self.items[batch.id] = batch
+        return batch
+
+    def flush(self) -> None:
+        self.flushes += 1
+
+    def commit(self) -> None:
         self.commits += 1
 
     def rollback(self) -> None:
