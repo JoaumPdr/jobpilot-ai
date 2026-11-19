@@ -1,10 +1,15 @@
-﻿param([string]$Action = 'start')
-
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $runner = Join-Path $root '.agents/skills/alethe/scripts/orchestrate.py'
+$diagnostic = Join-Path $PSScriptRoot 'jobpilot_codex.py'
 $callerDirectory = (Get-Location).ProviderPath
+$Action = 'start'
 $forward = $args
+$actionIndex = if ($args.Count -gt 0 -and $args[0] -eq '-Action') { 1 } else { 0 }
+if ($args.Count -gt $actionIndex -and $args[$actionIndex] -in @('start', 'check', 'check-session', 'alethe')) {
+    $Action = $args[$actionIndex]
+    $forward = @($args | Select-Object -Skip ($actionIndex + 1))
+}
 $tiers = @('cheap', 'standard', 'strong')
 
 function Invoke-AletheJson {
@@ -44,8 +49,8 @@ $previous = @{}
 $enteredRoot = $false
 $result = 1
 try {
-    if ($Action -notin @('start', 'check', 'check-session', 'alethe')) {
-        throw 'Ação inválida. Use start (padrão), check, check-session ou alethe.'
+    if ($Action -in @('check', 'check-session') -and $forward.Count -gt 0) {
+        throw "O modo $Action não aceita argumentos adicionais."
     }
     if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
         throw 'LOCALAPPDATA indisponível. Consulte docs/ALETHE_INSTRUCOES.md.'
@@ -53,53 +58,40 @@ try {
     $policyRoot = Join-Path $env:LOCALAPPDATA 'Alethe/JobPilot-AI'
     $policyPath = Join-Path $policyRoot 'alethe-orchestrate.json'
     $playbooksPath = Join-Path $policyRoot 'alethe-playbooks.yaml'
-    foreach ($path in @($policyPath, $playbooksPath, $runner)) {
-        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-            throw "Arquivo necessário ausente: $path. Consulte docs/ALETHE_INSTRUCOES.md."
-        }
-    }
-
     $venvScripts = Join-Path $root '.venv/Scripts'
     $venvPython = Join-Path $venvScripts 'python.exe'
-    $projectEnv = @{
-        ALETHE_ORCHESTRATE_POLICY = $policyPath
-        ALETHE_ORCHESTRATE_PLAYBOOKS = $playbooksPath
-        ALETHE_ORCHESTRATE_HOME = (Join-Path $policyRoot 'orchestrations')
-    }
-    if ($Action -eq 'check-session') {
+    $hasVenv = Test-Path -LiteralPath $venvPython -PathType Leaf
+    if ($Action -ne 'check-session') {
+        $projectEnv = @{
+            ALETHE_ORCHESTRATE_POLICY = $policyPath
+            ALETHE_ORCHESTRATE_PLAYBOOKS = $playbooksPath
+            ALETHE_ORCHESTRATE_HOME = (Join-Path $policyRoot 'orchestrations')
+        }
+        if ($hasVenv) {
+            # O hook do plugin invoca Python pelo PATH do processo.
+            $projectEnv.PATH = $venvScripts + [IO.Path]::PathSeparator + $env:PATH
+        }
         foreach ($name in $projectEnv.Keys) {
-            if ([Environment]::GetEnvironmentVariable($name, 'Process') -ne $projectEnv[$name]) {
-                throw "A sessão não herdou $name do JobPilot AI. Reabra o Codex pelo launcher."
-            }
+            $previous[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+            [Environment]::SetEnvironmentVariable($name, $projectEnv[$name], 'Process')
         }
     }
-    if (Test-Path -LiteralPath $venvPython -PathType Leaf) {
-        # O hook do plugin também invoca python pelo PATH do processo.
-        $projectEnv.PATH = $venvScripts + [IO.Path]::PathSeparator + $env:PATH
+    $python = if ($hasVenv) { $venvPython } else {
+        (Get-Command python -CommandType Application -ErrorAction SilentlyContinue |
+            Select-Object -First 1).Source
     }
-    foreach ($name in $projectEnv.Keys) {
-        $previous[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
-        [Environment]::SetEnvironmentVariable($name, $projectEnv[$name], 'Process')
-    }
-    $python = (Get-Command python -CommandType Application -ErrorAction SilentlyContinue |
-        Select-Object -First 1).Source
     if (-not $python) {
         throw 'Python indisponível. Execute uv sync na raiz do projeto e tente novamente.'
     }
 
     Push-Location -LiteralPath $root
     $enteredRoot = $true
-    $effective = Invoke-AletheJson @('policy', 'show')
-    if ($effective.path -ne $policyPath -or -not $effective.policy.onboarded -or
-        $effective.policy.backend -ne 'skill' -or
-        $effective.policy.providerSwitch -notin @('ask', 'never')) {
-        throw 'A política carregada precisa ser a do projeto, com backend skill e sem troca automática de provedor.'
+    $validationMode = if ($Action -eq 'check-session') { 'check-session' } else { 'check' }
+    $output = & $python -B $diagnostic $validationMode $policyRoot
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
     }
-
-    $playbook = Invoke-AletheJson @('playbook', 'direct', '--json')
-    if ($playbook.profile -ne 'base') {
-        throw 'O perfil esperado para o JobPilot AI é Base.'
-    }
+    $effective = $output | ConvertFrom-Json
 
     if ($Action -eq 'alethe') {
         $command = $forward | Select-Object -First 1
@@ -126,18 +118,36 @@ try {
         & $python -B $runner @forward
         $result = $LASTEXITCODE
     } else {
-        $doctor = Invoke-AletheJson @('doctor')
-        if (-not $doctor.policy.valid -or -not $doctor.playbooks.valid -or
-            $doctor.policyPath -ne $policyPath -or $doctor.playbooks.path -ne $playbooksPath) {
-            throw 'Falha na validação da política ou dos playbooks do projeto.'
+        [Console]::Error.WriteLine("Política Alethe: $($effective.paths.policy)")
+        [Console]::Error.WriteLine("Playbooks: $($effective.paths.playbooks)")
+        [Console]::Error.WriteLine("Diretório de estado: $($effective.paths.home)")
+        [Console]::Error.WriteLine("Perfil: $($effective.profile). Validação estrutural: OK.")
+    }
+    if ($Action -eq 'check-session') {
+        $evidence = $effective.hooks
+        switch ($evidence.status) {
+            'confirmed' { $result = 0 }
+            'wrong' { $result = 1 }
+            'pending' { $result = 2 }
         }
+        [Console]::Error.WriteLine("Hook Alethe ($($evidence.status)): $($evidence.detail)")
+    } elseif ($Action -eq 'start') {
+        $codex = Get-Command codex -CommandType Application -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+        if (-not $codex) {
+            throw 'Codex CLI indisponível no PATH.'
+        }
+        # O transporte JSON preserva as aspas e os argumentos vazios no PowerShell 5.1.
+        $previous.JOBPILOT_CODEX_ARGUMENTS = $env:JOBPILOT_CODEX_ARGUMENTS
+        $env:JOBPILOT_CODEX_ARGUMENTS = ConvertTo-Json -InputObject ([string[]]$forward) -Compress
+        & $python -B $diagnostic start $codex.Source
+        $result = $LASTEXITCODE
+    } elseif ($Action -eq 'check') {
+        $doctor = Invoke-AletheJson @('doctor')
         $allowedProviders = @($doctor.providers | Where-Object {
             $_.provider -in $effective.policy.providerOrder -and
             $_.provider -notin $effective.policy.conserveProviders
         })
-        [Console]::Error.WriteLine("Política Alethe: $($doctor.policyPath)")
-        [Console]::Error.WriteLine("Playbooks: $($doctor.playbooks.path)")
-        [Console]::Error.WriteLine("Perfil: $($playbook.profile). Validação estrutural: OK.")
         if ($allowedProviders.Count -eq 0) {
             [Console]::Error.WriteLine('Nenhum provedor habilitado para workers.')
         }
@@ -149,7 +159,7 @@ try {
                 else { 'não verificada' }
             [Console]::Error.WriteLine("Provedor $name ${availability}. Autenticação: $login.")
             foreach ($tier in $tiers) {
-                $defaults = $playbook.tiers.$tier.$name
+                $defaults = $effective.tiers.$tier.$name
                 $override = $effective.policy.modelTiers.$tier.$name
                 $model = if ($override.model) { $override.model } else { $defaults.model }
                 $effort = if ($override.effort) { $override.effort } else { $defaults.effort }
@@ -159,17 +169,7 @@ try {
                 [Console]::Error.WriteLine("  ${tier}: $model / $effort")
             }
         }
-        if ($Action -eq 'start') {
-            $codex = Get-Command codex -CommandType Application -ErrorAction SilentlyContinue |
-                Select-Object -First 1
-            if (-not $codex) {
-                throw 'Codex CLI indisponível no PATH.'
-            }
-            & $codex.Source @forward
-            $result = $LASTEXITCODE
-        } else {
-            $result = 0
-        }
+        $result = 0
     }
 } catch {
     [Console]::Error.WriteLine("JobPilot AI: $($_.Exception.Message)")

@@ -198,11 +198,21 @@ De outro diretório, invoque o script pelo caminho com `&`. O launcher identific
 
 O launcher, o Codex e a Alethe são ferramentas de desenvolvimento. A instalação e a execução do JobPilot AI para o usuário final seguem as instruções do README.
 
-O launcher espera `alethe-orchestrate.json` e `alethe-playbooks.yaml` em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. Ele define `ALETHE_ORCHESTRATE_POLICY`, `ALETHE_ORCHESTRATE_PLAYBOOKS` e `ALETHE_ORCHESTRATE_HOME` no ambiente do processo antes de iniciar o Codex. Ao sair, restaura os valores anteriores. Quando disponível, o Python do ambiente do projeto entra no PATH dessa execução para o launcher e os hooks.
+O launcher espera `alethe-orchestrate.json` e `alethe-playbooks.yaml` em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. No modo `start`, ele define `ALETHE_ORCHESTRATE_POLICY`, `ALETHE_ORCHESTRATE_PLAYBOOKS` e `ALETHE_ORCHESTRATE_HOME` no ambiente do processo. Quando disponível, o Python do ambiente do projeto entra no PATH dessa execução para o launcher e os hooks. Ao sair, o launcher restaura o ambiente anterior.
 
-O diagnóstico apresenta os caminhos efetivos, perfil, provedor detectado, autenticação conforme a evidência disponível e modelo e esforço por tier. Rode `.\scripts\JobPilot-Codex.ps1 check` para repetir a verificação sem abrir outra sessão. Se faltar um arquivo ou houver erro de configuração, restaure a cópia local do projeto e repita o diagnóstico. Os arquivos locais e as credenciais ficam fora do Git.
+O Codex CLI 0.170.0 pode conectar a interface a um daemon compartilhado que reutiliza o ambiente da inicialização do servidor. Nesse caso, uma nova interface iniciada pelo launcher recebeu o ambiente antigo e o hook da Alethe gravou dados no diretório global. O modo `start` agora passa `--no-daemon` para selecionar o servidor embutido exclusivamente nessa execução. O daemon dos demais projetos e as configurações de sandbox, aprovação e confiança de hooks permanecem sob controle do Codex. Se a CLI não anunciar suporte a `--no-daemon`, o launcher informa a incompatibilidade e encerra. Use `.\scripts\JobPilot-Codex.ps1 start <argumentos-do-Codex>` para encaminhar opções adicionais.
 
-Dentro do Codex, rode `.\scripts\JobPilot-Codex.ps1 check-session`. Esse modo verifica os caminhos herdados antes de configurar seu próprio processo. Se a sessão tiver chegado pelo Codex direto ou por uma interface que não herdou os caminhos, informe o problema e reabra pelo launcher antes de delegar.
+`.\scripts\JobPilot-Codex.ps1 check` mostra a configuração que o launcher aplicaria, os provedores e os modelos e esforços por tier. Dentro de uma sessão do Codex, rode `.\scripts\JobPilot-Codex.ps1 check-session` para validar o ambiente recebido, sem alterar variáveis nem consultar provedores. O diagnóstico usa os resolvedores da Alethe para conferir a política, os playbooks, o perfil Base e o diretório de estado. A Alethe pode derivar os playbooks e o estado a partir da política quando os respectivos overrides estiverem ausentes. Se houver arquivo ausente, inválido ou caminho divergente, corrija a causa indicada antes de delegar. Os arquivos locais e as credenciais ficam fora do Git.
+
+Para validar a integração interativa, execute o launcher em um PowerShell na raiz do checkout. Em uma sessão nova, envie um prompt pedindo apenas a execução de `.\scripts\JobPilot-Codex.ps1 check-session`. Confirme os três caminhos sob `%LOCALAPPDATA%\Alethe\JobPilot-AI` e a mensagem `Hook Alethe (confirmed)`. O diagnóstico procura o estado recente que o hook passivo da Alethe registrou para o ID da sessão atual. Estados anteriores ao lançamento são ignorados.
+
+| Código | Resultado em `check-session` |
+|---|---|
+| `0` | Configuração do projeto válida e execução recente do hook passivo confirmada. |
+| `1` | Configuração inválida ou evidência de que o hook usou estado global ou configuração divergente. |
+| `2` | Configuração válida e execução do hook ainda sem evidência. Confira a permissão dos hooks em `/hooks` e o modo passivo da Alethe. Faça a validação interativa em uma sessão nova antes de delegar. |
+
+O estado passivo confirma a execução, o diretório usado e o intervalo de verificação observado. A validação dos caminhos completos dos arquivos ocorre separadamente no shell da sessão.
 
 ### 7B. Workers, playbooks e cotas
 
