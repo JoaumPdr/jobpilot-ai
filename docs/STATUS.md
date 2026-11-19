@@ -17,15 +17,15 @@
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T08.md` (a criar ao iniciar) |
 | **Branch da tarefa** | `feat/f1-t08-listagem-filtros` (a criar a partir da fase) |
 | **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `430dc17` — merge do PR #15 (F1-T07); o commit deste arquivo é posterior e só ajusta estes campos |
-| **Testes** | verdes (**253 passed** no merge da F1-T07) |
-| **CI** | verde no merge do PR #15 (run `44443291243`) |
+| **Último commit** | `4d1ba61` — registro do PR #15 e da próxima tarefa. Último merge funcional: `430dc17` (F1-T07) |
+| **Testes** | **253 passed** com PostgreSQL na sessão de adequação da orquestração. Ruff e formatação verdes |
+| **CI** | verde no merge do PR #15 (run `44443291243`). Adequação documental validada localmente |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-19 02:18 (UTC) — merge do PR #15 na `phase/01-nucleo-sem-ia` |
+| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` confirmada em `4d1ba61` local e remoto. Alterações de orquestração em `docs/f1-orquestracao-codex`, branch local pendente de commit e publicação |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), ponta de `phase/01-nucleo-sem-ia` em `4d1ba61` |
 | **PR aberto** | nenhum após a integração do PR #15 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
-| **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
+| **GitHub** | `gh` CLI autenticado. Sincronização da fase conferida com `git ls-remote` |
 
 ### Próxima ação exata (uma frase, imperativa)
 
@@ -35,6 +35,7 @@
 
 ## 2. O que foi feito na última sessão
 
+- **Adequação ao Codex CLI e à Alethe (2026-11-19 UTC):** login do Codex via ChatGPT confirmado. Política local isolada com perfil Base, teto de dois workers simultâneos, alerta de cota em 80% e bloqueio em 90%. `doctor`, `policy show`, `playbook --pick` e `usage` validados. `validate` e `dry-run` confirmaram os três tiers, o modo de leitura para revisão, o isolamento das escritas e a rejeição de `custom` em somente leitura. A cota semanal do Codex foi medida em 2%. A janela de 5 h segue desconhecida. Codex é o único provedor inicialmente habilitado e nenhum worker foi iniciado. Ponto de entrada em `AGENTS.md` e ativação da política em `docs/ALETHE_INSTRUCOES.md` §7A. A F1-T08 continua por iniciar.
 - F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
 - F0-T02 concluída: ambiente Python configurado com `uv`, dependências de dev, pre-commit, teste de sanidade e ADR 0008.
 - F0-T03 concluída: `docker-compose.yml` com PostgreSQL 16 (porta 5433 no host devido a conflito com Docker Desktop backend na 5432), `.env.example` e `alembic.ini` atualizados para porta 5433, `app/core/config.py` com validação de ambiente, `app/api/routes/health.py` com conversão de URL SQLAlchemy para psycopg v3. Verificado com banco real: container saudável, `alembic upgrade head` + `downgrade -1` funcionam, `/health` retorna 200 com database.status = healthy.
@@ -65,7 +66,7 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T07 — concluída e integrada (PR #15). **Próxima:** F1-T08 — listagem e filtros de vagas.
+**Última tarefa concluída:** F1-T07 — integrada no PR #15. **Próxima:** F1-T08 — listagem e filtros de vagas.
 **Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T07.md` encerrada; a ficha da F1-T08 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T08.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
@@ -176,8 +177,8 @@
 ## 9. Checklist de encerramento de sessão (conferir antes de parar)
 
 - [x] Testes verdes **ou** falhas isoladas e listadas em §5
-- [x] Tudo commitado (`chore(wip)` se incompleto)
-- [x] Push feito e **verificado** (`git status -sb` sem `ahead`; branch visível no GitHub)
+- [ ] Commit da adequação documental em `docs/f1-orquestracao-codex` pendente
+- [ ] Publicar a adequação documental e integrar o PR autorizado após o CI verde
 - [x] Campos de sincronização da §1 atualizados (remoto, último push, PR aberto, CI no GitHub)
 - [x] §1 e §3 atualizados com a próxima ação exata
 - [x] `BACKLOG.md` marcado

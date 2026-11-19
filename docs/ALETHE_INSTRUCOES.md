@@ -62,7 +62,7 @@ Para cada tarefa do backlog:
 7. **Commit(s)** — pequenos, em PT-BR, formato convencional.
 8. **Push** da branch para o GitHub e conferir que o remoto recebeu (o remoto é o backup; ver §4A).
 9. **Atualizar `docs/STATUS.md`**, marcar a tarefa no `BACKLOG.md` e atualizar a ficha da tarefa (se existir).
-10. **Integrar** — abrir PR da branch da tarefa para a branch da fase (pelo MCP do GitHub), conferir o CI e mesclar quando os critérios de aceitação estiverem todos atendidos e o CI estiver verde.
+10. **Integrar** — abrir PR da branch da tarefa para a branch da fase pelo MCP do GitHub autenticado ou por `gh`, conferir o CI e mesclar quando os critérios de aceitação estiverem todos atendidos e o CI estiver verde.
 
 Nada de "quase pronto": ou a tarefa fecha com critérios atendidos, ou o estado parcial é registrado no `STATUS.md` (ver §6).
 
@@ -105,8 +105,8 @@ O repositório remoto no GitHub é o **backup e a fonte da verdade** do projeto.
 **Remoto e ferramentas**
 
 - Remoto `origin` = repositório no GitHub da conta do JP (nome sugerido: `JoaumPdr/jobpilot-ai`; confirmar com o JP na F0-T01). Criado na **F0-T01**, **privado** no início. Tornar público é decisão do JP, depois de uma varredura de segredos.
-- O VS Code do JP está ligado ao **MCP do GitHub**, conectado à conta dele. Use o MCP para operações de repositório: criar repositório, criar branches, abrir/atualizar/mesclar PRs, consultar status do CI, listar PRs e branches, e (opcional) milestones e issues.
-- Use o **git local** para commits, troca de branch, merge local e push. Se o MCP estiver indisponível ou sem permissão, siga com o git local, registre no `STATUS.md` e avise o JP. **Nunca** coloque token ou senha em arquivo, em URL do remoto ou em commit.
+- Use o **MCP do GitHub** quando estiver disponível e autenticado. Use **`gh` autenticado** para PRs e CI quando o MCP estiver indisponível e registre a alternativa no `STATUS.md`. Em caso de falha de permissão ou autenticação, avise o JP e siga a §8.
+- Use o **git local** para commits, troca de branch, merge local e push. Mantenha tokens e senhas nos mecanismos de autenticação das ferramentas.
 
 **Rotina**
 
@@ -115,7 +115,7 @@ O repositório remoto no GitHub é o **backup e a fonte da verdade** do projeto.
 | Início de sessão | `git fetch --all --prune` e conferir `git status -sb`. Remoto à frente → `git pull --ff-only` antes de começar. Histórico divergente → **parar**, registrar no `STATUS.md` e avisar o JP (nada de force push) |
 | Criar branch de tarefa | Fazer o **primeiro push logo após o primeiro commit**, já com upstream configurado |
 | Durante a tarefa | **Push após cada commit significativo** (ciclo verde) |
-| Tarefa concluída | Abrir PR **tarefa → fase** pelo MCP, conferir o CI no GitHub e só mesclar com CI verde |
+| Tarefa concluída | Abrir PR **tarefa → fase** pelo MCP ou por `gh`, conferir o CI no GitHub e só mesclar com CI verde |
 | Fase concluída | PR **fase → `develop`**; tag `fase-NN` criada **e publicada no remoto**; em marcos de release, PR `develop` → `main` + tag `vX.Y.Z` publicada |
 | Fim de sessão | Árvore limpa, **zero commits "à frente" do remoto** (`git status -sb` sem `ahead`), branch visível no GitHub; registrar o estado de sincronização no `STATUS.md` |
 
@@ -170,20 +170,43 @@ O objetivo: o próximo agente retoma em **menos de 2 minutos** só lendo o `STAT
 
 ---
 
-## 7. Estratégia de papéis (orquestração opcional)
+## 7. Orquestração do desenvolvimento
+
+O **Codex CLI** lidera o desenvolvimento com login pela assinatura do ChatGPT. A **Alethe** coordena a delegação quando houver ganho de qualidade ou de tempo. O líder resolve diretamente tarefas pequenas e claras e responde pela seleção dos workers, pelos briefs, pela revisão e pela integração.
 
 Se usar subagentes, divida por responsabilidade, **nunca por arquivo compartilhado**:
 
 | Papel | Responsabilidade |
 |-------|------------------|
-| Orquestrador | Lê STATUS/BACKLOG, escolhe a próxima tarefa, delega, atualiza STATUS, faz integração |
+| Líder | Lê STATUS/BACKLOG, prepara a tarefa, delega, revisa os resultados, integra mudanças e atualiza o STATUS |
 | Dados/Backend | Modelos, migrações, repositórios, serviços, rotas |
 | Testes | Escreve/valida testes, mede cobertura, mantém golden set |
 | Documentação | Atualiza README, RELATORIO, design, ADRs, docs de API/dados |
 | Segurança/Revisão | Revisa diff antes do merge: segredos, logs, validação, privacidade, regras invioláveis |
 | Frontend | Só entra na Fase 6 (Streamlit) |
 
-**Regras de paralelismo:** dois agentes nunca editam a mesma branch ao mesmo tempo; só paralelizar tarefas sem dependência entre si (ver coluna "Depende de" no backlog), cada uma na sua branch. Só o Orquestrador edita o `STATUS.md`.
+### 7A. Provedores, modelos e cotas
+
+- **Codex** é a opção inicial para workers. **Copilot** é a preferência para testes e implementação auxiliar quando o adaptador estiver validado. Use-o para revisão independente somente se houver modo de leitura verificável. **Antigravity** tem preferência para pesquisa e exploração quando a CLI nativa estiver disponível. **OpenCode** é a contingência com modelo gratuito explícito. **Claude** depende de autenticação autorizada e de confirmação de que a execução não acrescenta custo.
+- Use o perfil **Base** e fixe provedor, modelo e esforço por worker. Reserve `cheap` para triagem e tarefas mecânicas, `standard` para implementação e revisão de rotina e `strong` para decisões, revisão crítica e escalonamentos justificados. Preserve as escolhas ao retomar uma sessão.
+- Confira disponibilidade, tipo de autenticação e cotas antes de delegar. Use 80% como alerta e 90% como limite de bloqueio nas janelas mensuráveis. Quando a cota estiver baixa, proponha ao JP uma troca para um provedor apto no mesmo tier ou pause a delegação. Trate leitura ausente ou vencida como desconhecida e solicite autorização para delegar nessa condição. Serviços com cobrança adicional exigem autorização explícita. Fallback automático para API paga fica desabilitado.
+- Mantenha uma execução ativa por vez, com até dois workers simultâneos. Peça autorização para exceder esse limite. Defina orçamento de chamadas, tempo e tokens proporcional ao plano. Registre o consumo efetivamente reportado e a utilidade dos resultados. Quando o provedor não reportar a métrica, registre a ausência.
+- Mantenha a política, o catálogo e os IDs de modelos na configuração local. No Windows, a cópia do JobPilot AI fica em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. Defina a variável no PowerShell da sessão antes de iniciar o Codex neste repositório:
+
+  ```powershell
+  $env:ALETHE_ORCHESTRATE_POLICY = Join-Path $env:LOCALAPPDATA 'Alethe/JobPilot-AI/alethe-orchestrate.json'
+  codex
+  ```
+
+  Confira o caminho carregado com `policy show` e valide a configuração com `doctor`. Os arquivos locais e as credenciais ficam fora do Git.
+
+### 7B. Playbooks, contexto e segurança
+
+- Use `direct` para trabalho pequeno, `cascade` para mudanças mecânicas verificáveis, `scout-then-build` para módulos desconhecidos e `plan-execute` para etapas sequenciais. Use `review-gate` no diff final de mudanças relevantes, `parallel-worktrees` para unidades independentes e `advisor-escalation` quando evidências justificarem um modelo superior. Escolha `best-of-n` ou auditorias extensas somente quando o ganho justificar o consumo.
+- Use o estágio e a ficha atual como mapa. Leia os trechos necessários dos documentos técnicos. Envie objetivo, caminhos autorizados, restrições e checagens a cada worker. Peça caminhos e linhas, diffs, resultados e riscos. Consulte logs brutos apenas para diagnosticar falhas. Para uma correção relacionada, prefira retomar a sessão e faça no máximo uma nova tentativa por unidade após identificar a causa corrigível.
+- Pesquisadores e revisores operam em somente leitura. Escritas delegadas usam worktrees isoladas, com branches e arquivos disjuntos. O líder aplica os diffs revisados, roda os testes e linters, confere o CI quando houver PR e atualiza o `STATUS.md`.
+- Proíba delegação recursiva. Use os bloqueios fornecidos pela CLI e pela Alethe e inclua a regra no brief. Só habilite adaptadores personalizados após verificar o executável, argumentos, modelo, permissões, saída e limites com `validate`, `dry-run` e um teste controlado autorizado. Adaptadores `custom` da Alethe v24 operam em modo de escrita isolada. Use um provedor nativo em modo somente leitura para pesquisa e revisão.
+- Mantenha `allowUnsafe` desabilitado e entregue apenas dados sintéticos ou expurgados. Dados pessoais, currículos reais e segredos ficam fora de prompts, diffs e logs enviados a provedores.
 
 ---
 
@@ -235,7 +258,7 @@ Comece assim:
 6. Se sentir que o contexto está acabando, execute o protocolo de FIM de sessão (seção 6).
 7. Pare e me consulte nos casos da seção 8.
 
-Sincronize tudo com o repositório remoto no GitHub (MCP do GitHub conectado ao VS Code; git local como alternativa):
+Sincronize tudo com o repositório remoto no GitHub. Use o MCP autenticado ou gh para PRs e CI e o git local para branches, commits e push:
 fetch no início, push após cada commit significativo e verificação de sincronização no fim de toda sessão (seção 4A).
 Use SEMPRE o uv para ambiente e dependências (uv sync, uv add, uv run); nunca pip install direto.
 Não implemente fases futuras. Não automatize candidaturas. Não invente fatos no currículo.
@@ -245,6 +268,6 @@ Não implemente fases futuras. Não automatize candidaturas. Não invente fatos 
 
 ```text
 Retome o projeto JobPilot AI. Leia docs/STATUS.md e docs/ALETHE_INSTRUCOES.md,
-execute o protocolo de INÍCIO de sessão (incluindo git fetch e a comparação com o remoto no GitHub) e continue exatamente do ponto registrado,
-sem refazer trabalho já commitado.
+confira a política local da Alethe e execute o protocolo de INÍCIO de sessão
+(incluindo git fetch e a comparação com o remoto no GitHub). Retome do ponto registrado.
 ```
