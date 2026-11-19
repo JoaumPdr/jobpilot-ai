@@ -40,10 +40,11 @@ Copie os arquivos para o repositório com estes nomes:
 
 1. Ler `docs/STATUS.md` (onde estamos, próxima ação, bloqueios).
 2. Ler `docs/ALETHE_INSTRUCOES.md` (este arquivo) se for a primeira vez na sessão.
-3. Ler a **seção da fase atual** em `docs/BACKLOG.md` e, **quando existir**, a ficha da tarefa atual em `docs/tasks/FASE-XX/Fx-Tyy.md`. Sem ficha, os critérios de aceitação do BACKLOG bastam para começar.
+3. Ler a entrada pertinente em `docs/BACKLOG.md` e, quando existir, a ficha em `docs/tasks/FASE-XX/Fx-Tyy.md`. Sem ficha, os critérios do backlog bastam para começar.
 4. Rodar `git fetch --all --prune`, `git status -sb` e `git branch --show-current`; confirmar que está na branch correta da tarefa **e em dia com o remoto** (ver §4A).
 5. Rodar `uv sync` (garante o ambiente igual ao `uv.lock`) e depois os testes existentes via `uv run pytest` para confirmar que o ponto de partida está verde.
-6. **Declarar em 3 linhas** (no chat): fase atual, tarefa atual, o que fará nesta sessão.
+6. Confirmar que a sessão herdou a política e os playbooks do JobPilot AI (§7A). Avaliar modelo e esforço do líder para a tarefa (§7C).
+7. Declarar fase, tarefa, próxima ação, estratégia e adequação do modelo do líder. Quando houver motivo para trocar, aguardar confirmação antes de implementar (§7C).
 
 Se `STATUS.md` e o estado do Git divergirem, **confie no Git**, corrija o `STATUS.md` e registre a divergência em "Observações".
 
@@ -53,7 +54,7 @@ Se `STATUS.md` e o estado do Git divergirem, **confie no Git**, corrija o `STATU
 
 Para cada tarefa do backlog:
 
-1. **Preparar** — decidir se a tarefa precisa de ficha, seguindo a política da §3A. Se precisar e ela ainda não existir, criá-la a partir do modelo do `BACKLOG.md`. Se não precisar, o planejamento fica no próprio BACKLOG e a implementação pode começar.
+1. **Preparar** — reavaliar o modelo e esforço do líder a cada transição de tarefa (§7C). Decidir se a tarefa precisa de ficha conforme §3A. Se precisar e ela ainda não existir, criá-la a partir do modelo do `BACKLOG.md`. Caso contrário, o planejamento fica no backlog.
 2. **Branch** — criar a branch da tarefa a partir da branch da fase (convenção no `GUIA_DOCS_E_GIT.md`).
 3. **Testes primeiro** (ou junto) — especialmente para regras determinísticas.
 4. **Implementar o mínimo** que faz os testes passarem; sem abstração prematura.
@@ -185,28 +186,84 @@ Se usar subagentes, divida por responsabilidade, **nunca por arquivo compartilha
 | Segurança/Revisão | Revisa diff antes do merge: segredos, logs, validação, privacidade, regras invioláveis |
 | Frontend | Só entra na Fase 6 (Streamlit) |
 
-### 7A. Provedores, modelos e cotas
+### 7A. Ativação da política do projeto
+
+No Windows, inicie o Codex CLI pelo launcher a partir da raiz do checkout.
+
+```powershell
+.\scripts\JobPilot-Codex.ps1
+```
+
+De outro diretório, invoque o script pelo caminho com `&`. O launcher identifica a raiz pela localização do próprio arquivo. Ele usa a CLI da Alethe versionada em `.agents/skills/alethe`. Os hooks são fornecidos pelo plugin instalado e habilitado no Codex.
+
+O launcher, o Codex e a Alethe são ferramentas de desenvolvimento. A instalação e a execução do JobPilot AI para o usuário final seguem as instruções do README.
+
+O launcher espera `alethe-orchestrate.json` e `alethe-playbooks.yaml` em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. No modo `start`, ele define `ALETHE_ORCHESTRATE_POLICY`, `ALETHE_ORCHESTRATE_PLAYBOOKS` e `ALETHE_ORCHESTRATE_HOME` no ambiente do processo. Quando disponível, o Python do ambiente do projeto entra no PATH dessa execução para o launcher e os hooks. Ao sair, o launcher restaura o ambiente anterior.
+
+O Codex CLI 0.170.0 pode conectar a interface a um daemon compartilhado que reutiliza o ambiente da inicialização do servidor. Nesse caso, uma nova interface iniciada pelo launcher recebeu o ambiente antigo e o hook da Alethe gravou dados no diretório global. O modo `start` agora passa `--no-daemon` para selecionar o servidor embutido exclusivamente nessa execução. O daemon dos demais projetos e as configurações de sandbox, aprovação e confiança de hooks permanecem sob controle do Codex. Se a CLI não anunciar suporte a `--no-daemon`, o launcher informa a incompatibilidade e encerra. Use `.\scripts\JobPilot-Codex.ps1 start <argumentos-do-Codex>` para encaminhar opções adicionais.
+
+`.\scripts\JobPilot-Codex.ps1 check` mostra a configuração que o launcher aplicaria, os provedores e os modelos e esforços por tier. Dentro de uma sessão do Codex, rode `.\scripts\JobPilot-Codex.ps1 check-session` para validar o ambiente recebido, sem alterar variáveis nem consultar provedores. O diagnóstico usa os resolvedores da Alethe para conferir a política, os playbooks, o perfil Base e o diretório de estado. A Alethe pode derivar os playbooks e o estado a partir da política quando os respectivos overrides estiverem ausentes. Se houver arquivo ausente, inválido ou caminho divergente, corrija a causa indicada antes de delegar. Os arquivos locais e as credenciais ficam fora do Git.
+
+Para validar a integração interativa, execute o launcher em um PowerShell na raiz do checkout. Em uma sessão nova, envie um prompt pedindo apenas a execução de `.\scripts\JobPilot-Codex.ps1 check-session`. Confirme os três caminhos sob `%LOCALAPPDATA%\Alethe\JobPilot-AI` e a mensagem `Hook Alethe (confirmed)`. O diagnóstico procura o estado recente que o hook passivo da Alethe registrou para o ID da sessão atual. Estados anteriores ao lançamento são ignorados.
+
+| Código | Resultado em `check-session` |
+|---|---|
+| `0` | Configuração do projeto válida e execução recente do hook passivo confirmada. |
+| `1` | Configuração inválida ou evidência de que o hook usou estado global ou configuração divergente. |
+| `2` | Configuração válida e execução do hook ainda sem evidência. Confira a permissão dos hooks em `/hooks` e o modo passivo da Alethe. Faça a validação interativa em uma sessão nova antes de delegar. |
+
+O estado passivo confirma a execução, o diretório usado e o intervalo de verificação observado. A validação dos caminhos completos dos arquivos ocorre separadamente no shell da sessão.
+
+### 7B. Workers, playbooks e cotas
 
 - **Codex** é a opção inicial para workers. **Copilot** é a preferência para testes e implementação auxiliar quando o adaptador estiver validado. Use-o para revisão independente somente se houver modo de leitura verificável. **Antigravity** tem preferência para pesquisa e exploração quando a CLI nativa estiver disponível. **OpenCode** é a contingência com modelo gratuito explícito. **Claude** depende de autenticação autorizada e de confirmação de que a execução não acrescenta custo.
-- Use o perfil **Base** e fixe provedor, modelo e esforço por worker. Reserve `cheap` para triagem e tarefas mecânicas, `standard` para implementação e revisão de rotina e `strong` para decisões, revisão crítica e escalonamentos justificados. Preserve as escolhas ao retomar uma sessão.
+- Use o perfil **Base**. Declare `tier` e `provider` em cada item de `workers`. A Alethe fixa modelo e esforço pelo tier. Confira ambos no `dry-run` e preserve as escolhas ao retomar uma sessão. Na v24, os campos `model` e `effort` no plano são aceitos somente com `tier: standard`. Use-os quando a etapa do playbook exigir uma combinação diferente da padrão.
 - Confira disponibilidade, tipo de autenticação e cotas antes de delegar. Use 80% como alerta e 90% como limite de bloqueio nas janelas mensuráveis. Quando a cota estiver baixa, proponha ao JP uma troca para um provedor apto no mesmo tier ou pause a delegação. Trate leitura ausente ou vencida como desconhecida e solicite autorização para delegar nessa condição. Serviços com cobrança adicional exigem autorização explícita. Fallback automático para API paga fica desabilitado.
 - Mantenha uma execução ativa por vez, com até dois workers simultâneos. Peça autorização para exceder esse limite. Defina orçamento de chamadas, tempo e tokens proporcional ao plano. Registre o consumo efetivamente reportado e a utilidade dos resultados. Quando o provedor não reportar a métrica, registre a ausência.
-- Mantenha a política, o catálogo e os IDs de modelos na configuração local. No Windows, a cópia do JobPilot AI fica em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. Defina a variável no PowerShell da sessão antes de iniciar o Codex neste repositório:
+- Se o provedor estiver indisponível, informe a causa observada. Execute diretamente quando for adequado. Se a delegação continuar necessária, proponha um provedor habilitado com capacidade equivalente e aplique as regras de custo e cota antes de usá-lo. Sem uma alternativa apta, pause a delegação.
 
-  ```powershell
-  $env:ALETHE_ORCHESTRATE_POLICY = Join-Path $env:LOCALAPPDATA 'Alethe/JobPilot-AI/alethe-orchestrate.json'
-  codex
-  ```
+| Tier | Uso | Modelo Codex | Esforço |
+|---|---|---|---|
+| Cheap | Triagem e tarefas mecânicas verificáveis | `gpt-5.6-luna` | `low` |
+| Standard | Implementação e revisão de rotina | `gpt-6.2-sol` | `medium` |
+| Strong | Decisões, revisão crítica e escalonamentos justificados | `gpt-6.2-astra` | `high` |
 
-  Confira o caminho carregado com `policy show` e valide a configuração com `doctor`. Os arquivos locais e as credenciais ficam fora do Git.
+Use o launcher nas operações da Alethe deste projeto, inclusive quando a skill indicar um comando da CLI. Escolha o playbook, defina os workers e confira os tiers e os modelos no `dry-run`. Passe o plano como primeiro argumento após o subcomando. O launcher verifica tier e provedor em `validate`, `dry-run` e `run`. Uma omissão interrompe o comando antes de a CLI aplicar o padrão de `economy`. Salve o plano JSON em UTF-8 sem BOM.
 
-### 7B. Playbooks, contexto e segurança
+```powershell
+.\scripts\JobPilot-Codex.ps1 alethe playbook --pick
+.\scripts\JobPilot-Codex.ps1 alethe validate $plano
+.\scripts\JobPilot-Codex.ps1 alethe dry-run $plano
+# Depois de conferir a prévia, as cotas e as autorizações
+.\scripts\JobPilot-Codex.ps1 alethe new 'Título da execução' --playbook plan-execute
+.\scripts\JobPilot-Codex.ps1 alethe run $plano --in current --detach
+.\scripts\JobPilot-Codex.ps1 alethe wait --timeout 30
+```
 
 - Use `direct` para trabalho pequeno, `cascade` para mudanças mecânicas verificáveis, `scout-then-build` para módulos desconhecidos e `plan-execute` para etapas sequenciais. Use `review-gate` no diff final de mudanças relevantes, `parallel-worktrees` para unidades independentes e `advisor-escalation` quando evidências justificarem um modelo superior. Escolha `best-of-n` ou auditorias extensas somente quando o ganho justificar o consumo.
 - Use o estágio e a ficha atual como mapa. Leia os trechos necessários dos documentos técnicos. Envie objetivo, caminhos autorizados, restrições e checagens a cada worker. Peça caminhos e linhas, diffs, resultados e riscos. Consulte logs brutos apenas para diagnosticar falhas. Para uma correção relacionada, prefira retomar a sessão e faça no máximo uma nova tentativa por unidade após identificar a causa corrigível.
 - Pesquisadores e revisores operam em somente leitura. Escritas delegadas usam worktrees isoladas, com branches e arquivos disjuntos. O líder aplica os diffs revisados, roda os testes e linters, confere o CI quando houver PR e atualiza o `STATUS.md`.
 - Proíba delegação recursiva. Use os bloqueios fornecidos pela CLI e pela Alethe e inclua a regra no brief. Só habilite adaptadores personalizados após verificar o executável, argumentos, modelo, permissões, saída e limites com `validate`, `dry-run` e um teste controlado autorizado. Adaptadores `custom` da Alethe v24 operam em modo de escrita isolada. Use um provedor nativo em modo somente leitura para pesquisa e revisão.
 - Mantenha `allowUnsafe` desabilitado e entregue apenas dados sintéticos ou expurgados. Dados pessoais, currículos reais e segredos ficam fora de prompts, diffs e logs enviados a provedores.
+
+### 7C. Modelo e esforço do líder
+
+No início da sessão e a cada transição de tarefa, avalie fase, complexidade técnica, decisões arquiteturais, riscos de segurança, complexidade dos testes, integrações externas e consumo estimado. Use a matriz como ponto de partida. A complexidade da tarefa determina a recomendação.
+
+| Fase | Modelo | Esforço |
+|---|---|---|
+| F0 | Sol | Medium |
+| F1 | Sol | Medium |
+| F2 | Sol | Medium ou High |
+| F3 | Sol ou Astra | High |
+| F4 | Astra | High |
+| F5 | Sol ou Astra | Medium ou High |
+| F6 | Sol | Medium |
+| F7 | Sol ou Astra | High |
+
+Confira o modelo e o esforço da sessão no seletor `/model` ou nos metadados disponíveis do turno. Trate a configuração padrão como padrão de inicialização e declare quando a combinação efetiva da sessão não for verificável. A Alethe aplica seus tiers aos workers. A configuração da sessão principal pertence ao Codex.
+
+Se a combinação for adequada, prossiga segundo as autorizações da tarefa. Quando houver motivo para trocar, informe a combinação atual quando verificável, recomende modelo e esforço concretos, explique o motivo e peça ao JP para selecionar a combinação com `/model`. Aguarde a confirmação antes de implementar. Registre a troca como efetiva somente quando houver evidência da sessão ou confirmação explícita do JP.
 
 ---
 
@@ -267,7 +324,15 @@ Não implemente fases futuras. Não automatize candidaturas. Não invente fatos 
 ## 12. Prompt de retomada (use em qualquer sessão nova)
 
 ```text
-Retome o projeto JobPilot AI. Leia docs/STATUS.md e docs/ALETHE_INSTRUCOES.md,
-confira a política local da Alethe e execute o protocolo de INÍCIO de sessão
-(incluindo git fetch e a comparação com o remoto no GitHub). Retome do ponto registrado.
+Retome o JobPilot AI a partir do ponto registrado. Leia AGENTS.md,
+docs/STATUS.md e docs/ALETHE_INSTRUCOES.md. Execute o protocolo de INÍCIO
+da §2, incluindo a comparação com o GitHub, a suíte de partida e a
+verificação de que esta sessão herdou a política do projeto.
+Antes de editar, informe fase, tarefa, próxima ação e estratégia.
+Avalie a adequação do modelo e esforço do líder conforme §7C. Quando
+houver motivo para troca, recomende a combinação e aguarde minha
+confirmação após o ajuste manual em /model.
+Se houver delegação, use o launcher e declare o tier de cada worker
+conforme §7B. Em caso de divergência relevante ou mudanças locais
+inesperadas, pare e solicite orientação.
 ```
