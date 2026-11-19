@@ -1,4 +1,4 @@
-"""Repositório de vagas: consultas de deduplicação e escrita.
+"""Repositório de vagas: listagem, consultas de deduplicação e escrita.
 
 POR QUÊ: as três primeiras camadas da dedup (`PLANO.md` §6.3) são consultas
 simples, mas o serviço não deve montar `select` — assim ele fica testável com um
@@ -10,10 +10,11 @@ from __future__ import annotations
 import uuid
 from collections.abc import Sequence
 
-from sqlalchemy import select, tuple_
+from sqlalchemy import or_, select, tuple_
 
 from app.models import Job
 from app.repositories.base import BaseRepository
+from app.schemas.jobs import JobListQuery
 
 # Limite defensivo do aviso: se houver dezenas de vagas com o mesmo trio
 # empresa/título/local, o cliente não precisa receber todas para decidir.
@@ -22,6 +23,39 @@ MAX_FINGERPRINT_MATCHES = 10
 
 class JobRepository(BaseRepository):
     """Consultas e escritas de `jobs`."""
+
+    def list_page(self, query: JobListQuery) -> list[Job]:
+        """Busca até um item adicional na mesma consulta que lê a página."""
+        stmt = select(Job)
+        if query.q is not None:
+            # Escapar % e _ permite buscar esses caracteres como texto.
+            stmt = stmt.where(
+                or_(
+                    Job.title.icontains(query.q, autoescape=True),
+                    Job.company.icontains(query.q, autoescape=True),
+                    Job.description.icontains(query.q, autoescape=True),
+                )
+            )
+        if query.work_mode is not None:
+            stmt = stmt.where(Job.work_mode == query.work_mode.value)
+        if query.location is not None:
+            stmt = stmt.where(Job.location.icontains(query.location, autoescape=True))
+        if query.seniority is not None:
+            stmt = stmt.where(Job.seniority == query.seniority.value)
+        if query.source is not None:
+            stmt = stmt.where(Job.source == query.source)
+        if query.posted_from is not None:
+            stmt = stmt.where(Job.posted_at >= query.posted_from)
+        if query.posted_to is not None:
+            stmt = stmt.where(Job.posted_at <= query.posted_to)
+        if not query.include_archived:
+            stmt = stmt.where(Job.is_archived.is_(False))
+        if not query.include_duplicates:
+            stmt = stmt.where(Job.duplicate_of_job_id.is_(None))
+
+        # O UUID desempata vagas do mesmo lote, que podem ter a mesma data.
+        stmt = stmt.order_by(Job.created_at.desc(), Job.id.desc())
+        return list(self._db.scalars(stmt.offset(query.offset).limit(query.limit + 1)))
 
     def get_by_source_external_id(self, source: str, external_id: str) -> Job | None:
         """Camada 1: mesma origem e mesmo identificador externo = duplicata certa."""

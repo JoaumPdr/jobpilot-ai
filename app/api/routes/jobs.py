@@ -1,4 +1,4 @@
-"""Rotas de vagas: cadastro manual, importação CSV e revisão de duplicatas.
+"""Rotas de vagas: listagem, cadastro, importação CSV e revisão de duplicatas.
 
 POR QUÊ: as rotas são finas sobre os serviços; normalização, dedup, contadores e
 transação ficam neles. A revisão (F1-T07) expõe apenas o que o usuário precisa:
@@ -30,10 +30,30 @@ from app.schemas.jobs import (
     DuplicateWarning,
     JobCreate,
     JobCreateResult,
+    JobListQuery,
+    JobPage,
     JobRead,
 )
 
 router = APIRouter(tags=["vagas"])
+
+
+@router.get(
+    "/jobs",
+    response_model=JobPage,
+    summary="Lista vagas com filtros e paginação",
+)
+def list_jobs(
+    query: Annotated[JobListQuery, Query()], service: JobServiceDep
+) -> JobPage:
+    """Retorna primeiro as vagas cadastradas mais recentemente."""
+    jobs, has_more = service.list_jobs(query)
+    return JobPage(
+        items=[JobRead.model_validate(job) for job in jobs],
+        limit=query.limit,
+        offset=query.offset,
+        has_more=has_more,
+    )
 
 
 @router.post(

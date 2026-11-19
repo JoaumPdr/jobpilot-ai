@@ -392,8 +392,36 @@ ou `422 invalid_data`.
 
 ## Vagas
 
-Nesta versão existem o cadastro manual, a importação CSV e a revisão de
-duplicatas. Listagem e filtros chegam na F1-T08.
+### `GET /jobs`
+
+Lista vagas da mais recente para a mais antiga por data de cadastro
+(`created_at`). Vagas cadastradas no mesmo instante são ordenadas por UUID
+decrescente, o que mantém a ordem entre páginas enquanto o catálogo e os
+filtros forem os mesmos.
+
+| Parâmetro | Regra |
+|-----------|-------|
+| `q` | Trecho literal no título, na empresa ou na descrição. Ignora maiúsculas/minúsculas e preserva distinções de acento. |
+| `work_mode` | `remoto`, `híbrido`, `presencial` ou `desconhecido`. |
+| `location` | Trecho literal da localização, sem distinguir maiúsculas/minúsculas. |
+| `seniority` | `estágio`, `júnior`, `pleno`, `sênior`, `especialista` ou `desconhecido`. |
+| `source` | Nome exato da fonte cadastrada. |
+| `posted_from`, `posted_to` | Limites inclusivos e opcionais para `posted_at`. Use data e hora com fuso, como `2026-11-18T12:00:00Z`. Vagas sem data de publicação ficam fora quando houver qualquer limite. |
+| `include_archived` | Use `true` para incluir arquivadas. Padrão `false`. |
+| `include_duplicates` | Use `true` para incluir duplicatas confirmadas. Padrão `false`. |
+| `limit`, `offset` | Tamanho da página de 1 a 100 (padrão 50) e quantidade de registros a pular (padrão 0). |
+
+Os filtros são combinados por interseção. Por exemplo, `GET /jobs?q=dados&work_mode=remoto&limit=20`
+lista a primeira página das vagas remotas que correspondem ao texto.
+
+**Resposta `200`.** O corpo contém `items` (vagas no mesmo formato `JobRead`
+usado pelo cadastro), `limit`, `offset` e `has_more`. Quando `has_more` for
+`true`, mantenha os filtros e use `offset + limit` para a próxima página.
+Páginas sem resultados retornam `items: []` e `has_more: false`.
+
+**Erro `422 validation_error`.** Parâmetros desconhecidos, valores inválidos
+ou intervalo invertido. O filtro por status da candidatura está previsto
+para a F1-T10, após os modelos de candidaturas da F1-T09.
 
 ### `POST /jobs`
 
@@ -688,5 +716,5 @@ Desfaz a marcação e devolve a vaga à revisão. **Resposta:** `204` sem corpo.
 
 ## Fora desta versão
 
-- Listagem/filtros de vagas, matching, candidaturas, LLM e pipeline (fases
+- Filtro por status da candidatura, matching, candidaturas, LLM e pipeline (fases
   seguintes).

@@ -11,30 +11,32 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T07 concluídas e integradas; próxima: F1-T08**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T07 integradas, F1-T08 implementada**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-T08 — Listagem e filtros de vagas + paginação |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T08.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t08-listagem-filtros` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada — aguarda decisão sobre a dependência do filtro por status de candidatura |
-| **Último commit** | `deef8b5` — merge do PR #16, seguido pelo registro deste status. Último merge funcional: `430dc17` (F1-T07) |
-| **Testes** | **253 passed** com PostgreSQL na validação da adequação documental |
-| **CI** | verde no PR #16 (run `44461724414`) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T08.md` |
+| **Branch da tarefa** | `feat/f1-t08-listagem-filtros` |
+| **Estado da tarefa** | implementada, pendente de integração |
+| **Último commit da fase confirmado** | `18dd9be` — merge do PR #17 (planejamento da distribuição). Último merge funcional da fase: `430dc17` (F1-T07) |
+| **Testes** | **275 passed** com PostgreSQL. São 22 testes novos, incluindo a medição do RNF-09 com 10 mil vagas. Ruff e formatação verdes |
+| **CI** | último confirmado no PR #17 (run `44463322179`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #16 |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `deef8b5` do PR #16 na fase |
-| **PR aberto** | nenhum para a tarefa atual |
+| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #17 |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `18dd9be` do PR #17 na fase |
+| **PR atual** | integração da F1-T08 para `phase/01-nucleo-sem-ia` |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
-| **GitHub** | MCP indisponível nesta sessão. `gh` autenticado usado para abrir, conferir o CI e mesclar o PR #16 |
+| **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Confirmar com o JP se o filtro por status de candidatura será entregue após a F1-T09 ou se o modelo de candidaturas deve ser antecipado, antes de criar a ficha e a branch da F1-T08.
+> Integrar o PR da F1-T08 com CI verde e preparar a F1-T09, responsável pelo modelo de candidaturas.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-T08 implementada (2026-11-19 UTC):** `GET /jobs` com filtros combináveis, paginação estável por data de cadastro e UUID, e opções independentes para incluir arquivadas e duplicatas confirmadas. O JP aprovou entregar o filtro por status de candidatura na F1-T10, após o modelo da F1-T09.
+- **Planejamento da v1.0.0 integrado (2026-11-19 UTC):** PR #17 mesclado em `18dd9be`. ADR 0011 aceito, tarefas de distribuição local registradas na Fase 7.
 - **Adequação documental integrada (2026-11-19 UTC):** alterações commitadas em `05fe43a`, publicadas e mescladas na fase pelo PR #16 (`deef8b5`), com CI verde. A suíte local passou com 253 testes. A F1-T08 foi conferida contra o backlog e o plano mestre, e aguarda a decisão sobre o filtro por status de candidatura.
 - **Adequação ao Codex CLI e à Alethe (2026-11-19 UTC):** login do Codex via ChatGPT confirmado. Política local isolada com perfil Base, teto de dois workers simultâneos, alerta de cota em 80% e bloqueio em 90%. `doctor`, `policy show`, `playbook --pick` e `usage` validados. `validate` e `dry-run` confirmaram os três tiers, o modo de leitura para revisão, o isolamento das escritas e a rejeição de `custom` em somente leitura. A cota semanal do Codex foi medida em 2%. A janela de 5 h segue desconhecida. Codex é o único provedor inicialmente habilitado e nenhum worker foi iniciado. Ponto de entrada em `AGENTS.md` e ativação da política em `docs/ALETHE_INSTRUCOES.md` §7A. A F1-T08 continua por iniciar.
 - F0-T01 concluída: repositório GitHub criado, branches enviadas, estrutura de docs e arquivos base commitados.
@@ -67,8 +69,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa concluída:** F1-T07 — integrada no PR #15. **Próxima:** F1-T08 — listagem e filtros de vagas.
-**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T07.md` encerrada; a ficha da F1-T08 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T08.
+**Última tarefa integrada:** F1-T07 (PR #15). **Tarefa atual:** F1-T08 — listagem e filtros de vagas, pendente de integração.
+**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T08.md`. Critérios canônicos: `docs/BACKLOG.md` → F1-T08.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -94,6 +96,8 @@
 - [x] Endpoints de listar, confirmar (`duplicate_of_job_id`) e desfazer, sem apagar nada ✅
 - [x] `docs/api.md`, ficha e testes unitários/de API ✅
 - [x] Commit da branch, CI verde e merge do PR #15 (com autorização) ✅
+- [x] Ficha, branch, endpoint de listagem, testes de API e documentação da F1-T08
+- [ ] Integrar a F1-T08 com CI verde
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -106,7 +110,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T07 integradas; próxima: F1-T08) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T07 integradas, F1-T08 implementada) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -129,7 +133,6 @@
 | 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
 | 2026-11-18 | dívida | `canonical_url` não tem índice único: concorrência extrema pode criar duas vagas com a mesma URL canônica (a checagem do serviço é best-effort) | F1-T07 | aberto |
 | 2026-11-19 | dívida | revisão de duplicatas varre no máximo 5 000 vagas por chamada (`truncated` avisa); catálogo maior exigirá varredura incremental ou paginação | F1-T08+ | aberto |
-| 2026-11-19 | bloqueio | O BACKLOG inclui status na F1-T08 e o PLANO §6.4 especifica status da candidatura. A tabela `applications` pertence à F1-T09 e ainda não existe | F1-T08 | aguarda decisão do JP |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -154,6 +157,7 @@
 | 2026-11-19 | Importação em duas passadas com pré-carga de chaves em blocos de 500 e um único `commit` | uma consulta de dedup por linha levava ~32 s em 5 mil linhas; o alvo do RNF-09 é < 30 s (agora ~5 s) | — |
 | 2026-11-19 | Camada 4 da dedup com RapidFuzz `token_set_ratio` (limiar 85) comparando títulos **na mesma empresa**, com grupos calculados sob demanda | implementa o `PLANO.md` §6.3 sem coluna nova; bloquear pela empresa evita ruído de cargos homônimos em empresas diferentes | — |
 | 2026-11-19 | Revisão com `GET /jobs/duplicates`, `POST`/`DELETE /jobs/{job_id}/duplicate`; confirmação idempotente, `409` para trocar referência e `422` para cadeia/auto-referência | grava só `duplicate_of_job_id`, nunca apaga nem mescla; estados inconsistentes ficam diagnosticáveis | — |
+| 2026-11-19 | Filtro por status da candidatura fica na F1-T10, após os modelos da F1-T09 | O JP aprovou entregar a listagem, a paginação e os demais filtros na F1-T08 | — |
 
 ---
 

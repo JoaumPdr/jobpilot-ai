@@ -96,6 +96,14 @@
 
 ---
 
-## Fases 1–7
+## Fase 1 — Núcleo sem IA
+
+### F1-T08 — Listagem e filtros de vagas (2026-11-19)
+- **O que foi feito.** `GET /jobs` com filtros combináveis e paginação. Arquivadas e duplicatas confirmadas ficam ocultas por padrão e podem ser incluídas separadamente.
+- **Decisões e motivos.** A ordenação por data de cadastro e UUID desempata vagas do mesmo lote. Buscar um item adicional permite calcular `has_more` na mesma consulta da página.
+- **Testes.** 22 testes de API cobrem filtros, paginação, validação e a meta de 500 ms com 10 mil vagas em PostgreSQL.
+- **Pendência.** O filtro por status de candidatura está previsto para a F1-T10, depois do modelo criado pela F1-T09.
+
+## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*
