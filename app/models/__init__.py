@@ -9,7 +9,7 @@ autogenerate "não ver" a tabela e quebra o mapeamento das relações.
 from app.models.base import Base
 from app.models.candidate import Candidate
 from app.models.experience import CandidateExperience
-from app.models.import_batch import ImportBatch
+from app.models.import_batch import ImportBatch, ImportKind
 from app.models.job import Job, Seniority, WorkMode
 from app.models.preferences import CandidatePreference
 from app.models.skill import CandidateSkill, Skill
@@ -21,6 +21,7 @@ __all__ = [
     "CandidatePreference",
     "CandidateSkill",
     "ImportBatch",
+    "ImportKind",
     "Job",
     "Seniority",
     "Skill",

@@ -7,9 +7,12 @@ na F1-T07.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, status
+from typing import Annotated
 
-from app.api.dependencies import JobServiceDep
+from fastapi import APIRouter, File, Form, UploadFile, status
+
+from app.api.dependencies import JobImportServiceDep, JobServiceDep
+from app.schemas.imports import ImportBatchRead
 from app.schemas.jobs import (
     DuplicateLayer,
     DuplicateWarning,
@@ -39,4 +42,35 @@ def create_job(payload: JobCreate, service: JobServiceDep) -> JobCreateResult:
             DuplicateWarning.from_job(other, DuplicateLayer.FINGERPRINT)
             for other in probable
         ],
+    )
+
+
+@router.post(
+    "/jobs/import",
+    response_model=ImportBatchRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Importa vagas de um arquivo CSV",
+)
+def import_jobs(
+    service: JobImportServiceDep,
+    file: Annotated[
+        UploadFile,
+        File(description="CSV em UTF-8, separado por vírgula, com cabeçalho."),
+    ],
+    source: Annotated[
+        str | None,
+        Form(description="Origem usada quando a linha não traz a coluna source."),
+    ] = None,
+) -> ImportBatchRead:
+    """Importa o lote e devolve contadores e erros por linha.
+
+    Linha inválida é rejeitada com motivo e número da linha, sem abortar o
+    restante. Reimportar o mesmo arquivo não insere nada (dedup por
+    identificador externo e URL canônica).
+    """
+    content = file.file.read()
+    return service.import_csv(
+        filename=file.filename,
+        content=content,
+        source=source,
     )
