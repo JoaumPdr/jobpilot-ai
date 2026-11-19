@@ -69,7 +69,7 @@
 | [x] F1-T09 | Modelos e migração de **candidaturas**: `applications`, `application_status_history` | F1-T03 | Único `(candidate_id, job_id)`; histórico ligado à candidatura; testes |
 | [x] F1-T10 | **Serviço e rotas de candidaturas** com máquina de estados e histórico e filtro por status da candidatura na listagem de vagas | F1-T09, F1-T02, F1-T08 | Transições válidas conforme `PLANO.md` §5.1; inválidas → 422 com mensagem; cada mudança grava histórico; observações editáveis; testes unitários da máquina de estados. O filtro por status é aplicado à candidatura do candidato consultado e combina com os filtros existentes, com teste de API |
 | [x] F1-T11 | **Arquivar/salvar** vagas e atalhos de fluxo (salvar vaga cria candidatura "salva") | F1-T10, F1-T08 | Fluxo salvar → planejada → aplicada coberto por teste de integração |
-| [ ] F1-T12 | **Testes de ponta a ponta da Fase 1** + revisão de cobertura | F1-T11 | Cenário completo (perfil → importar → filtrar → candidatar) verde; cobertura serviços ≥ 85%, global ≥ 70% |
+| [x] F1-T12 | **Testes de ponta a ponta da Fase 1** + revisão de cobertura | F1-T11 | Cenário completo (perfil → importar → filtrar → candidatar) verde; cobertura serviços ≥ 85%, global ≥ 70% |
 | [ ] F1-T13 | Docs da fase: `api.md`, `data-model.md`, README, `RELATORIO.md`, `CHANGELOG.md` | F1-T12 | Documentos refletem o código; README ensina o fluxo completo da Fase 1 |
 | [ ] F1-GATE | Gate da fase | todas | RF-01…06 cobertos; reimportação idempotente; CI verde → PR para `develop`, tag `fase-01` |
 

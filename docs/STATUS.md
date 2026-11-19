@@ -11,30 +11,31 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T11 integradas**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T12 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T12 — Testes de ponta a ponta da Fase 1 e revisão de cobertura |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T12.md` |
-| **Branch da tarefa** | `test/f1-t12-fluxo-e-cobertura` |
-| **Estado da tarefa** | implementada e em revisão no GitHub |
-| **Último merge funcional da fase** | `5b11e45` — PR #23 (F1-T11) |
+| **Tarefa atual** | F1-T13 — Documentação da Fase 1 |
+| **Ficha da tarefa** | a avaliar no início da F1-T13 |
+| **Branch da tarefa** | a criar a partir da fase |
+| **Estado da tarefa** | não iniciada |
+| **Último merge da fase** | `3bb0df1` — PR #24 (F1-T12) |
 | **Testes** | **360 testes aprovados** com PostgreSQL. Cobertura de linhas de 96,60% em `app` e 95,33% em `app/services`. Ruff e formatação verdes |
-| **CI** | cenário e limites de cobertura validados no PR #24 ([run 44600965603](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44600965603)) |
+| **CI** | cenário e limites de cobertura verdes na branch da fase após o merge do PR #24 ([run 44604854927](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44604854927)) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | branch da F1-T12 publicada com upstream; fase sincronizada. As 12 branches de tarefa da F1-T01 à F1-T11 foram removidas após verificação de integração |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), fase em `ee8ff59` e F1-T12 publicada no PR #24 |
-| **PR atual** | [PR #24 — F1-T12](https://github.com/JoaumPdr/jobpilot-ai/pull/24) |
+| **Sincronização com o remoto** | fase atualizada por fast-forward após o PR #24; branch `test/f1-t12-fluxo-e-cobertura` preservada no remoto |
+| **Último merge confirmado no remoto** | 2026-11-19 20:04 UTC, `3bb0df1` na branch da fase |
+| **PR atual** | nenhum para a F1-T13 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Revisar o PR #24 da F1-T12, com testes e limites de cobertura validados, para integração na fase.
+> Ler os critérios da F1-T13 no backlog e comparar a documentação da fase com o fluxo implementado.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-T12 integrada (2026-11-19 UTC).** O [PR #24](https://github.com/JoaumPdr/jobpilot-ai/pull/24) foi revisado e mesclado com autorização em `3bb0df1`. Suíte de partida com 360 testes aprovados, política do JobPilot AI e hook confirmados pelo launcher. Revisão direta com Sol/Medium. A branch da fase foi atualizada por fast-forward e o CI do merge ficou verde. Ponto de retomada na F1-T13.
 - **F1-T12 implementada (2026-11-19 UTC).** O teste pela API cobriu perfil, preferências, importação e reimportação CSV, filtros e candidatura com histórico. A suíte local passou com 360 testes em PostgreSQL. Adicionado `coverage.py` ao grupo de desenvolvimento, com os limites de 70% global e 85% nos serviços aplicados no CI. Execução direta com Sol/Medium.
 - **Limpeza de branches (2026-11-19 UTC).** Removidas 12 branches de tarefas da F1-T01 à F1-T11 no Git local e no GitHub. Todos os commits removidos das referências já pertenciam ao histórico da fase. As branches de fase, `develop` e `main` foram verificadas após a limpeza.
 - **F1-T11 implementada (2026-11-19 UTC).** O arquivamento oculta a vaga na listagem padrão. O atalho de salvar cria uma candidatura em `salva` com histórico inicial. O fluxo até `aplicada` foi validado com PostgreSQL. Suíte com 359 testes aprovados, Ruff e formatação verdes. Execução direta com Sol/Medium, no perfil Base.
@@ -80,8 +81,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F1-T11 (PR #23). A F1-T12 está em revisão.
-**Planejamento detalhado.** [Ficha da F1-T12](tasks/FASE-01/F1-T12.md).
+**Última tarefa integrada.** F1-T12 (PR #24).
+**Próxima tarefa.** F1-T13, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -120,7 +121,7 @@
 - [x] Criar a ficha e a branch da F1-T12, validar o cenário completo e medir a cobertura local
 - [x] Publicar a F1-T12 e abrir o PR #24
 - [x] Confirmar no CI os limites de cobertura da F1-T12
-- [ ] Revisar e integrar o PR #24
+- [x] Revisar e integrar o PR #24, com CI verde na fase
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -133,7 +134,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T11 integradas, F1-T12 em revisão) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T12 integradas, próxima F1-T13) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
