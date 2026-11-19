@@ -11,31 +11,32 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T08 integradas**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T09 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T09 — Modelos e migração de candidaturas |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T09.md` |
-| **Branch da tarefa** | `feat/f1-t09-modelos-candidaturas` |
-| **Estado da tarefa** | implementada, pendente de integração |
-| **Último merge funcional da fase** | `f612b3f` — PR #18 (F1-T08), seguido pelo registro desta integração |
+| **Tarefa atual** | F1-T10 — Serviço e rotas de candidaturas e filtro por status |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T10.md` (a criar ao iniciar) |
+| **Branch da tarefa** | `feat/f1-t10-fluxo-candidaturas` (a criar a partir da fase) |
+| **Estado da tarefa** | não iniciada |
+| **Último merge funcional da fase** | `1b7f7da` — PR #19 (F1-T09), seguido pelo registro desta integração |
 | **Testes** | **289 passed** com PostgreSQL, incluindo 13 testes novos. Ciclo de migração validado. Ruff e formatação verdes |
-| **CI** | verde no PR #18 (run `44464938086`) |
+| **CI** | verde no PR #19 (run `44466785158`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #18 |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `f612b3f` do PR #18 na fase |
-| **PR atual** | F1-T09 para `phase/01-nucleo-sem-ia` |
+| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #19 |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `1b7f7da` do PR #19 na fase |
+| **PR atual** | nenhum para a F1-T10 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Integrar a F1-T09 com CI verde e preparar a F1-T10, que entregará a máquina de estados e o filtro por status de candidatura.
+> Criar a ficha e a branch da F1-T10 e preparar o serviço e as rotas de candidaturas, com histórico de transições e filtro por status na listagem de vagas.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
 - **F1-T09 implementada (2026-11-19 UTC):** modelos de candidaturas e histórico, com unicidade por par candidato/vaga, FKs e validação de status na migração `000000000004`. Suíte com 289 testes e ciclo de migração validado em PostgreSQL.
+- **F1-T09 integrada (2026-11-19 UTC):** [PR #19](https://github.com/JoaumPdr/jobpilot-ai/pull/19) mesclado em `1b7f7da` com CI verde. Título do PR com o identificador `(F1-T09)` ao final, conforme solicitado pelo JP.
 - **F1-T08 implementada (2026-11-19 UTC):** `GET /jobs` com filtros combináveis, paginação estável por data de cadastro e UUID, e opções independentes para incluir arquivadas e duplicatas confirmadas. O JP aprovou entregar o filtro por status de candidatura na F1-T10, após o modelo da F1-T09.
 - **F1-T08 integrada (2026-11-19 UTC):** PR #18 mesclado com CI verde (`f612b3f`). Suíte local com 276 testes, incluindo o RNF-09 em PostgreSQL com 10 mil vagas.
 - **Planejamento da v1.0.0 integrado (2026-11-19 UTC):** PR #17 mesclado em `18dd9be`. ADR 0011 aceito, tarefas de distribuição local registradas na Fase 7.
@@ -71,8 +72,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada:** F1-T08 (PR #18). **Tarefa atual:** F1-T09 — modelos e migração de candidaturas, pendente de integração.
-**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T09.md`. Critérios canônicos: `docs/BACKLOG.md` → F1-T09.
+**Última tarefa integrada:** F1-T09 (PR #19). **Próxima:** F1-T10 — serviço e rotas de candidaturas e filtro por status.
+**Planejamento detalhado:** ficha da F1-T09 encerrada. Criar a ficha da F1-T10 ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T10.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -101,7 +102,7 @@
 - [x] Ficha, branch, endpoint de listagem, testes de API e documentação da F1-T08
 - [x] Integrar a F1-T08 com CI verde (PR #18)
 - [x] Modelos, migração, testes e documentação da F1-T09
-- [ ] Integrar a F1-T09 com CI verde
+- [x] Integrar a F1-T09 com CI verde (PR #19)
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -114,7 +115,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T08 integradas, próxima F1-T09) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T09 integradas, próxima F1-T10) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
