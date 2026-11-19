@@ -18,6 +18,7 @@ from decimal import Decimal
 from enum import StrEnum
 
 from pydantic import (
+    AwareDatetime,
     BaseModel,
     ConfigDict,
     Field,
@@ -26,6 +27,7 @@ from pydantic import (
 )
 
 from app.models import Job
+from app.models.job import Seniority, WorkMode
 from app.services.normalization import canonicalize_url
 
 
@@ -157,6 +159,51 @@ class JobRead(BaseModel):
     duplicate_of_job_id: uuid.UUID | None
     created_at: datetime
     updated_at: datetime
+
+
+class JobListQuery(BaseModel):
+    """Filtros combinados por interseção e parâmetros de página."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    q: str | None = Field(default=None, min_length=1, max_length=300)
+    work_mode: WorkMode | None = None
+    location: str | None = Field(default=None, min_length=1, max_length=200)
+    seniority: Seniority | None = None
+    source: str | None = Field(default=None, min_length=1, max_length=100)
+    posted_from: AwareDatetime | None = None
+    posted_to: AwareDatetime | None = None
+    include_archived: bool = False
+    include_duplicates: bool = False
+    limit: int = Field(default=50, ge=1, le=100)
+    offset: int = Field(default=0, ge=0, le=2**63 - 1)
+
+    @field_validator("q", "location", "source")
+    @classmethod
+    def _validate_filter_text(cls, value: str | None) -> str | None:
+        """Rejeita o caractere nulo antes de enviar o texto ao PostgreSQL."""
+        if value is not None and "\x00" in value:
+            raise ValueError("O filtro não pode conter o caractere nulo.")
+        return value
+
+    @model_validator(mode="after")
+    def _validate_posted_range(self) -> JobListQuery:
+        if (
+            self.posted_from is not None
+            and self.posted_to is not None
+            and self.posted_from > self.posted_to
+        ):
+            raise ValueError("posted_from não pode ser posterior a posted_to.")
+        return self
+
+
+class JobPage(BaseModel):
+    """Página do catálogo com indicação de que há mais itens no filtro atual."""
+
+    items: list[JobRead]
+    limit: int
+    offset: int
+    has_more: bool
 
 
 class DuplicateWarning(BaseModel):

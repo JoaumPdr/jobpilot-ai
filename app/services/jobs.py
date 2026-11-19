@@ -1,4 +1,4 @@
-"""Serviço de vagas: cadastro manual com deduplicação em camadas.
+"""Serviço de vagas: listagem e cadastro manual com deduplicação em camadas.
 
 POR QUÊ: o cadastro não pode gravar uma vaga duplicada em silêncio nem recusar
 tudo com um erro genérico. As camadas 1 e 2 (`source`+`external_id` e
@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 from app.core.errors import ConflictError
 from app.models import Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
-from app.schemas.jobs import DuplicateLayer, JobCreate
+from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
 from app.services.normalization import (
     canonicalize_url,
     clean_text,
@@ -31,6 +31,8 @@ from app.services.normalization import (
 
 class JobRepositoryProtocol(Protocol):
     """Contrato mínimo do repositório de vagas usado pelo serviço."""
+
+    def list_page(self, query: JobListQuery) -> list[Job]: ...
 
     def get_by_source_external_id(
         self, source: str, external_id: str
@@ -48,10 +50,15 @@ class JobRepositoryProtocol(Protocol):
 
 
 class JobService:
-    """Casos de uso de vagas; por enquanto, o cadastro manual."""
+    """Casos de uso de listagem e cadastro manual de vagas."""
 
     def __init__(self, jobs: JobRepositoryProtocol) -> None:
         self._jobs = jobs
+
+    def list_jobs(self, query: JobListQuery) -> tuple[list[Job], bool]:
+        """Devolve a página e sinaliza se ainda há vagas para os mesmos filtros."""
+        jobs = self._jobs.list_page(query)
+        return jobs[: query.limit], len(jobs) > query.limit
 
     def create_manual(self, data: JobCreate) -> tuple[Job, list[Job]]:
         """Grava a vaga normalizada e devolve as duplicatas prováveis.
