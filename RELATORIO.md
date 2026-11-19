@@ -96,6 +96,47 @@
 
 ---
 
-## Fases 1–7
+## Fase 1 — Núcleo sem IA
+
+### F1-T08 — Listagem e filtros de vagas (2026-11-19)
+- **O que foi feito.** `GET /jobs` com filtros combináveis e paginação. Arquivadas e duplicatas confirmadas ficam ocultas por padrão e podem ser incluídas separadamente.
+- **Decisões e motivos.** A ordenação por data de cadastro e UUID desempata vagas do mesmo lote. Buscar um item adicional permite calcular `has_more` na mesma consulta da página.
+- **Testes.** 23 testes de API cobrem filtros, paginação, validação e a meta de 500 ms com 10 mil vagas em PostgreSQL.
+- **Continuação.** A F1-T10 acrescentou o filtro por status de candidatura sobre o modelo criado pela F1-T09.
+
+### F1-T09 — Modelos e migração de candidaturas (2026-11-19)
+- **O que foi feito.** Modelos de candidatura e histórico de status com a migração reversível `000000000004`.
+- **Decisões e motivos.** A unicidade por candidato e vaga evita registros concorrentes duplicados. A exclusão de perfil remove seus históricos, e as vagas vinculadas podem ser arquivadas com o histórico preservado.
+- **Testes.** 13 testes de constraints e 289 testes na suíte completa. O ciclo de migração validou a preservação de registros de perfil e vaga em PostgreSQL. A comparação do schema detectou somente duas diferenças de índices já presentes na revisão anterior.
+
+### F1-T10 — Serviço e rotas de candidaturas (2026-11-19)
+
+- **O que foi feito.** Rotas de criação, listagem, consulta e edição de candidaturas por candidato. O filtro por status de candidatura combina com os filtros de `GET /jobs`.
+- **Decisões e motivos.** Estado e histórico são gravados na mesma transação. Um bloqueio na linha da candidatura serializa atualizações concorrentes e preserva a sequência de transições.
+- **Testes.** 49 casos unitários para o grafo de estados e três testes de API. A suíte completa passou com 341 testes em PostgreSQL.
+
+### F1-T11 — Arquivar e salvar vagas (2026-11-19)
+
+- O arquivamento usa o campo `is_archived` e preserva as candidaturas vinculadas. A listagem continua ocultando vagas arquivadas por padrão.
+- O atalho de salvar reutiliza o serviço de candidaturas, que grava o estado `salva` e a primeira entrada do histórico na mesma transação.
+- Três testes de integração verificam o arquivamento, o fluxo `salva` → `planejada` → `aplicada` e a resposta para referências ausentes. A suíte completa passou com 359 testes em PostgreSQL.
+
+### F1-T12 — Fluxo de ponta a ponta e cobertura (2026-11-19)
+
+- Um teste com PostgreSQL verifica o fluxo pela API desde a criação do perfil até a consulta do histórico da candidatura. Reimportar o mesmo CSV produz zero vagas novas.
+- O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44604854927) passou com 360 testes, 96,60% de cobertura global e 95,33% nos serviços. Os mínimos no CI são 70% e 85%, respectivamente.
+
+### F1-T13 — Documentação da Fase 1 (2026-11-19)
+
+- O [README](README.md#fluxo-da-fase-1) reúne um roteiro local com dados fictícios, importação e reimportação de CSV, filtros e acompanhamento de candidaturas. A [API](docs/api.md) e o [modelo de dados](docs/data-model.md) detalham o contrato e a persistência.
+- O [changelog](CHANGELOG.md) registra as entregas já implementadas para a Fase 1 em desenvolvimento. O gate de saída continua registrado no [backlog](docs/BACKLOG.md).
+
+### F1-GATE — Validação de saída (2026-11-19)
+
+- A [ficha do gate](docs/tasks/FASE-01/F1-GATE.md) relaciona RF-01 a RF-06 aos testes da fase, incluindo a reimportação de CSV sem novas vagas e o histórico de candidaturas.
+- A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
+- A integração em `develop` está em revisão no [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26).
+
+## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*

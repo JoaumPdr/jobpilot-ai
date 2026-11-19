@@ -40,10 +40,11 @@ Copie os arquivos para o repositório com estes nomes:
 
 1. Ler `docs/STATUS.md` (onde estamos, próxima ação, bloqueios).
 2. Ler `docs/ALETHE_INSTRUCOES.md` (este arquivo) se for a primeira vez na sessão.
-3. Ler a **seção da fase atual** em `docs/BACKLOG.md` e o **arquivo da tarefa atual** em `docs/tasks/FASE-XX/` (se existir).
+3. Ler a entrada pertinente em `docs/BACKLOG.md` e, quando existir, a ficha em `docs/tasks/FASE-XX/Fx-Tyy.md`. Sem ficha, os critérios do backlog bastam para começar.
 4. Rodar `git fetch --all --prune`, `git status -sb` e `git branch --show-current`; confirmar que está na branch correta da tarefa **e em dia com o remoto** (ver §4A).
 5. Rodar `uv sync` (garante o ambiente igual ao `uv.lock`) e depois os testes existentes via `uv run pytest` para confirmar que o ponto de partida está verde.
-6. **Declarar em 3 linhas** (no chat): fase atual, tarefa atual, o que fará nesta sessão.
+6. Confirmar que a sessão herdou a política e os playbooks do JobPilot AI (§7A). Avaliar modelo e esforço do líder para a tarefa (§7C).
+7. Declarar fase, tarefa, próxima ação, estratégia e adequação do modelo do líder. Quando houver motivo para trocar, aguardar confirmação antes de implementar (§7C).
 
 Se `STATUS.md` e o estado do Git divergirem, **confie no Git**, corrija o `STATUS.md` e registre a divergência em "Observações".
 
@@ -53,7 +54,7 @@ Se `STATUS.md` e o estado do Git divergirem, **confie no Git**, corrija o `STATU
 
 Para cada tarefa do backlog:
 
-1. **Preparar** — se `docs/tasks/FASE-XX/Fx-Tyy.md` não existir, criá-lo a partir do modelo do `BACKLOG.md` (objetivo, arquivos prováveis, critérios de aceitação, plano de testes, riscos).
+1. **Preparar** — reavaliar o modelo e esforço do líder a cada transição de tarefa (§7C). Decidir se a tarefa precisa de ficha conforme §3A. Se precisar e ela ainda não existir, criá-la a partir do modelo do `BACKLOG.md`. Caso contrário, o planejamento fica no backlog.
 2. **Branch** — criar a branch da tarefa a partir da branch da fase (convenção no `GUIA_DOCS_E_GIT.md`).
 3. **Testes primeiro** (ou junto) — especialmente para regras determinísticas.
 4. **Implementar o mínimo** que faz os testes passarem; sem abstração prematura.
@@ -61,23 +62,40 @@ Para cada tarefa do backlog:
 6. **Documentar** — atualizar docs afetadas (ver tabela de gatilhos no `GUIA_DOCS_E_GIT.md`), comentários didáticos que expliquem o *porquê*.
 7. **Commit(s)** — pequenos, em PT-BR, formato convencional.
 8. **Push** da branch para o GitHub e conferir que o remoto recebeu (o remoto é o backup; ver §4A).
-9. **Atualizar `docs/STATUS.md`** e marcar a tarefa no `BACKLOG.md`.
-10. **Integrar** — abrir PR da branch da tarefa para a branch da fase (pelo MCP do GitHub), conferir o CI e mesclar quando os critérios de aceitação estiverem todos atendidos e o CI estiver verde.
+9. **Atualizar `docs/STATUS.md`**, marcar a tarefa no `BACKLOG.md` e atualizar a ficha da tarefa (se existir).
+10. **Integrar** — abrir PR da branch da tarefa para a branch da fase pelo MCP do GitHub autenticado ou por `gh`, conferir o CI e mesclar quando os critérios de aceitação estiverem todos atendidos e o CI estiver verde.
 
 Nada de "quase pronto": ou a tarefa fecha com critérios atendidos, ou o estado parcial é registrado no `STATUS.md` (ver §6).
+
+### 3A. Política de fichas de tarefa (`docs/tasks/FASE-XX/Fx-Tyy.md`)
+
+A ficha é o **planejamento detalhado da execução** de uma tarefa. Ela é **opcional e just-in-time** — não é etapa burocrática obrigatória para toda tarefa. A regra de ouro:
+
+- **BACKLOG** decide **o que** fazer e **quando** a tarefa está pronta (critérios canônicos).
+- **Ficha** explica **como** executar e verificar.
+- **STATUS** registra **onde estamos** e como retomar.
+
+Regras de criação:
+
+1. **Sem fichas retroativas.** Tarefas já concluídas (Fase 0) não recebem ficha; o histórico delas vive no `BACKLOG.md`, no `RELATORIO.md` e nos commits.
+2. Criar a ficha **quando a tarefa estiver prestes a começar**, nunca antecipadamente para todas as tarefas futuras da fase.
+3. **Criar ficha quando** a tarefa envolver múltiplas etapas técnicas, decisão arquitetural, vários arquivos, risco relevante ou plano de testes não trivial.
+4. **Tarefa pequena e direta** → o planejamento permanece no próprio `BACKLOG.md`, desde que os critérios de aceitação sejam suficientes para orientar a execução.
+5. Se uma tarefa inicialmente simples **revelar complexidade** durante a preparação, criar a ficha **antes** de iniciar a implementação.
+6. Ficha existente é **complemento**, não substituta: os critérios de aceitação canônicos continuam no BACKLOG; a ficha referencia e detalha como verificá-los, sem alterar escopo por conta própria.
 
 ---
 
 ## 4. Regras de tamanho e foco (proteção contra falta de tokens)
 
 - **Uma tarefa por vez.** Não começar outra com a anterior aberta.
-- **Tamanho máximo de tarefa:** ~8 arquivos tocados ou ~400 linhas de diff. Passou disso → **dividir** em subtarefas (`Fx-Tyy-a`, `Fx-Tyy-b`) e registrar no backlog.
+- **Tamanho máximo de tarefa:** ~8 arquivos tocados ou ~400 linhas de diff. Passou disso → **avaliar** a divisão em subtarefas (`Fx-Tyy-a`, `Fx-Tyy-b`) e registrar no backlog. O limite é um alerta, não uma regra cega: se dividir quebrar uma unidade coesa (ex.: um esquema e a migração que o cria), manter a tarefa inteira e justificar na ficha ou no `STATUS.md`.
 - **Commit a cada ciclo verde** (testes passando) e pelo menos a cada ~30–45 minutos de trabalho. Nunca acumular trabalho grande sem commit.
 - **Push após todo commit significativo** para o GitHub e sempre antes de encerrar a sessão (ver §4A).
 - **Não ler o repositório inteiro.** Ler só o necessário para a tarefa; usar o `design.md` e o `STATUS.md` como mapa.
 - **Não implementar fases futuras** nem "já deixar pronto" funcionalidades fora da tarefa atual.
 - **Não reescrever arquivos grandes por completo** para pequenas mudanças — editar pontualmente.
-- **Planejamento just-in-time:** detalhar tarefas só da fase que está começando.
+- **Planejamento just-in-time:** detalhar a tarefa só quando ela for começar (ficha quando aplicável, §3A); não detalhar a fase inteira antecipadamente.
 
 ---
 
@@ -88,8 +106,8 @@ O repositório remoto no GitHub é o **backup e a fonte da verdade** do projeto.
 **Remoto e ferramentas**
 
 - Remoto `origin` = repositório no GitHub da conta do JP (nome sugerido: `JoaumPdr/jobpilot-ai`; confirmar com o JP na F0-T01). Criado na **F0-T01**, **privado** no início. Tornar público é decisão do JP, depois de uma varredura de segredos.
-- O VS Code do JP está ligado ao **MCP do GitHub**, conectado à conta dele. Use o MCP para operações de repositório: criar repositório, criar branches, abrir/atualizar/mesclar PRs, consultar status do CI, listar PRs e branches, e (opcional) milestones e issues.
-- Use o **git local** para commits, troca de branch, merge local e push. Se o MCP estiver indisponível ou sem permissão, siga com o git local, registre no `STATUS.md` e avise o JP. **Nunca** coloque token ou senha em arquivo, em URL do remoto ou em commit.
+- Use o **MCP do GitHub** quando estiver disponível e autenticado. Use **`gh` autenticado** para PRs e CI quando o MCP estiver indisponível e registre a alternativa no `STATUS.md`. Em caso de falha de permissão ou autenticação, avise o JP e siga a §8.
+- Use o **git local** para commits, troca de branch, merge local e push. Mantenha tokens e senhas nos mecanismos de autenticação das ferramentas.
 
 **Rotina**
 
@@ -98,7 +116,7 @@ O repositório remoto no GitHub é o **backup e a fonte da verdade** do projeto.
 | Início de sessão | `git fetch --all --prune` e conferir `git status -sb`. Remoto à frente → `git pull --ff-only` antes de começar. Histórico divergente → **parar**, registrar no `STATUS.md` e avisar o JP (nada de force push) |
 | Criar branch de tarefa | Fazer o **primeiro push logo após o primeiro commit**, já com upstream configurado |
 | Durante a tarefa | **Push após cada commit significativo** (ciclo verde) |
-| Tarefa concluída | Abrir PR **tarefa → fase** pelo MCP, conferir o CI no GitHub e só mesclar com CI verde |
+| Tarefa concluída | Abrir PR **tarefa → fase** pelo MCP ou por `gh`, conferir o CI no GitHub e só mesclar com CI verde |
 | Fase concluída | PR **fase → `develop`**; tag `fase-NN` criada **e publicada no remoto**; em marcos de release, PR `develop` → `main` + tag `vX.Y.Z` publicada |
 | Fim de sessão | Árvore limpa, **zero commits "à frente" do remoto** (`git status -sb` sem `ahead`), branch visível no GitHub; registrar o estado de sincronização no `STATUS.md` |
 
@@ -153,20 +171,99 @@ O objetivo: o próximo agente retoma em **menos de 2 minutos** só lendo o `STAT
 
 ---
 
-## 7. Estratégia de papéis (orquestração opcional)
+## 7. Orquestração do desenvolvimento
+
+O **Codex CLI** lidera o desenvolvimento com login pela assinatura do ChatGPT. A **Alethe** coordena a delegação quando houver ganho de qualidade ou de tempo. O líder resolve diretamente tarefas pequenas e claras e responde pela seleção dos workers, pelos briefs, pela revisão e pela integração.
 
 Se usar subagentes, divida por responsabilidade, **nunca por arquivo compartilhado**:
 
 | Papel | Responsabilidade |
 |-------|------------------|
-| Orquestrador | Lê STATUS/BACKLOG, escolhe a próxima tarefa, delega, atualiza STATUS, faz integração |
+| Líder | Lê STATUS/BACKLOG, prepara a tarefa, delega, revisa os resultados, integra mudanças e atualiza o STATUS |
 | Dados/Backend | Modelos, migrações, repositórios, serviços, rotas |
 | Testes | Escreve/valida testes, mede cobertura, mantém golden set |
 | Documentação | Atualiza README, RELATORIO, design, ADRs, docs de API/dados |
 | Segurança/Revisão | Revisa diff antes do merge: segredos, logs, validação, privacidade, regras invioláveis |
 | Frontend | Só entra na Fase 6 (Streamlit) |
 
-**Regras de paralelismo:** dois agentes nunca editam a mesma branch ao mesmo tempo; só paralelizar tarefas sem dependência entre si (ver coluna "Depende de" no backlog), cada uma na sua branch. Só o Orquestrador edita o `STATUS.md`.
+### 7A. Ativação da política do projeto
+
+No Windows, inicie o Codex CLI pelo launcher a partir da raiz do checkout.
+
+```powershell
+.\scripts\JobPilot-Codex.ps1
+```
+
+De outro diretório, invoque o script pelo caminho com `&`. O launcher identifica a raiz pela localização do próprio arquivo. Ele usa a CLI da Alethe versionada em `.agents/skills/alethe`. Os hooks são fornecidos pelo plugin instalado e habilitado no Codex.
+
+O launcher, o Codex e a Alethe são ferramentas de desenvolvimento. A instalação e a execução do JobPilot AI para o usuário final seguem as instruções do README.
+
+O launcher espera `alethe-orchestrate.json` e `alethe-playbooks.yaml` em `%LOCALAPPDATA%\Alethe\JobPilot-AI`. No modo `start`, ele define `ALETHE_ORCHESTRATE_POLICY`, `ALETHE_ORCHESTRATE_PLAYBOOKS` e `ALETHE_ORCHESTRATE_HOME` no ambiente do processo. Quando disponível, o Python do ambiente do projeto entra no PATH dessa execução para o launcher e os hooks. Ao sair, o launcher restaura o ambiente anterior.
+
+O Codex CLI 0.170.0 pode conectar a interface a um daemon compartilhado que reutiliza o ambiente da inicialização do servidor. Nesse caso, uma nova interface iniciada pelo launcher recebeu o ambiente antigo e o hook da Alethe gravou dados no diretório global. O modo `start` agora passa `--no-daemon` para selecionar o servidor embutido exclusivamente nessa execução. O daemon dos demais projetos e as configurações de sandbox, aprovação e confiança de hooks permanecem sob controle do Codex. Se a CLI não anunciar suporte a `--no-daemon`, o launcher informa a incompatibilidade e encerra. Use `.\scripts\JobPilot-Codex.ps1 start <argumentos-do-Codex>` para encaminhar opções adicionais.
+
+`.\scripts\JobPilot-Codex.ps1 check` mostra a configuração que o launcher aplicaria, os provedores e os modelos e esforços por tier. Dentro de uma sessão do Codex, rode `.\scripts\JobPilot-Codex.ps1 check-session` para validar o ambiente recebido, sem alterar variáveis nem consultar provedores. O diagnóstico usa os resolvedores da Alethe para conferir a política, os playbooks, o perfil Base e o diretório de estado. A Alethe pode derivar os playbooks e o estado a partir da política quando os respectivos overrides estiverem ausentes. Se houver arquivo ausente, inválido ou caminho divergente, corrija a causa indicada antes de delegar. Os arquivos locais e as credenciais ficam fora do Git.
+
+Para validar a integração interativa, execute o launcher em um PowerShell na raiz do checkout. Em uma sessão nova, envie um prompt pedindo apenas a execução de `.\scripts\JobPilot-Codex.ps1 check-session`. Confirme os três caminhos sob `%LOCALAPPDATA%\Alethe\JobPilot-AI` e a mensagem `Hook Alethe (confirmed)`. O diagnóstico procura o estado recente que o hook passivo da Alethe registrou para o ID da sessão atual. Estados anteriores ao lançamento são ignorados.
+
+| Código | Resultado em `check-session` |
+|---|---|
+| `0` | Configuração do projeto válida e execução recente do hook passivo confirmada. |
+| `1` | Configuração inválida ou evidência de que o hook usou estado global ou configuração divergente. |
+| `2` | Configuração válida e execução do hook ainda sem evidência. Confira a permissão dos hooks em `/hooks` e o modo passivo da Alethe. Faça a validação interativa em uma sessão nova antes de delegar. |
+
+O estado passivo confirma a execução, o diretório usado e o intervalo de verificação observado. A validação dos caminhos completos dos arquivos ocorre separadamente no shell da sessão.
+
+### 7B. Workers, playbooks e cotas
+
+- **Codex** é a opção inicial para workers. **Copilot** é a preferência para testes e implementação auxiliar quando o adaptador estiver validado. Use-o para revisão independente somente se houver modo de leitura verificável. **Antigravity** tem preferência para pesquisa e exploração quando a CLI nativa estiver disponível. **OpenCode** é a contingência com modelo gratuito explícito. **Claude** depende de autenticação autorizada e de confirmação de que a execução não acrescenta custo.
+- Use o perfil **Base**. Declare `tier` e `provider` em cada item de `workers`. A Alethe fixa modelo e esforço pelo tier. Confira ambos no `dry-run` e preserve as escolhas ao retomar uma sessão. Na v24, os campos `model` e `effort` no plano são aceitos somente com `tier: standard`. Use-os quando a etapa do playbook exigir uma combinação diferente da padrão.
+- Confira disponibilidade, tipo de autenticação e cotas antes de delegar. Use 80% como alerta e 90% como limite de bloqueio nas janelas mensuráveis. Quando a cota estiver baixa, proponha ao JP uma troca para um provedor apto no mesmo tier ou pause a delegação. Trate leitura ausente ou vencida como desconhecida e solicite autorização para delegar nessa condição. Serviços com cobrança adicional exigem autorização explícita. Fallback automático para API paga fica desabilitado.
+- Mantenha uma execução ativa por vez, com até dois workers simultâneos. Peça autorização para exceder esse limite. Defina orçamento de chamadas, tempo e tokens proporcional ao plano. Registre o consumo efetivamente reportado e a utilidade dos resultados. Quando o provedor não reportar a métrica, registre a ausência.
+- Se o provedor estiver indisponível, informe a causa observada. Execute diretamente quando for adequado. Se a delegação continuar necessária, proponha um provedor habilitado com capacidade equivalente e aplique as regras de custo e cota antes de usá-lo. Sem uma alternativa apta, pause a delegação.
+
+| Tier | Uso | Modelo Codex | Esforço |
+|---|---|---|---|
+| Cheap | Triagem e tarefas mecânicas verificáveis | `gpt-5.6-luna` | `low` |
+| Standard | Implementação e revisão de rotina | `gpt-6.2-sol` | `medium` |
+| Strong | Decisões, revisão crítica e escalonamentos justificados | `gpt-6.2-astra` | `high` |
+
+Use o launcher nas operações da Alethe deste projeto, inclusive quando a skill indicar um comando da CLI. Escolha o playbook, defina os workers e confira os tiers e os modelos no `dry-run`. Passe o plano como primeiro argumento após o subcomando. O launcher verifica tier e provedor em `validate`, `dry-run` e `run`. Uma omissão interrompe o comando antes de a CLI aplicar o padrão de `economy`. Salve o plano JSON em UTF-8 sem BOM.
+
+```powershell
+.\scripts\JobPilot-Codex.ps1 alethe playbook --pick
+.\scripts\JobPilot-Codex.ps1 alethe validate $plano
+.\scripts\JobPilot-Codex.ps1 alethe dry-run $plano
+# Depois de conferir a prévia, as cotas e as autorizações
+.\scripts\JobPilot-Codex.ps1 alethe new 'Título da execução' --playbook plan-execute
+.\scripts\JobPilot-Codex.ps1 alethe run $plano --in current --detach
+.\scripts\JobPilot-Codex.ps1 alethe wait --timeout 30
+```
+
+- Use `direct` para trabalho pequeno, `cascade` para mudanças mecânicas verificáveis, `scout-then-build` para módulos desconhecidos e `plan-execute` para etapas sequenciais. Use `review-gate` no diff final de mudanças relevantes, `parallel-worktrees` para unidades independentes e `advisor-escalation` quando evidências justificarem um modelo superior. Escolha `best-of-n` ou auditorias extensas somente quando o ganho justificar o consumo.
+- Use o estágio e a ficha atual como mapa. Leia os trechos necessários dos documentos técnicos. Envie objetivo, caminhos autorizados, restrições e checagens a cada worker. Peça caminhos e linhas, diffs, resultados e riscos. Consulte logs brutos apenas para diagnosticar falhas. Para uma correção relacionada, prefira retomar a sessão e faça no máximo uma nova tentativa por unidade após identificar a causa corrigível.
+- Pesquisadores e revisores operam em somente leitura. Escritas delegadas usam worktrees isoladas, com branches e arquivos disjuntos. O líder aplica os diffs revisados, roda os testes e linters, confere o CI quando houver PR e atualiza o `STATUS.md`.
+- Proíba delegação recursiva. Use os bloqueios fornecidos pela CLI e pela Alethe e inclua a regra no brief. Só habilite adaptadores personalizados após verificar o executável, argumentos, modelo, permissões, saída e limites com `validate`, `dry-run` e um teste controlado autorizado. Adaptadores `custom` da Alethe v24 operam em modo de escrita isolada. Use um provedor nativo em modo somente leitura para pesquisa e revisão.
+- Mantenha `allowUnsafe` desabilitado e entregue apenas dados sintéticos ou expurgados. Dados pessoais, currículos reais e segredos ficam fora de prompts, diffs e logs enviados a provedores.
+
+### 7C. Modelo e esforço do líder
+
+No início da sessão e a cada transição de tarefa, avalie fase, complexidade técnica, decisões arquiteturais, riscos de segurança, complexidade dos testes, integrações externas e consumo estimado. Use a matriz como ponto de partida. A complexidade da tarefa determina a recomendação.
+
+| Fase | Modelo | Esforço |
+|---|---|---|
+| F0 | Sol | Medium |
+| F1 | Sol | Medium |
+| F2 | Sol | Medium ou High |
+| F3 | Sol ou Astra | High |
+| F4 | Astra | High |
+| F5 | Sol ou Astra | Medium ou High |
+| F6 | Sol | Medium |
+| F7 | Sol ou Astra | High |
+
+Confira o modelo e o esforço da sessão no seletor `/model` ou nos metadados disponíveis do turno. Trate a configuração padrão como padrão de inicialização e declare quando a combinação efetiva da sessão não for verificável. A Alethe aplica seus tiers aos workers. A configuração da sessão principal pertence ao Codex.
+
+Se a combinação for adequada, prossiga segundo as autorizações da tarefa. Quando houver motivo para trocar, informe a combinação atual quando verificável, recomende modelo e esforço concretos, explique o motivo e peça ao JP para selecionar a combinação com `/model`. Aguarde a confirmação antes de implementar. Registre a troca como efetiva somente quando houver evidência da sessão ou confirmação explícita do JP.
 
 ---
 
@@ -218,7 +315,7 @@ Comece assim:
 6. Se sentir que o contexto está acabando, execute o protocolo de FIM de sessão (seção 6).
 7. Pare e me consulte nos casos da seção 8.
 
-Sincronize tudo com o repositório remoto no GitHub (MCP do GitHub conectado ao VS Code; git local como alternativa):
+Sincronize tudo com o repositório remoto no GitHub. Use o MCP autenticado ou gh para PRs e CI e o git local para branches, commits e push:
 fetch no início, push após cada commit significativo e verificação de sincronização no fim de toda sessão (seção 4A).
 Use SEMPRE o uv para ambiente e dependências (uv sync, uv add, uv run); nunca pip install direto.
 Não implemente fases futuras. Não automatize candidaturas. Não invente fatos no currículo.
@@ -227,7 +324,15 @@ Não implemente fases futuras. Não automatize candidaturas. Não invente fatos 
 ## 12. Prompt de retomada (use em qualquer sessão nova)
 
 ```text
-Retome o projeto JobPilot AI. Leia docs/STATUS.md e docs/ALETHE_INSTRUCOES.md,
-execute o protocolo de INÍCIO de sessão (incluindo git fetch e a comparação com o remoto no GitHub) e continue exatamente do ponto registrado,
-sem refazer trabalho já commitado.
+Retome o JobPilot AI a partir do ponto registrado. Leia AGENTS.md,
+docs/STATUS.md e docs/ALETHE_INSTRUCOES.md. Execute o protocolo de INÍCIO
+da §2, incluindo a comparação com o GitHub, a suíte de partida e a
+verificação de que esta sessão herdou a política do projeto.
+Antes de editar, informe fase, tarefa, próxima ação e estratégia.
+Avalie a adequação do modelo e esforço do líder conforme §7C. Quando
+houver motivo para troca, recomende a combinação e aguarde minha
+confirmação após o ajuste manual em /model.
+Se houver delegação, use o launcher e declare o tier de cada worker
+conforme §7B. Em caso de divergência relevante ou mudanças locais
+inesperadas, pare e solicite orientação.
 ```

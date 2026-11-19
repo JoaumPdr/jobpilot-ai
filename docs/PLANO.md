@@ -55,7 +55,9 @@ Perfil, importação de vagas (CSV/manual), deduplicação, filtros, gestão de 
 
 ### 2.2 Pós-MVP (Fases 5–7) — versão `v1.0.0`
 
-Assistente de currículo com aprovação humana, dashboard Streamlit e analytics, hardening, primeiro coletor autorizado.
+Assistente de currículo com aprovação humana, dashboard Streamlit e analytics, hardening e primeiro coletor autorizado opcional.
+
+A primeira distribuição da `v1.0.0` será local e reproduzível. O pacote Docker Compose coordenará a API FastAPI, a interface Streamlit acessível no navegador e o PostgreSQL com armazenamento persistente. A instalação em uma máquina limpa será validada por uma terceira pessoa seguindo a documentação de configuração inicial, execução, backup e restauração. No Windows, o Docker Desktop poderá ser um pré-requisito. O uso do terminal e a edição do `.env` serão suficientes para configurar e iniciar a distribuição, sem instalação de Python, `uv` ou PostgreSQL no host. [ADR 0011](adr/0011-distribuicao-local-docker-compose.md)
 
 ### 2.3 Fora de escopo (decisões explícitas)
 
@@ -65,6 +67,8 @@ Assistente de currículo com aprovação humana, dashboard Streamlit e analytics
 - Múltiplos frameworks de orquestração (CrewAI etc.).
 - UI em React.
 - Probabilidade de contratação — o score é **compatibilidade explicável**, nunca chance de ser contratado.
+
+**Possíveis melhorias para a `v1.1.0`, sujeitas a planejamento próprio.** Instalador gráfico para Windows, executável independente, assistente visual de configuração, atalho que gerencia a inicialização dos serviços, atualizador automático, backup pela interface e diagnóstico visual avançado.
 
 ---
 
@@ -318,7 +322,7 @@ Cada fase = **1 branch de fase** + **1 tag** ao fechar. Ninguém avança sem o g
 | 4 | Orquestração | Pipeline LangGraph com logs, retry, execução persistida | RF-11; testes por nó + fluxo; **checklist de 10 critérios do MVP** → tag `v0.1.0` |
 | 5 | Assistente de currículo | Sugestões com evidência + aprovação humana | RF-12; validador anti-invenção bloqueia fatos novos; nada exportado sem aprovação |
 | 6 | Dashboard | Streamlit + analytics de funil | RF-13; definições de métricas documentadas |
-| 7 | Hardening e release | Segurança, performance, 1º coletor autorizado (opcional), docs finais | RNF-01…13 verificados → tag `v1.0.0` |
+| 7 | Hardening e release | Segurança, desempenho, coletor autorizado opcional, documentação final e distribuição local por Docker Compose | RNF-01…13 verificados e F7-T06 a F7-T09 concluídas. Terceiro instala o candidato a release do zero pelo README, configura e inicia os serviços, abre a interface no navegador e comprova persistência, backup e restauração → tag `v1.0.0` |
 
 Detalhe das tarefas, dependências e critérios de aceitação: **arquivo 04**.
 

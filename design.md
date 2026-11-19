@@ -61,6 +61,7 @@ Arquitetura: **monólito modular** em Python 3.12+, FastAPI, PostgreSQL, SQLAlch
 | 0007 | Single-user no MVP; `candidate_id` mantido nas tabelas | aceito |
 | 0008 | `uv` como único gerenciador de ambiente e dependências | aceito |
 | 0009 | GitHub como remoto e fonte da verdade (MCP + git local) | aceito |
+| [0011](docs/adr/0011-distribuicao-local-docker-compose.md) | Distribuição local da v1.0.0 com Docker Compose | aceito |
 
 ---
 
