@@ -11,25 +11,25 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T05 concluídas e integradas; próxima: F1-T06**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T06 concluídas e integradas; próxima: F1-T07**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T06 — Importação CSV com relatório por linha e idempotência |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T06.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t06-importacao-csv` (a criar a partir da fase) |
+| **Tarefa atual** | F1-T07 — Deduplicação em camadas + revisão humana |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T07.md` (a criar ao iniciar) |
+| **Branch da tarefa** | `feat/f1-t07-dedup-revisao` (a criar a partir da fase) |
 | **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `163ea6b` — docs(status): registrar merge do PR #13 e proxima F1-T06 (o commit deste arquivo é posterior e só ajusta estes campos) |
-| **Testes** | verdes (201 passed no merge da F1-T05) |
-| **CI** | verde no merge do PR #13 (run `44439397111`) e no push do registro de STATUS (run `44439591153`) |
+| **Último commit** | `528a872` — merge do PR #14 (F1-T06); o commit deste arquivo é posterior e só ajusta estes campos |
+| **Testes** | verdes (**219 passed** no merge da F1-T06) |
+| **CI** | verde no merge do PR #14 (run `44441646029`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-19 01:48 (UTC) — registro de STATUS pós-PR #13 na `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum após a integração do PR #13 |
+| **Último push** | 2026-11-19 02:05 (UTC) — merge do PR #14 na `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum após a integração do PR #14 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha `docs/tasks/FASE-01/F1-T06.md` e a branch `feat/f1-t06-importacao-csv` a partir da fase, e implementar a importação CSV com relatório por linha, contadores em `import_batches` e idempotência.
+> Criar a ficha `docs/tasks/FASE-01/F1-T07.md` e a branch `feat/f1-t07-dedup-revisao` a partir da fase, e implementar as camadas de deduplicação restantes com os endpoints de listar, confirmar e desfazer duplicatas.
 
 ---
 
@@ -56,13 +56,15 @@
 - **Sessão encerrada (2026-11-17):** 4 tarefas fechadas ou integradas (fechamento da F1-T02-b, F1-T03, F1-T04 e registros de STATUS), 3 PRs mesclados (#10, #11, #12) e 2 commits de documentação na fase. Ponto de retomada: F1-T05.
 - **F1-T05 implementada (2026-11-18):** ficha criada, branch `feat/f1-t05-cadastro-manual`; `POST /jobs` com schemas validados (URL canônica, moeda ISO, faixa salarial, `posted_at` em UTC), `JobRepository` com consultas de dedup, `JobService` com as camadas 1/2 → `409` com `details` e camada 3 → `201` + `duplicates[]`, `BaseRepository` extraída para `app/repositories/base.py`, router registrado, 17 testes novos (9 unitários + 8 de API) e `docs/api.md` atualizado. Suíte **201 passed**; lint/format limpos.
 - **F1-T05 integrada (2026-11-19 UTC):** commit `3279f7b`, **PR #13 mesclado** em `phase/01-nucleo-sem-ia` (`0a3ca2b`) com CI verde (run `44439397111`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t05-cadastro-manual` preservada no remoto. Ponto de retomada: F1-T06.
+- **F1-T06 implementada (2026-11-19 UTC):** ficha criada, branch `feat/f1-t06-importacao-csv`; `POST /jobs/import` em `multipart/form-data` com `file` + `source` opcional, `JobImportService` com validação por linha (erro com `row`/`field`/`message` sem abortar o lote), `ImportBatch` com contadores e `finished_at`, dedup pelas camadas 1/2 com pré-carga em blocos de 500 e um único `commit`, `prepare_job` extraído do `create_manual` e `docs/import-csv.md` criado. Suíte **219 passed**; o teste de 5 mil linhas fica em ~5 s (RNF-09).
+- **F1-T06 integrada (2026-11-19 UTC):** commit `5af3d20`, **PR #14 mesclado** em `phase/01-nucleo-sem-ia` (`528a872`) com CI verde (run `44441646029`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t06-importacao-csv` preservada no remoto. Ponto de retomada: F1-T07.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T05 — concluída e integrada (PR #13). **Próxima:** F1-T06 — importação CSV.
-**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T05.md` encerrada; a ficha da F1-T06 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T06.
+**Tarefa atual:** F1-T06 — concluída e integrada (PR #14). **Próxima:** F1-T07 — deduplicação e revisão humana.
+**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T06.md` encerrada; a ficha da F1-T07 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T07.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -78,6 +80,11 @@
 - [x] Rota REST de cadastro manual e detecção de duplicata certa/provável com aviso claro ✅
 - [x] Testes unitários e de API; `docs/api.md` atualizado ✅
 - [x] Commit da branch, CI verde e merge do PR #13 (com autorização) ✅
+- [x] Criar ficha `F1-T06.md` e branch `feat/f1-t06-importacao-csv` ✅
+- [x] Endpoint `POST /jobs/import` com relatório por linha e `import_batches` preenchido ✅
+- [x] Idempotência (reimportar = 0 inserções) e 5 mil linhas dentro do RNF-09 ✅
+- [x] `docs/import-csv.md`, `docs/api.md` e testes unitários/de API ✅
+- [x] Commit da branch, CI verde e merge do PR #14 (com autorização) ✅
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -90,7 +97,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T05 integradas; próxima: F1-T06) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T06 integradas; próxima: F1-T07) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -131,6 +138,9 @@
 | 2026-11-17 | `PATCH` de experiência revalida a faixa de datas combinando estado atual + payload e responde `422 invalid_data` (novo `InvalidDataError`) | a regra depende do estado gravado, não só do payload; separar `validation_error` (schema) de `invalid_data` (consistência) deixa o erro diagnosticável | — |
 | 2026-11-17 | Vínculo por `canonical_name` cria a habilidade no catálogo quando ela não existe | permite registrar habilidades sem um passo prévio de curadoria; a duplicidade é fechada pela comparação case-insensitive na API | — |
 | 2026-11-18 | Dedup do cadastro manual: camadas 1 (`source`+`external_id`) e 2 (`canonical_url`) → `409` com `details`; camada 3 (`fingerprint`) → `201` com `duplicates[]` | as duas primeiras identificam a mesma vaga; o fingerprint pode ser coincidência e a confirmação humana é da F1-T07 (nunca apagar/bloquear às cegas) | — |
+| 2026-11-19 | Importação CSV usa `multipart/form-data` em `POST /jobs/import`, exige `title`/`company`/`description`/`url` e só aceita UTF-8 com vírgula | `url` é NOT NULL e base da dedup; adivinhar separador/codificação trocaria colunas silenciosamente (desvio do `PLANO.md` §6.1 documentado em `docs/import-csv.md`) | — |
+| 2026-11-19 | Dedup da importação usa só as camadas 1 e 2 (contam em `duplicates`); o lote ignora a camada 3 | garante "reimportar o mesmo arquivo = 0 inserções"; o fingerprint provável continua na revisão humana da F1-T07 | — |
+| 2026-11-19 | Importação em duas passadas com pré-carga de chaves em blocos de 500 e um único `commit` | uma consulta de dedup por linha levava ~32 s em 5 mil linhas; o alvo do RNF-09 é < 30 s (agora ~5 s) | — |
 
 ---
 
@@ -164,4 +174,4 @@
 - [x] Ficha da tarefa atual atualizada (se existir)
 - [x] `RELATORIO.md` com nota curta da tarefa (se concluída) — a seção da Fase 1 será preenchida no gate da fase
 - [x] `.env.example` sincronizado (se houve nova variável) — nenhuma variável nova
-- [x] `uv.lock` commitado junto com o `pyproject.toml` (se houve mudança de dependência) — nenhuma dependência nova
+- [x] `uv.lock` commitado junto com o `pyproject.toml` (se houve mudança de dependência) — `python-multipart` adicionado na F1-T06
