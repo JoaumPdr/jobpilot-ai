@@ -138,6 +138,7 @@ jobpilot-ai/
 
 ## Como Contribuir / Retomar
 
+- Ponto de entrada para agentes: [`AGENTS.md`](AGENTS.md)
 - Estado vivo: [`docs/STATUS.md`](docs/STATUS.md)
 - Instruções de execução: [`docs/ALETHE_INSTRUCOES.md`](docs/ALETHE_INSTRUCOES.md)
 - Guia de docs e Git: [`docs/GUIA_DOCS_E_GIT.md`](docs/GUIA_DOCS_E_GIT.md)

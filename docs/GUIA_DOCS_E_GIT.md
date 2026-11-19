@@ -10,6 +10,7 @@
 
 | Arquivo | Para quê | Quando atualizar |
 |---------|----------|------------------|
+| `AGENTS.md` | Ponto de entrada para agentes, com links para as fontes canônicas | Quando mudar a ordem de retomada ou o mapa de instruções |
 | `README.md` | Porta de entrada: objetivo, status, instalação, configuração, execução, arquitetura resumida, roadmap | A cada fase fechada e a cada mudança de instalação/execução |
 | `design.md` | Arquitetura em detalhe: camadas, fluxos, decisões e o *porquê* | Quando a arquitetura ou um fluxo mudar |
 | `RELATORIO.md` | Diário técnico por fase: o que foi feito, problemas, soluções, métricas, aprendizados | Ao fechar cada tarefa (nota curta) e cada fase (seção completa) |
@@ -148,7 +149,7 @@ Passos (executar uma vez; o repositório local e o remoto nascem juntos):
 ### B.3 Fluxo de integração
 
 1. Branch de tarefa criada **a partir da branch da fase**.
-2. Ao atender os critérios de aceitação, abrir **PR no GitHub** (pelo MCP) da tarefa → fase, usando **merge com histórico** (preserva commits pequenos, útil para retomada). Mesclar só com **CI verde no remoto**.
+2. Ao atender os critérios de aceitação, abrir **PR no GitHub** da tarefa → fase via MCP autenticado ou `gh`, usando **merge com histórico** (preserva commits pequenos, útil para retomada). Mesclar só com **CI verde no remoto**.
 3. Ao cumprir o **gate da fase**: PR `phase/NN-*` → `develop`.
 4. Ao fechar marcos de release (`v0.1.0` no fim da Fase 4, `v1.0.0` na Fase 7): PR `develop` → `main` + **tag anotada publicada no remoto**; criar também um *release* no GitHub com o trecho do `CHANGELOG.md`.
 5. Tag a cada fase fechada: `fase-00`, `fase-01`, … **sempre enviadas ao GitHub** (permite voltar rapidamente a qualquer ponto bom).
@@ -241,14 +242,14 @@ Testes que chamam LLM real ficam **fora** do CI padrão (marcador opt-in).
 
 **Princípio:** nenhum trabalho confirmado fica só na máquina. O GitHub é o backup e o ponto de retomada.
 
-**Ferramentas:** MCP do GitHub (ligado à conta do JP no VS Code) para operações de repositório (criar repositório/branches, PRs, status de CI, milestones); git local para commits, branches, merge local e push. Se o MCP falhar, usar o git local e registrar no `STATUS.md`. Credenciais nunca entram em arquivos, URLs do remoto ou commits.
+**Ferramentas.** Use o MCP do GitHub quando estiver disponível e autenticado. Use `gh` autenticado para PRs e CI quando o MCP estiver indisponível e registre a alternativa no `STATUS.md`. Use `git` local para commits, branches, merge local e push. Credenciais ficam nos mecanismos de autenticação das ferramentas.
 
 | Momento | Ação | Verificação |
 |---------|------|-------------|
 | Início de sessão | `git fetch --all --prune`; se o remoto estiver à frente, `git pull --ff-only` | `git status -sb` sem `behind`; sem divergência |
 | Nova branch de tarefa | Primeiro commit → **primeiro push** com upstream | Branch aparece no GitHub |
 | Durante a tarefa | Push após cada commit significativo (ciclo verde) | Sem `ahead` ao pausar |
-| Tarefa concluída | PR tarefa → fase pelo MCP; CI roda no GitHub | CI verde antes de mesclar |
+| Tarefa concluída | PR tarefa → fase pelo MCP ou `gh`. O CI roda no GitHub | CI verde antes de mesclar |
 | Fase concluída | PR fase → `develop`; tag `fase-NN` publicada | Tag visível no GitHub; CI verde em `develop` |
 | Release | PR `develop` → `main`; tag `vX.Y.Z` + release no GitHub | `main` com a tag e o `CHANGELOG.md` atualizado |
 | Fim de sessão | Commit (`chore(wip)` se incompleto) + push | Árvore limpa, sem `ahead`, `STATUS.md` com o estado de sincronização |
@@ -266,7 +267,7 @@ Testes que chamam LLM real ficam **fora** do CI padrão (marcador opt-in).
 |----------|-------------|
 | Push rejeitado (remoto à frente) | `git fetch`, integrar com `git pull --ff-only` ou rebase **apenas da própria branch de tarefa**; nunca force |
 | Histórico divergiu | Parar, registrar no `STATUS.md` e avisar o JP |
-| MCP sem permissão ou autenticação | Avisar o JP; continuar com git local se a credencial dele já estiver configurada na máquina; não contornar |
+| MCP sem permissão ou autenticação | Avisar o JP e registrar a alternativa no `STATUS.md`. Usar `gh` ou `git` local somente nas operações cobertas pelas permissões de cada ferramenta |
 | CI vermelho no GitHub | Corrigir na branch da tarefa e novo push; não mesclar |
 | Segredo enviado ao remoto | Avisar o JP para **revogar a chave imediatamente**; só então tratar o histórico com a orientação dele |
 
