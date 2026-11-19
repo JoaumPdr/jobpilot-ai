@@ -10,26 +10,26 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-18 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T04 integradas; F1-T05 implementada, aguardando PR**) |
+| **Última atualização** | 2026-11-19 (UTC) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T05 concluídas e integradas; próxima: F1-T06**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T05 — Cadastro manual de vaga (serviço + rota, usando normalização e dedup) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T05.md` (criada em 2026-11-18) |
-| **Branch da tarefa** | `feat/f1-t05-cadastro-manual` (criada a partir da fase) |
-| **Estado da tarefa** | implementada e testada (201 passed); falta commit, push, PR e merge |
-| **Último commit** | `05f69aa` — docs(status): encerrar sessao com F1-T04 integrada e F1-T05 proxima |
-| **Testes** | verdes (201 passed na branch da F1-T05) |
-| **CI** | verde no último push da fase (run `44191524901`, 2026-11-17); branch da tarefa ainda sem push |
+| **Tarefa atual** | F1-T06 — Importação CSV com relatório por linha e idempotência |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T06.md` (a criar ao iniciar) |
+| **Branch da tarefa** | `feat/f1-t06-importacao-csv` (a criar a partir da fase) |
+| **Estado da tarefa** | não iniciada — ficha e branch a criar |
+| **Último commit** | `0a3ca2b` — Merge pull request #13 (F1-T05) |
+| **Testes** | verdes (201 passed no merge da F1-T05) |
+| **CI** | verde no merge do PR #13 na `phase/01-nucleo-sem-ia` (run `44439397111`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` em dia; branch da tarefa local (push a fazer) |
-| **Último push** | 2026-11-17 22:35 (UTC) — commit de STATUS pós-F1-T04 na `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum |
+| **Sincronização com o remoto** | em dia |
+| **Último push** | 2026-11-19 01:46 (UTC) — merge do PR #13 na `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum após a integração do PR #13 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Commitar e publicar a branch `feat/f1-t05-cadastro-manual`, abrir o PR para `phase/01-nucleo-sem-ia`, conferir o CI e mesclar; em seguida iniciar a F1-T06 (importação CSV).
+> Criar a ficha `docs/tasks/FASE-01/F1-T06.md` e a branch `feat/f1-t06-importacao-csv` a partir da fase, e implementar a importação CSV com relatório por linha, contadores em `import_batches` e idempotência.
 
 ---
 
@@ -55,13 +55,14 @@
 - **F1-T04 implementada e integrada (2026-11-17):** funções puras em `app/services/normalization.py` (`clean_text`, `comparison_text`, `normalize_work_mode`, `normalize_seniority`, `canonicalize_url`, `job_fingerprint`), 46 testes unitários sem banco, suíte **184 passed**. Commit `3cfd4fb`, **PR #12 mesclado** (`396e851`) com CI verde (run `44191309228`); BACKLOG e ficha atualizados.
 - **Sessão encerrada (2026-11-17):** 4 tarefas fechadas ou integradas (fechamento da F1-T02-b, F1-T03, F1-T04 e registros de STATUS), 3 PRs mesclados (#10, #11, #12) e 2 commits de documentação na fase. Ponto de retomada: F1-T05.
 - **F1-T05 implementada (2026-11-18):** ficha criada, branch `feat/f1-t05-cadastro-manual`; `POST /jobs` com schemas validados (URL canônica, moeda ISO, faixa salarial, `posted_at` em UTC), `JobRepository` com consultas de dedup, `JobService` com as camadas 1/2 → `409` com `details` e camada 3 → `201` + `duplicates[]`, `BaseRepository` extraída para `app/repositories/base.py`, router registrado, 17 testes novos (9 unitários + 8 de API) e `docs/api.md` atualizado. Suíte **201 passed**; lint/format limpos.
+- **F1-T05 integrada (2026-11-19 UTC):** commit `3279f7b`, **PR #13 mesclado** em `phase/01-nucleo-sem-ia` (`0a3ca2b`) com CI verde (run `44439397111`). `phase/01-nucleo-sem-ia` atualizada por fast-forward; `feat/f1-t05-cadastro-manual` preservada no remoto. Ponto de retomada: F1-T06.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T05 — cadastro manual de vaga · **implementada, aguardando PR**.
-**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T05.md`. Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T05.
+**Tarefa atual:** F1-T05 — concluída e integrada (PR #13). **Próxima:** F1-T06 — importação CSV.
+**Planejamento detalhado:** ficha `docs/tasks/FASE-01/F1-T05.md` encerrada; a ficha da F1-T06 será criada ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T06.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -76,7 +77,7 @@
 - [x] Schema/repositório/serviço de vaga manual (normaliza, calcula URL canônica/fingerprint) ✅
 - [x] Rota REST de cadastro manual e detecção de duplicata certa/provável com aviso claro ✅
 - [x] Testes unitários e de API; `docs/api.md` atualizado ✅
-- [ ] Commit da branch, CI verde e merge do PR da tarefa (com autorização)
+- [x] Commit da branch, CI verde e merge do PR #13 (com autorização) ✅
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -89,7 +90,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T04 integradas; F1-T05 implementada, aguardando PR) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T05 integradas; próxima: F1-T06) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
