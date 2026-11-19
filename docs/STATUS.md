@@ -11,30 +11,30 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T13 integradas**, gate pendente) |
-| **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-GATE — Gate de saída da Fase 1 |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-GATE.md` |
-| **Branch do gate** | `phase/01-nucleo-sem-ia` |
-| **Estado da tarefa** | critérios técnicos verificados, integração em revisão |
-| **Último merge da fase** | `5fa4999` — PR #25 (F1-T13) |
+| **Fase atual** | Fase 1 — Núcleo sem IA concluída. Próxima fase: Fase 2 — Matching |
+| **Branch base** | `develop`. A próxima branch de fase será `phase/02-matching` |
+| **Próxima tarefa** | F2-T01 — Taxonomia de skills |
+| **Ficha da tarefa** | a avaliar no início da F2-T01 |
+| **Estado da próxima tarefa** | não iniciada |
+| **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **360 testes aprovados** com PostgreSQL. Cobertura de linhas de 96,60% em `app` e 95,33% em `app/services`. Ruff e formatação verdes |
-| **CI** | cobertura, Ruff e migração verdes na revisão de referência `8c852a7` ([run 44608937267](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267)). Confirmar os checks do head do PR #26 antes de mesclar |
+| **CI** | cobertura, Ruff e migração verdes no merge da Fase 1 em `develop` ([run 44610945327](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327)) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | fase atualizada por fast-forward após o PR #25. Branch `docs/f1-t13-documentacao-fase-1` preservada no remoto |
-| **Último merge confirmado no remoto** | 2026-11-19 20:24 UTC, `5fa4999` na branch da fase |
-| **PR atual** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), fase → `develop` |
-| **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
+| **Sincronização com o remoto** | `develop` atualizado por fast-forward após o PR #26. Branch `phase/01-nucleo-sem-ia` preservada no remoto |
+| **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
+| **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
+| **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o CI do PR #26 e integrar a Fase 1 em `develop` após autorização. Confirmar o CI do merge antes de publicar a tag `fase-01`.
+> Ler os critérios da F2-T01 no backlog e preparar a branch `phase/02-matching` a partir de `develop` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-GATE concluído (2026-11-19 UTC).** O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) foi mesclado com autorização em `bbea363`. O CI do merge passou em `develop`, e a tag anotada `fase-01` foi publicada e conferida no GitHub. Ponto de retomada na F2-T01.
 - **F1-GATE validado tecnicamente (2026-11-19 UTC).** A ficha reúne as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação. A suíte local passou com 360 testes. Cobertura de 96,60% em `app` e 95,33% em `app/services`. Execução direta com Sol/Medium, política e hook confirmados. [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) aberto para `develop`.
 - **F1-T13 integrada (2026-11-19 UTC).** O [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) foi mesclado com autorização em `5fa4999`. A branch local da fase avançou por fast-forward e o CI do merge passou. O gate de saída é o ponto de retomada.
 - **F1-T13 documentada (2026-11-19 UTC).** README com roteiro pelo Swagger UI, referências da API e do banco atualizadas, relatório consolidado e changelog da fase em desenvolvimento. O roteiro foi exercitado com seus exemplos exatos em PostgreSQL isolado. Rotas e links locais conferidos, 360 testes aprovados, Ruff e formatação verdes. Execução direta com Sol/Medium. [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) aberto para a fase.
@@ -84,8 +84,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F1-T13 (PR #25).
-**Tarefa em revisão.** [F1-GATE](tasks/FASE-01/F1-GATE.md).
+**Última tarefa integrada.** [F1-GATE](tasks/FASE-01/F1-GATE.md), PR #26.
+**Próxima tarefa.** F2-T01, conforme os critérios no [backlog](BACKLOG.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -128,8 +128,8 @@
 - [x] Documentar a Fase 1, validar o roteiro e abrir o PR #25
 - [x] Integrar o PR #25 após revisão, CI verde e autorização
 - [x] Validar os critérios técnicos do F1-GATE e abrir o PR #26
-- [ ] Integrar o PR #26 após confirmar CI verde e autorização
-- [ ] Publicar a tag `fase-01` após o fechamento da fase
+- [x] Integrar o PR #26 após confirmar CI verde e autorização
+- [x] Publicar a tag `fase-01` após confirmar o CI do merge em `develop`
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -142,7 +142,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | gate pendente (F1-T01 a F1-T13 integradas) | — | — |
+| 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |

@@ -71,7 +71,7 @@
 | [x] F1-T11 | **Arquivar/salvar** vagas e atalhos de fluxo (salvar vaga cria candidatura "salva") | F1-T10, F1-T08 | Fluxo salvar → planejada → aplicada coberto por teste de integração |
 | [x] F1-T12 | **Testes de ponta a ponta da Fase 1** + revisão de cobertura | F1-T11 | Cenário completo (perfil → importar → filtrar → candidatar) verde; cobertura serviços ≥ 85%, global ≥ 70% |
 | [x] F1-T13 | Docs da fase: `api.md`, `data-model.md`, README, `RELATORIO.md`, `CHANGELOG.md` | F1-T12 | Documentos refletem o código; README ensina o fluxo completo da Fase 1 |
-| [ ] F1-GATE | Gate da fase | todas | RF-01…06 cobertos; reimportação idempotente; CI verde → PR para `develop`, tag `fase-01` |
+| [x] F1-GATE | Gate da fase | todas | RF-01…06 cobertos; reimportação idempotente; CI verde → PR para `develop`, tag `fase-01` |
 
 ---
 
