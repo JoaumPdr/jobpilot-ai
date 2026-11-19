@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Última atualização: 2026-11-17 (F1-T03).
+> Última atualização: 2026-11-19 (F1-T09).
 
 ## Visão geral
 
@@ -20,8 +20,9 @@
   origem e os contadores de cada lote. Apagar um lote ou a vaga original de uma
   duplicata usa `ON DELETE SET NULL` — nada é perdido em cascata.
 - **Migrações:** `migrations/versions/000000000002_profile_tables.py` (perfil) e
-  `000000000003_job_tables.py` (vagas), ambas com `upgrade`/`downgrade`
-  reversíveis.
+  `000000000003_job_tables.py` (vagas), seguidas por
+  `000000000004_application_tables.py` (candidaturas). Cada revisão tem
+  `upgrade` e `downgrade`.
 
 ## Diagrama
 
@@ -33,6 +34,9 @@ erDiagram
     skills ||--o{ candidate_skills : "classifica"
     import_batches ||--o{ jobs : "origina"
     jobs ||--o| jobs : "duplicata confirmada"
+    candidates ||--o{ applications : "possui"
+    jobs ||--o{ applications : "recebe"
+    applications ||--o{ application_status_history : "registra"
 
     candidates {
         uuid id PK
@@ -128,6 +132,26 @@ erDiagram
         uuid duplicate_of_job_id FK "opcional"
         timestamptz created_at
         timestamptz updated_at
+    }
+
+    applications {
+        uuid id PK
+        uuid candidate_id FK
+        uuid job_id FK
+        varchar status "default salva"
+        timestamptz applied_at "opcional"
+        text notes "opcional"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    application_status_history {
+        uuid id PK
+        uuid application_id FK
+        varchar from_status "opcional no registro inicial"
+        varchar to_status
+        timestamptz changed_at
+        text note "opcional"
     }
 ```
 
@@ -260,6 +284,39 @@ a vaga só é gravada depois da normalização (F1-T04/T05).
 têm índices próprios para as camadas seguintes. Duplicata provável **sinaliza**,
 nunca apaga: `duplicate_of_job_id` só é preenchido quando o usuário confirma.
 
+### `applications`
+
+Uma candidatura por par candidato/vaga. O candidato é dono da candidatura, e
+excluir o perfil remove a candidatura e seu histórico. Uma vaga com candidatura
+pode ser arquivada. A exclusão física é bloqueada para preservar a referência.
+
+| Coluna | Tipo | Regras |
+|--------|------|--------|
+| `id` | `UUID` | PK |
+| `candidate_id` | `UUID` | FK → `candidates.id`, obrigatória, `ON DELETE CASCADE` |
+| `job_id` | `UUID` | FK → `jobs.id`, obrigatória, `ON DELETE RESTRICT` |
+| `status` | `varchar(20)` | obrigatório, default `salva` |
+| `applied_at` | `timestamptz` | opcional |
+| `notes` | `text` | opcional |
+| `created_at`, `updated_at` | `timestamptz` | default `now()` |
+
+Os status aceitos são `salva`, `planejada`, `aplicada`, `entrevista`, `oferta`,
+`rejeitada` e `encerrada`. As regras de transição serão aplicadas na F1-T10.
+
+### `application_status_history`
+
+Registra o status anterior e o novo status. O histórico acompanha a candidatura
+inclusive na exclusão em cascata.
+
+| Coluna | Tipo | Regras |
+|--------|------|--------|
+| `id` | `UUID` | PK |
+| `application_id` | `UUID` | FK → `applications.id`, obrigatória, `ON DELETE CASCADE` |
+| `from_status` | `varchar(20)` | status válido ou `NULL` para o registro inicial |
+| `to_status` | `varchar(20)` | status válido, obrigatório |
+| `changed_at` | `timestamptz` | default `now()` |
+| `note` | `text` | opcional |
+
 ## Constraints nomeadas
 
 | Nome | Tabela | Regra |
@@ -283,6 +340,12 @@ nunca apaga: `duplicate_of_job_id` só é preenchido quando o usuário confirma.
 | `ck_import_batches_kind` | `import_batches` | `csv`, `manual` ou `api` |
 | `ck_import_batches_counters_non_negative` | `import_batches` | contadores `>= 0` |
 | `ck_import_batches_finished_after_started` | `import_batches` | `finished_at >= started_at` quando informado |
+| `uq_applications_candidate_job` | `applications` | par candidato/vaga único |
+| `ck_applications_status` | `applications` | status atual permitido |
+| `ix_applications_job_id` | `applications` | busca de candidaturas por vaga |
+| `ck_application_status_history_from_status` | `application_status_history` | status anterior permitido, aceita `NULL` |
+| `ck_application_status_history_to_status` | `application_status_history` | novo status permitido |
+| `ix_application_status_history_application_changed` | `application_status_history` | busca do histórico por candidatura e data |
 
 ## Testes do esquema
 
@@ -305,6 +368,13 @@ nunca apaga: `duplicate_of_job_id` só é preenchido quando o usuário confirma.
 - contadores negativos e `finished_at` anterior a `started_at`;
 - presença dos índices de `fingerprint` e `canonical_url`.
 
+`tests/db/test_application_constraints.py` cobre o estado inicial, a unicidade
+por par candidato/vaga, as referências obrigatórias, os valores de status,
+a exclusão em cascata e a proteção das vagas vinculadas.
+O downgrade da revisão `000000000004` remove as duas tabelas de candidatura
+e seus dados. O ciclo de migração em banco isolado preservou os registros
+preexistentes de perfil e vagas.
+
 O banco de teste é isolado (`jobpilot_test`), criado pela fixture a partir de
 `TEST_DATABASE_URL` (default derivado de `DATABASE_URL`), com
 `alembic upgrade head` na sessão. A fixture **aborta** se o alvo não terminar
@@ -312,7 +382,6 @@ em `_test` ou for igual ao banco de desenvolvimento.
 
 ## Próximas tabelas (fora desta tarefa)
 
-`applications`/`application_status_history` (F1-T09) e, nas fases seguintes,
 `job_skills`, `job_matches`, `llm_cache`, `pipeline_runs`, `resume_versions` e
 `interviews` (ver `PLANO.md` §5).
 

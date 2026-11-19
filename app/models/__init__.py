@@ -6,6 +6,11 @@ e os testes dependem desse registro completo; esquecer um import faz o
 autogenerate "não ver" a tabela e quebra o mapeamento das relações.
 """
 
+from app.models.application import (
+    Application,
+    ApplicationStatus,
+    ApplicationStatusHistory,
+)
 from app.models.base import Base
 from app.models.candidate import Candidate
 from app.models.experience import CandidateExperience
@@ -15,6 +20,9 @@ from app.models.preferences import CandidatePreference
 from app.models.skill import CandidateSkill, Skill
 
 __all__ = [
+    "Application",
+    "ApplicationStatus",
+    "ApplicationStatusHistory",
     "Base",
     "Candidate",
     "CandidateExperience",
