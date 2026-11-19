@@ -157,8 +157,9 @@ def db_session(test_engine: Engine) -> Iterator[Session]:
                 transaction.rollback()
 
 
-# As tabelas do perfil em ordem irrelevante para `TRUNCATE ... CASCADE`.
-_PROFILE_TABLES = (
+# Tabelas limpas entre os testes de API (ordem irrelevante por causa do CASCADE).
+_RESET_TABLES = (
+    "jobs",
     "candidates",
     "candidate_preferences",
     "candidate_skills",
@@ -196,5 +197,5 @@ def api_client(test_engine: Engine) -> Iterator[TestClient]:
         app.dependency_overrides.pop(get_db, None)
         with test_engine.begin() as connection:
             connection.execute(
-                text(f"TRUNCATE TABLE {', '.join(_PROFILE_TABLES)} CASCADE")
+                text(f"TRUNCATE TABLE {', '.join(_RESET_TABLES)} CASCADE")
             )

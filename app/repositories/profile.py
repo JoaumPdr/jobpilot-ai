@@ -10,7 +10,7 @@ from __future__ import annotations
 import uuid
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import selectinload
 
 from app.models import (
     Candidate,
@@ -19,21 +19,7 @@ from app.models import (
     CandidateSkill,
     Skill,
 )
-
-
-class BaseRepository:
-    """Base com o controle de transação usado pelo serviço."""
-
-    def __init__(self, db: Session) -> None:
-        self._db = db
-
-    def commit(self) -> None:
-        """Confirma a transação corrente."""
-        self._db.commit()
-
-    def rollback(self) -> None:
-        """Descarta a transação corrente (após erro de integridade)."""
-        self._db.rollback()
+from app.repositories.base import BaseRepository
 
 
 class CandidateRepository(BaseRepository):

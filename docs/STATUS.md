@@ -10,26 +10,26 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-17 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01, F1-T02-a, F1-T02-b, F1-T03 e F1-T04 concluídas e integradas; próxima: F1-T05**) |
+| **Última atualização** | 2026-11-18 (UTC) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T04 integradas; F1-T05 implementada, aguardando PR**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-T05 — Cadastro manual de vaga (serviço + rota, usando normalização e dedup) |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T05.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t05-cadastro-manual` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `396e851` — Merge pull request #12 (F1-T04) |
-| **Testes** | verdes (184 passed no merge da F1-T04) |
-| **CI** | verde no merge do PR #12 na `phase/01-nucleo-sem-ia` (run `44191309228`) |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T05.md` (criada em 2026-11-18) |
+| **Branch da tarefa** | `feat/f1-t05-cadastro-manual` (criada a partir da fase) |
+| **Estado da tarefa** | implementada e testada (201 passed); falta commit, push, PR e merge |
+| **Último commit** | `05f69aa` — docs(status): encerrar sessao com F1-T04 integrada e F1-T05 proxima |
+| **Testes** | verdes (201 passed na branch da F1-T05) |
+| **CI** | verde no último push da fase (run `44191524901`, 2026-11-17); branch da tarefa ainda sem push |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-17 22:34 (UTC) — merge do PR #12 na `phase/01-nucleo-sem-ia` |
-| **PR aberto** | nenhum após a integração do PR #12 |
+| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` em dia; branch da tarefa local (push a fazer) |
+| **Último push** | 2026-11-17 22:35 (UTC) — commit de STATUS pós-F1-T04 na `phase/01-nucleo-sem-ia` |
+| **PR aberto** | nenhum |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha `docs/tasks/FASE-01/F1-T05.md` e a branch `feat/f1-t05-cadastro-manual` a partir da fase, e implementar o serviço e a rota de cadastro manual de vaga usando normalização, `canonical_url`/fingerprint e aviso de duplicata.
+> Commitar e publicar a branch `feat/f1-t05-cadastro-manual`, abrir o PR para `phase/01-nucleo-sem-ia`, conferir o CI e mesclar; em seguida iniciar a F1-T06 (importação CSV).
 
 ---
 
@@ -54,13 +54,14 @@
 - **F1-T03 implementada e integrada (2026-11-17):** modelos `Job`/`ImportBatch` com enums (`WorkMode`, `Seniority`, `ImportKind`), migração `000000000003` reversível (upgrade → downgrade → upgrade testados), índice único parcial `(source, external_id)`, índices de `fingerprint`/`canonical_url`, FKs com `SET NULL`, CHECKs de salário/contadores; 19 testes de constraint novos; suíte **138 passed**. Commit `11ffb68`, **PR #11 mesclado** (`b837c3d`) com CI verde (run `44189183645`); `data-model.md`, BACKLOG e ficha atualizados.
 - **F1-T04 implementada e integrada (2026-11-17):** funções puras em `app/services/normalization.py` (`clean_text`, `comparison_text`, `normalize_work_mode`, `normalize_seniority`, `canonicalize_url`, `job_fingerprint`), 46 testes unitários sem banco, suíte **184 passed**. Commit `3cfd4fb`, **PR #12 mesclado** (`396e851`) com CI verde (run `44191309228`); BACKLOG e ficha atualizados.
 - **Sessão encerrada (2026-11-17):** 4 tarefas fechadas ou integradas (fechamento da F1-T02-b, F1-T03, F1-T04 e registros de STATUS), 3 PRs mesclados (#10, #11, #12) e 2 commits de documentação na fase. Ponto de retomada: F1-T05.
+- **F1-T05 implementada (2026-11-18):** ficha criada, branch `feat/f1-t05-cadastro-manual`; `POST /jobs` com schemas validados (URL canônica, moeda ISO, faixa salarial, `posted_at` em UTC), `JobRepository` com consultas de dedup, `JobService` com as camadas 1/2 → `409` com `details` e camada 3 → `201` + `duplicates[]`, `BaseRepository` extraída para `app/repositories/base.py`, router registrado, 17 testes novos (9 unitários + 8 de API) e `docs/api.md` atualizado. Suíte **201 passed**; lint/format limpos.
 
 ---
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Tarefa atual:** F1-T05 — cadastro manual de vaga · **não iniciada**.
-**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T05.md` (a criar). Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T05.
+**Tarefa atual:** F1-T05 — cadastro manual de vaga · **implementada, aguardando PR**.
+**Planejamento detalhado:** `docs/tasks/FASE-01/F1-T05.md`. Critérios de aceitação canônicos: `docs/BACKLOG.md` → F1-T05.
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -71,11 +72,11 @@
 - [x] F1-T02-b concluída e integrada: habilidades e experiências (PR #10) ✅
 - [x] F1-T03 concluída e integrada: modelos e migração de `jobs`/`import_batches` (PR #11) ✅
 - [x] F1-T04 concluída e integrada: normalização e canonização (PR #12) ✅
-- [ ] Criar ficha `F1-T05.md` e branch `feat/f1-t05-cadastro-manual`
-- [ ] Schema/repositório/serviço de vaga manual (normaliza, calcula URL canônica/fingerprint)
-- [ ] Rota REST de cadastro manual e detecção de duplicata certa/provável com aviso claro
-- [ ] Testes unitários e de API; `docs/api.md` atualizado
-- [ ] PR tarefa → fase, CI verde e merge (com autorização)
+- [x] Criar ficha `F1-T05.md` e branch `feat/f1-t05-cadastro-manual` ✅
+- [x] Schema/repositório/serviço de vaga manual (normaliza, calcula URL canônica/fingerprint) ✅
+- [x] Rota REST de cadastro manual e detecção de duplicata certa/provável com aviso claro ✅
+- [x] Testes unitários e de API; `docs/api.md` atualizado ✅
+- [ ] Commit da branch, CI verde e merge do PR da tarefa (com autorização)
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -88,7 +89,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01, F1-T02-a, F1-T02-b, F1-T03 e F1-T04 concluídas; próxima: F1-T05) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T04 integradas; F1-T05 implementada, aguardando PR) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
@@ -109,6 +110,7 @@
 | 2026-11-14 | dívida | `.agents/skills/alethe` versionado (~1,5 MB de assets) infla o repositório; reavaliar se precisa ficar versionado | — | aberto |
 | 2026-11-17 | dívida | `skills.canonical_name` é único case-sensitive no banco; a API compara em minúsculas, mas concorrência ainda pode criar variações de caixa | F2-T01 | aberto |
 | 2026-11-17 | dívida | `CandidateRepository.get` carrega preferências, skills e experiências em toda leitura de candidato; separar consultas se virar gargalo | F1-T03+ | aberto |
+| 2026-11-18 | dívida | `canonical_url` não tem índice único: concorrência extrema pode criar duas vagas com a mesma URL canônica (a checagem do serviço é best-effort) | F1-T07 | aberto |
 
 *(Testes vermelhos ou `xfail` ativos devem ser listados aqui com o motivo.)*
 
@@ -127,6 +129,7 @@
 | 2026-11-16 | Perfil: e-mail único case-insensitive via `lower(email)`; `level` NULL = desconhecido; `years` em `candidate_skills` e `candidate_experiences` com CHECK; timestamps `TIMESTAMPTZ` com `now()` do servidor; `TEST_DATABASE_URL` isolada | decisões aprovadas pelo JP na preparação da F1-T01 | — |
 | 2026-11-17 | `PATCH` de experiência revalida a faixa de datas combinando estado atual + payload e responde `422 invalid_data` (novo `InvalidDataError`) | a regra depende do estado gravado, não só do payload; separar `validation_error` (schema) de `invalid_data` (consistência) deixa o erro diagnosticável | — |
 | 2026-11-17 | Vínculo por `canonical_name` cria a habilidade no catálogo quando ela não existe | permite registrar habilidades sem um passo prévio de curadoria; a duplicidade é fechada pela comparação case-insensitive na API | — |
+| 2026-11-18 | Dedup do cadastro manual: camadas 1 (`source`+`external_id`) e 2 (`canonical_url`) → `409` com `details`; camada 3 (`fingerprint`) → `201` com `duplicates[]` | as duas primeiras identificam a mesma vaga; o fingerprint pode ser coincidência e a confirmação humana é da F1-T07 (nunca apagar/bloquear às cegas) | — |
 
 ---
 
@@ -139,6 +142,7 @@
 
 ## 8. Observações
 
+- **Divergência corrigida em 2026-11-18:** o §1 dizia último commit `396e851` (merge do PR #12) e push às 22:34 UTC; o Git/GitHub mostravam `05f69aa` ("docs(status): encerrar sessao...") com push às 22:35 UTC e CI verde (run `44191524901`). Era só documentação posterior ao merge; campos corrigidos. Nenhuma outra divergência.
 - **Docker Desktop encerrou sozinho durante a sessão (2026-11-17):** a segunda execução completa de testes gerou 82 erros de conexão; o container `jobpilot-postgres` foi reiniciado (`docker compose up -d`) e a suíte voltou a verde (184 passed). Nenhuma falha de código.
 - **Divergência corrigida em 2026-11-17:** o §1 dizia "F1-T02-b não iniciada; ficha a criar", mas o Git já tinha a ficha (`186b575`), a branch publicada e ~1.900 linhas de implementação não commitadas. Confiado o Git; STATUS corrigido e o trabalho revisado, testado e commitado (`d6513a6`, `eb7481d`). Nenhum outro campo divergia do remoto.
 - **Divergência corrigida em 2026-11-16:** o §1 mostrava último commit `ff60748` e push 03:05 UTC; o Git/GitHub confirmam `9bc62d1` em `phase/01-nucleo-sem-ia`, push às 06:44 UTC (CI verde, run 43567810203). Corrigido; nenhum outro campo divergia.
