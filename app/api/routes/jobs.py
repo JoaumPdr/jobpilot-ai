@@ -1,23 +1,36 @@
-"""Rotas de vagas: cadastro manual.
+"""Rotas de vagas: cadastro manual, importação CSV e revisão de duplicatas.
 
-POR QUÊ: rota fina sobre `JobService`; a normalização, a dedup e a transação
-ficam no serviço. A listagem/filtros chegam na F1-T08 e a revisão de duplicatas
-na F1-T07.
+POR QUÊ: as rotas são finas sobre os serviços; normalização, dedup, contadores e
+transação ficam neles. A revisão (F1-T07) expõe apenas o que o usuário precisa:
+ver os grupos suspeitos, confirmar a duplicata e desfazer a decisão.
 """
 
 from __future__ import annotations
 
+import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, File, Form, UploadFile, status
+from fastapi import APIRouter, File, Form, Query, Response, UploadFile, status
 
-from app.api.dependencies import JobImportServiceDep, JobServiceDep
+from app.api.dependencies import (
+    JobDedupServiceDep,
+    JobImportServiceDep,
+    JobServiceDep,
+)
+from app.schemas.dedup import (
+    DuplicateConfirm,
+    DuplicateGroupList,
+    DuplicateGroupRead,
+    DuplicateReviewLayer,
+    JobDuplicateSummary,
+)
 from app.schemas.imports import ImportBatchRead
 from app.schemas.jobs import (
     DuplicateLayer,
     DuplicateWarning,
     JobCreate,
     JobCreateResult,
+    JobRead,
 )
 
 router = APIRouter(tags=["vagas"])
@@ -33,7 +46,7 @@ def create_job(payload: JobCreate, service: JobServiceDep) -> JobCreateResult:
     """Cadastra a vaga normalizada; duplicata certa retorna 409 com detalhes.
 
     Duplicata provável (mesmo `fingerprint`) não bloqueia: a vaga é criada e o
-    corpo traz `duplicates`, para o usuário decidir na revisão da F1-T07.
+    corpo traz `duplicates`, para o usuário decidir na revisão de duplicatas.
     """
     job, probable = service.create_manual(payload)
     return JobCreateResult(
@@ -74,3 +87,62 @@ def import_jobs(
         content=content,
         source=source,
     )
+
+
+@router.get(
+    "/jobs/duplicates",
+    response_model=DuplicateGroupList,
+    summary="Lista possíveis duplicatas para revisão",
+)
+def list_duplicate_jobs(
+    service: JobDedupServiceDep,
+    layer: Annotated[
+        DuplicateReviewLayer | None,
+        Query(description="Filtra pelo critério que aproximou as vagas."),
+    ] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+) -> DuplicateGroupList:
+    """Agrupa duplicatas prováveis pelas camadas 3 (fingerprint) e 4 (título).
+
+    Nada é alterado: confirmar é uma ação explícita. Vagas arquivadas ou já
+    marcadas como duplicata não aparecem.
+    """
+    scan = service.list_groups(layer=layer, limit=limit)
+    return DuplicateGroupList(
+        groups=[
+            DuplicateGroupRead(
+                layer=group.layer,
+                similarity=group.similarity,
+                canonical_job_id=group.canonical_job_id,
+                jobs=[JobDuplicateSummary.model_validate(job) for job in group.jobs],
+            )
+            for group in scan.groups
+        ],
+        scanned_jobs=scan.scanned_jobs,
+        truncated=scan.truncated,
+    )
+
+
+@router.post(
+    "/jobs/{job_id}/duplicate",
+    response_model=JobRead,
+    summary="Confirma uma vaga como duplicata de outra",
+)
+def confirm_duplicate_job(
+    job_id: uuid.UUID,
+    payload: DuplicateConfirm,
+    service: JobDedupServiceDep,
+) -> JobRead:
+    """Grava a decisão humana em `duplicate_of_job_id`; nada é apagado."""
+    return service.confirm_duplicate(job_id, payload.duplicate_of_job_id)
+
+
+@router.delete(
+    "/jobs/{job_id}/duplicate",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Desfaz a marcação de duplicata",
+)
+def undo_duplicate_job(job_id: uuid.UUID, service: JobDedupServiceDep) -> Response:
+    """Devolve a vaga à revisão, limpando `duplicate_of_job_id`."""
+    service.undo_duplicate(job_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

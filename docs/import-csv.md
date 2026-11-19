@@ -61,7 +61,8 @@ curl -X POST http://localhost:8000/jobs/import \
   em `rejected`.
 - A dedup da importação usa as camadas 1 (`source` + `external_id`) e 2
   (`canonical_url`). A camada 3 (`fingerprint`, duplicata provável) **não**
-  bloqueia a importação — a revisão humana é da F1-T07.
+  bloqueia a importação — ela e a camada 4 (similaridade) aparecem na revisão
+  de duplicatas (`GET /jobs/duplicates`).
 - Reimportar o mesmo arquivo resulta em `inserted = 0` (as linhas caem em
   `duplicates`), contanto que `source` e URLs não tenham mudado.
 
