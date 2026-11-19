@@ -11,31 +11,32 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T10 integradas**) |
+| **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T11 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
-| **Tarefa atual** | F1-T11 — Arquivar e salvar vagas |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T11.md` |
-| **Branch da tarefa** | `feat/f1-t11-arquivar-salvar-vagas` |
-| **Estado da tarefa** | implementada e validada localmente, aguardando integração |
-| **Último merge funcional da fase** | `e982147` — PR #20 (F1-T10), seguido pelo registro desta integração |
+| **Tarefa atual** | F1-T12 — Testes de ponta a ponta da Fase 1 e revisão de cobertura |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T12.md` (a criar ao iniciar) |
+| **Branch da tarefa** | a criar a partir da fase |
+| **Estado da tarefa** | não iniciada |
+| **Último merge funcional da fase** | `5b11e45` — PR #23 (F1-T11) |
 | **Testes** | **359 testes aprovados** com PostgreSQL. Ruff e formatação verdes |
-| **CI** | verde no PR #22 ([run 44593225447](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44593225447)). CI da F1-T11 pendente |
+| **CI** | verde no PR #23 ([run 44595618336](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44595618336)) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | branch da fase atualizada por fast-forward após o PR #22 |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `010b9c6` do PR #22 na fase |
-| **PR atual** | F1-T11 a publicar |
+| **Sincronização com o remoto** | branch da fase atualizada por fast-forward após o PR #23; branch da F1-T11 preservada no GitHub |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `5b11e45` do PR #23 na fase |
+| **PR atual** | nenhum para a F1-T12 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Publicar a branch da F1-T11, conferir o CI e integrar o PR na fase.
+> Criar a ficha e a branch da F1-T12 para validar o cenário completo da Fase 1 e medir a cobertura conforme o backlog.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
 - **F1-T11 implementada (2026-11-19 UTC).** O arquivamento oculta a vaga na listagem padrão. O atalho de salvar cria uma candidatura em `salva` com histórico inicial. O fluxo até `aplicada` foi validado com PostgreSQL. Suíte com 359 testes aprovados, Ruff e formatação verdes. Execução direta com Sol/Medium, no perfil Base.
+- **F1-T11 integrada (2026-11-19 UTC).** [PR #23](https://github.com/JoaumPdr/jobpilot-ai/pull/23) mesclado em `5b11e45` com CI verde. Branch da fase atualizada por fast-forward. Ponto de retomada na F1-T12.
 - **Correção do launcher integrada (2026-11-19 UTC).** O [PR #22](https://github.com/JoaumPdr/jobpilot-ai/pull/22) substituiu o PR #21 e foi mesclado em `010b9c6` com CI verde. O launcher inicia o Codex com servidor embutido e exige tier e provedor também em `run`. A nova sessão confirmou a política, os playbooks, o diretório de estado do JobPilot AI e `Hook Alethe (confirmed)`. Suíte local com 356 testes aprovados, incluindo 15 regressões do launcher.
 - **Validação da intervenção.** Com Codex CLI 0.170.0 e Alethe 24, os três tiers resolveram no `dry-run`. Planos sem tier, política ausente ou inválida e provedor indisponível foram recusados. Em duas chamadas pela assinatura ChatGPT, uma sessão nova confirmou Sol/medium e gravou o estado do hook no diretório do projeto, e um worker somente leitura confirmou Luna/low e retornou `DONE` sem alterações. A suíte existente passou com 341 testes, e Ruff e formatação passaram.
 - **F1-T10 implementada (2026-11-19 UTC).** Candidaturas com rotas por candidato, observações editáveis e histórico gravado junto da transição. `GET /jobs` aceita status da candidatura combinado com candidato e os filtros existentes. A suíte de partida passou com 289 testes. A suíte com a entrega passou com 341 testes. Execução direta no perfil Base da Alethe, com etapas do `plan-execute` e revisão local do diff.
@@ -77,8 +78,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F1-T10 (PR #20). A F1-T11 está validada localmente.
-**Planejamento detalhado.** [Ficha da F1-T11](tasks/FASE-01/F1-T11.md).
+**Última tarefa integrada.** F1-T11 (PR #23). A próxima tarefa é a F1-T12.
+**Planejamento detalhado.** Criar a ficha da F1-T12 a partir dos critérios no [backlog](BACKLOG.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -113,7 +114,7 @@
 - [x] Criar ficha e branch da F1-T11
 - [x] Implementar arquivamento e atalho para salvar uma vaga
 - [x] Validar o fluxo `salva` → `planejada` → `aplicada` em um teste de integração
-- [ ] Publicar a F1-T11, confirmar o CI e integrar o PR
+- [x] Publicar a F1-T11, confirmar o CI e integrar o PR #23
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
@@ -126,7 +127,7 @@
 | Fase | Estado | Tag | Gate |
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
-| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T10 integradas, próxima F1-T11) | — | — |
+| 1 — Núcleo sem IA | em andamento (F1-T01 a F1-T11 integradas, próxima F1-T12) | — | — |
 | 2 — Matching | não iniciada | — | — |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
