@@ -14,27 +14,28 @@
 | **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T13 integradas**, gate pendente) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-GATE — Gate de saída da Fase 1 |
-| **Ficha da tarefa** | a avaliar no início do gate |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-GATE.md` |
 | **Branch do gate** | `phase/01-nucleo-sem-ia` |
-| **Estado da tarefa** | gate não iniciado |
+| **Estado da tarefa** | critérios técnicos verificados, integração em revisão |
 | **Último merge da fase** | `5fa4999` — PR #25 (F1-T13) |
 | **Testes** | **360 testes aprovados** com PostgreSQL. Cobertura de linhas de 96,60% em `app` e 95,33% em `app/services`. Ruff e formatação verdes |
-| **CI** | cobertura e suíte verdes na branch da fase após o merge do PR #25 ([run 44608446735](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608446735)) |
+| **CI** | cobertura, Ruff e migração verdes na revisão de referência `8c852a7` ([run 44608937267](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267)). Confirmar os checks do head do PR #26 antes de mesclar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | fase atualizada por fast-forward após o PR #25. Branch `docs/f1-t13-documentacao-fase-1` preservada no remoto |
 | **Último merge confirmado no remoto** | 2026-11-19 20:24 UTC, `5fa4999` na branch da fase |
-| **PR atual** | nenhum para o F1-GATE |
+| **PR atual** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), fase → `develop` |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir os critérios do F1-GATE no backlog e no `docs/PLANO.md` §11 e reunir as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação.
+> Conferir o CI do PR #26 e integrar a Fase 1 em `develop` após autorização. Confirmar o CI do merge antes de publicar a tag `fase-01`.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-GATE validado tecnicamente (2026-11-19 UTC).** A ficha reúne as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação. A suíte local passou com 360 testes. Cobertura de 96,60% em `app` e 95,33% em `app/services`. Execução direta com Sol/Medium, política e hook confirmados. [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) aberto para `develop`.
 - **F1-T13 integrada (2026-11-19 UTC).** O [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) foi mesclado com autorização em `5fa4999`. A branch local da fase avançou por fast-forward e o CI do merge passou. O gate de saída é o ponto de retomada.
 - **F1-T13 documentada (2026-11-19 UTC).** README com roteiro pelo Swagger UI, referências da API e do banco atualizadas, relatório consolidado e changelog da fase em desenvolvimento. O roteiro foi exercitado com seus exemplos exatos em PostgreSQL isolado. Rotas e links locais conferidos, 360 testes aprovados, Ruff e formatação verdes. Execução direta com Sol/Medium. [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) aberto para a fase.
 - **F1-T12 integrada (2026-11-19 UTC).** O [PR #24](https://github.com/JoaumPdr/jobpilot-ai/pull/24) foi revisado e mesclado com autorização em `3bb0df1`. Suíte de partida com 360 testes aprovados, política do JobPilot AI e hook confirmados pelo launcher. Revisão direta com Sol/Medium. A branch da fase foi atualizada por fast-forward e o CI do merge ficou verde. Ponto de retomada na F1-T13.
@@ -84,7 +85,7 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** F1-T13 (PR #25).
-**Próxima tarefa.** F1-GATE, conforme o [backlog](BACKLOG.md) e o [plano mestre](PLANO.md).
+**Tarefa em revisão.** [F1-GATE](tasks/FASE-01/F1-GATE.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -126,7 +127,8 @@
 - [x] Revisar e integrar o PR #24, com CI verde na fase
 - [x] Documentar a Fase 1, validar o roteiro e abrir o PR #25
 - [x] Integrar o PR #25 após revisão, CI verde e autorização
-- [ ] Validar o F1-GATE e integrar a branch da fase em `develop` com CI verde
+- [x] Validar os critérios técnicos do F1-GATE e abrir o PR #26
+- [ ] Integrar o PR #26 após confirmar CI verde e autorização
 - [ ] Publicar a tag `fase-01` após o fechamento da fase
 
 ### Itens fora do escopo da Fase 0 (resolvido)

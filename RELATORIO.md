@@ -131,6 +131,12 @@
 - O [README](README.md#fluxo-da-fase-1) reúne um roteiro local com dados fictícios, importação e reimportação de CSV, filtros e acompanhamento de candidaturas. A [API](docs/api.md) e o [modelo de dados](docs/data-model.md) detalham o contrato e a persistência.
 - O [changelog](CHANGELOG.md) registra as entregas já implementadas para a Fase 1 em desenvolvimento. O gate de saída continua registrado no [backlog](docs/BACKLOG.md).
 
+### F1-GATE — Validação de saída (2026-11-19)
+
+- A [ficha do gate](docs/tasks/FASE-01/F1-GATE.md) relaciona RF-01 a RF-06 aos testes da fase, incluindo a reimportação de CSV sem novas vagas e o histórico de candidaturas.
+- A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
+- A integração em `develop` está em revisão no [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26).
+
 ## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*
