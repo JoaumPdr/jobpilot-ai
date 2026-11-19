@@ -14,29 +14,29 @@
 | **Fase atual** | Fase 1 — Núcleo sem IA (**F1-T01 a F1-T10 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-T11 — Arquivar e salvar vagas |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T11.md` (a criar ao iniciar) |
-| **Branch da tarefa** | a criar a partir da fase |
-| **Estado da tarefa** | não iniciada |
+| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T11.md` |
+| **Branch da tarefa** | `feat/f1-t11-arquivar-salvar-vagas` |
+| **Estado da tarefa** | implementada e validada localmente, aguardando integração |
 | **Último merge funcional da fase** | `e982147` — PR #20 (F1-T10), seguido pelo registro desta integração |
-| **Testes** | **341 passed** com PostgreSQL, incluindo 52 testes novos. Ruff e formatação verdes |
-| **CI** | verde no PR #20 ([run 44574733346](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44574733346)) |
+| **Testes** | **359 testes aprovados** com PostgreSQL. Ruff e formatação verdes |
+| **CI** | verde no PR #22 ([run 44593225447](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44593225447)). CI da F1-T11 pendente |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | branch da fase atualizada por fast-forward após o PR #20 |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `e982147` do PR #20 na fase |
-| **PR atual** | nenhum para a F1-T11 |
+| **Sincronização com o remoto** | branch da fase atualizada por fast-forward após o PR #22 |
+| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `010b9c6` do PR #22 na fase |
+| **PR atual** | F1-T11 a publicar |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha e a branch da F1-T11 e implementar o arquivamento e o atalho de salvar vaga, que cria uma candidatura em `salva`.
+> Publicar a branch da F1-T11, conferir o CI e integrar o PR na fase.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
-- **Correção do launcher após reprodução da falha em novas sessões.** O daemon compartilhado do Codex reutilizava o ambiente da própria inicialização, e o `check-session` exigia overrides opcionais. A correção na branch `fix/alethe-codex-projeto` inicia o Codex com servidor embutido, valida os caminhos resolvidos pela Alethe sem alterar o ambiente da sessão e verifica separadamente a evidência recente do hook passivo. A nova sessão confirmou a política, os playbooks e o diretório de estado do JobPilot AI, além de `Hook Alethe (confirmed)`. Suíte local com 356 testes passando, incluindo 15 regressões novas. Ruff e formatação verdes. O JP fechou o PR #21 e autorizou publicar e integrar um novo PR após o CI. A F1-T11 segue por iniciar.
-- **Integração Alethe + Codex aperfeiçoada na branch `fix/alethe-codex-projeto` (2026-11-19 UTC).** O launcher ativa e verifica a política do projeto, e exige tier e provedor explícitos também em `run`. O protocolo inclui avaliação do modelo do líder no início e nas transições. A intervenção aguarda avaliação do JP antes do merge. A F1-T11 continua por iniciar.
+- **F1-T11 implementada (2026-11-19 UTC).** O arquivamento oculta a vaga na listagem padrão. O atalho de salvar cria uma candidatura em `salva` com histórico inicial. O fluxo até `aplicada` foi validado com PostgreSQL. Suíte com 359 testes aprovados, Ruff e formatação verdes. Execução direta com Sol/Medium, no perfil Base.
+- **Correção do launcher integrada (2026-11-19 UTC).** O [PR #22](https://github.com/JoaumPdr/jobpilot-ai/pull/22) substituiu o PR #21 e foi mesclado em `010b9c6` com CI verde. O launcher inicia o Codex com servidor embutido e exige tier e provedor também em `run`. A nova sessão confirmou a política, os playbooks, o diretório de estado do JobPilot AI e `Hook Alethe (confirmed)`. Suíte local com 356 testes aprovados, incluindo 15 regressões do launcher.
 - **Validação da intervenção.** Com Codex CLI 0.170.0 e Alethe 24, os três tiers resolveram no `dry-run`. Planos sem tier, política ausente ou inválida e provedor indisponível foram recusados. Em duas chamadas pela assinatura ChatGPT, uma sessão nova confirmou Sol/medium e gravou o estado do hook no diretório do projeto, e um worker somente leitura confirmou Luna/low e retornou `DONE` sem alterações. A suíte existente passou com 341 testes, e Ruff e formatação passaram.
 - **F1-T10 implementada (2026-11-19 UTC).** Candidaturas com rotas por candidato, observações editáveis e histórico gravado junto da transição. `GET /jobs` aceita status da candidatura combinado com candidato e os filtros existentes. A suíte de partida passou com 289 testes. A suíte com a entrega passou com 341 testes. Execução direta no perfil Base da Alethe, com etapas do `plan-execute` e revisão local do diff.
 - **F1-T10 integrada (2026-11-19 UTC).** [PR #20](https://github.com/JoaumPdr/jobpilot-ai/pull/20) mesclado em `e982147` com CI verde. A branch da fase recebeu o merge por fast-forward. A branch da tarefa foi preservada no GitHub.
@@ -77,8 +77,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F1-T10 (PR #20). A próxima tarefa é a F1-T11.
-**Planejamento detalhado.** Criar a ficha da F1-T11 a partir dos critérios no [backlog](BACKLOG.md).
+**Última tarefa integrada.** F1-T10 (PR #20). A F1-T11 está validada localmente.
+**Planejamento detalhado.** [Ficha da F1-T11](tasks/FASE-01/F1-T11.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -110,9 +110,10 @@
 - [x] Integrar a F1-T09 com CI verde (PR #19)
 - [x] Criar ficha e branch da F1-T10, implementar rotas e filtro, validar suíte local e abrir o PR #20
 - [x] Confirmar CI verde, mesclar o PR #20 e marcar o backlog
-- [ ] Criar ficha e branch da F1-T11
-- [ ] Implementar arquivamento e atalho para salvar uma vaga
-- [ ] Validar o fluxo `salva` → `planejada` → `aplicada` em um teste de integração
+- [x] Criar ficha e branch da F1-T11
+- [x] Implementar arquivamento e atalho para salvar uma vaga
+- [x] Validar o fluxo `salva` → `planejada` → `aplicada` em um teste de integração
+- [ ] Publicar a F1-T11, confirmar o CI e integrar o PR
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 

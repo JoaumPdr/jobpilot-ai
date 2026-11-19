@@ -710,6 +710,24 @@ Confirma que a vaga do path é duplicata de outra. **Nada é apagado.**
 Desfaz a marcação e devolve a vaga à revisão. **Resposta:** `204` sem corpo.
 **Erros:** `404` (vaga inexistente), `422 invalid_data` (vaga não está marcada).
 
+### `POST /jobs/{job_id}/archive`
+
+Arquiva a vaga sem corpo de requisição. Retorna `200` com a vaga e
+`is_archived: true`, inclusive se ela já estiver arquivada. Uma vaga ausente
+retorna `404 not_found`.
+
+O arquivamento preserva a vaga e suas candidaturas. Para encontrá-la em
+`GET /jobs`, use `include_archived=true`.
+
+### `POST /candidates/{candidate_id}/jobs/{job_id}/save`
+
+Salva a vaga para o candidato sem corpo de requisição. Retorna `201` com a
+candidatura em `salva` e grava a entrada inicial no histórico. Use o `id`
+retornado para mudar o status pela rota de candidaturas.
+
+Candidato ou vaga ausente retorna `404 not_found`. Se o par já tiver uma
+candidatura, o atalho retorna `409 conflict` e preserva o status e o histórico.
+
 ---
 
 ## Saúde
