@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Última atualização: 2026-11-19 (F1-T09).
+> Revisado em 2026-11-19 (F1-T13). A revisão Alembic ao fim da fase é `000000000004`.
 
 ## Visão geral
 
@@ -13,7 +13,7 @@
   `UPDATE`. Não dependem do relógio da aplicação.
 - **JSONB:** `education`, `languages`, `aliases`, listas de preferência,
   `knockout_rules` e `skills_used` guardam JSON válido no banco; a estrutura
-  interna é validada por Pydantic na camada de serviço (F1-T02).
+  interna é validada pelos schemas Pydantic da API (F1-T02).
 - **Exclusão em cascata:** tudo que pertence ao candidato é removido junto
   (`ON DELETE CASCADE`). O catálogo `skills` **não** é apagado em cascata.
 - **Vagas:** `jobs` guarda a vaga já normalizada; `import_batches` registra a
@@ -33,7 +33,7 @@ erDiagram
     candidates ||--o{ candidate_experiences : "possui"
     skills ||--o{ candidate_skills : "classifica"
     import_batches ||--o{ jobs : "origina"
-    jobs ||--o| jobs : "duplicata confirmada"
+    jobs |o--o{ jobs : "referência de duplicatas confirmadas"
     candidates ||--o{ applications : "possui"
     jobs ||--o{ applications : "recebe"
     applications ||--o{ application_status_history : "registra"
@@ -283,6 +283,8 @@ a vaga só é gravada depois da normalização (F1-T04/T05).
 `(source, external_id)` cobre a duplicata certa; `fingerprint` e `canonical_url`
 têm índices próprios para as camadas seguintes. Duplicata provável **sinaliza**,
 nunca apaga: `duplicate_of_job_id` só é preenchido quando o usuário confirma.
+A similaridade de título na mesma empresa (camada 4) é calculada durante a
+revisão. Arquivar a vaga só altera `is_archived` e preserva suas candidaturas.
 
 ### `applications`
 
@@ -301,12 +303,18 @@ pode ser arquivada. A exclusão física é bloqueada para preservar a referênci
 | `created_at`, `updated_at` | `timestamptz` | default `now()` |
 
 Os status aceitos são `salva`, `planejada`, `aplicada`, `entrevista`, `oferta`,
-`rejeitada` e `encerrada`. As regras de transição serão aplicadas na F1-T10.
+`rejeitada` e `encerrada`. O serviço aplica as
+[regras de transição](api.md#candidaturas). Ao entrar em `aplicada`,
+`applied_at` recebe a mesma data e hora do evento correspondente no histórico.
 
 ### `application_status_history`
 
 Registra o status anterior e o novo status. O histórico acompanha a candidatura
 inclusive na exclusão em cascata.
+O serviço grava a candidatura e seu primeiro evento na mesma transação,
+inclusive pelo atalho de salvar uma vaga. Cada transição atualiza o status e
+insere um evento na mesma transação. Editar apenas as observações da
+candidatura preserva o histórico.
 
 | Coluna | Tipo | Regras |
 |--------|------|--------|
@@ -390,4 +398,5 @@ em `_test` ou for igual ao banco de desenvolvimento.
 O `PLANO.md` §5.1 previa `years` em `candidate_skills`; a decisão de
 2026-11-16 também alocou `years` em `candidate_experiences` (anos na função).
 As duas colunas existem com o mesmo CHECK, mas a duplicidade semântica deve
-ser confirmada com o JP antes de a F1-T02 usar esses campos.
+ser confirmada com o JP. O vínculo de habilidade usa `candidate_skills.years`
+e a experiência usa `candidate_experiences.years`.

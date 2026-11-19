@@ -1,14 +1,16 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T07** — perfil, cadastro manual,
-> importação CSV e revisão de duplicatas de vagas.
+> `GUIA_DOCS_E_GIT.md`). Cobre o núcleo da Fase 1: perfil e preferências,
+> catálogo de vagas e candidaturas com histórico.
 
 - **Base local:** `http://localhost:8000`
-- **Formato:** JSON (`Content-Type: application/json`)
+- **Formato:** corpos em JSON (`Content-Type: application/json`).
+  O [envio de CSV](#post-jobsimport) usa `multipart/form-data`.
 - **Autenticação:** nenhuma no MVP (single-user local; ADR 0007). As tabelas já
   carregam `candidate_id` para o futuro multiusuário.
 - **Documentação interativa:** `GET /docs` (Swagger UI) e `GET /openapi.json`.
+  Siga o [roteiro do README](../README.md#fluxo-da-fase-1) para percorrer a API.
 
 ## Convenções
 
@@ -36,10 +38,10 @@ dos erros, permitindo correlacionar com os logs estruturados.
 
 | `error` | HTTP | Quando |
 |---------|------|--------|
-| `validation_error` | 422 | payload/path inválido (Pydantic) |
-| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência, auto-referência/cadeia na revisão de duplicatas) ou problema do arquivo inteiro na importação CSV |
-| `not_found` | 404 | candidato, preferências, habilidade, experiência ou vaga inexistentes |
-| `conflict` | 409 | e-mail, nome de habilidade, par candidato/habilidade, vaga já existente ou vaga já marcada como duplicata |
+| `validation_error` | 422 | corpo, path ou parâmetros de consulta inválidos (Pydantic) |
+| `invalid_data` | 422 | regra de negócio inválida, como transição de candidatura ou cadeia de duplicatas, ou problema do arquivo inteiro na importação CSV |
+| `not_found` | 404 | candidato, preferências, habilidade, experiência, vaga ou candidatura inexistentes |
+| `conflict` | 409 | conflito de e-mail, habilidade, vaga ou candidatura já existente para o par candidato/vaga |
 | `bad_request` / `method_not_allowed` / … | 4xx | erros HTTP do próprio FastAPI, padronizados |
 | `internal_server_error` | 500 | falha inesperada (sem detalhes internos) |
 
@@ -732,8 +734,9 @@ candidatura, o atalho retorna `409 conflict` e preserva o status e o histórico.
 
 ## Saúde
 
-`GET /health` retorna `200` com o status da aplicação e do banco
-(`healthy`/`degraded`). Não valida o contrato de perfil.
+`GET /health` retorna `200`. Com conexão ao banco, `status` e
+`database.status` são `healthy`. Se a conexão falhar, o status da aplicação
+é `degraded` e `database.status` é `unhealthy`.
 
 ## Candidaturas
 
@@ -752,10 +755,13 @@ O fluxo principal é `salva` → `planejada` → `aplicada` → `entrevista` →
 De qualquer um desses estados, é possível ir para `rejeitada` ou `encerrada`,
 que são terminais. Ao chegar pela primeira vez a `aplicada`, a API preenche
 `applied_at`. Uma transição fora do fluxo retorna `422 invalid_data`.
+Atualizar o status para o mesmo valor ou enviar `status: null` também
+retorna esse erro.
 
 O histórico registra a criação com `from_status: null` e cada transição com
 `from_status`, `to_status`, `changed_at` e `note`. Para acrescentar uma nota ao
-evento, envie `transition_note` junto de `status`, como neste exemplo.
+evento, envie `transition_note` junto de `status`. Enviar apenas a nota
+sem o novo status retorna `422 invalid_data`.
 
 ```json
 {"status": "planejada", "transition_note": "Revisar currículo."}
