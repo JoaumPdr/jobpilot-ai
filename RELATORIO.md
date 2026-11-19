@@ -115,6 +115,12 @@
 - **Decisões e motivos.** Estado e histórico são gravados na mesma transação. Um bloqueio na linha da candidatura serializa atualizações concorrentes e preserva a sequência de transições.
 - **Testes.** 49 casos unitários para o grafo de estados e três testes de API. A suíte completa passou com 341 testes em PostgreSQL.
 
+### F1-T11 — Arquivar e salvar vagas (2026-11-19)
+
+- O arquivamento usa o campo `is_archived` e preserva as candidaturas vinculadas. A listagem continua ocultando vagas arquivadas por padrão.
+- O atalho de salvar reutiliza o serviço de candidaturas, que grava o estado `salva` e a primeira entrada do histórico na mesma transação.
+- Três testes de integração verificam o arquivamento, o fluxo `salva` → `planejada` → `aplicada` e a resposta para referências ausentes. A suíte completa passou com 359 testes em PostgreSQL.
+
 ## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*

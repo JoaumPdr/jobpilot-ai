@@ -41,6 +41,86 @@ def _apply(client: TestClient, path: str, job_id: str) -> str:
     return response.json()["id"]
 
 
+def test_save_job_shortcut_and_application_flow(api_client: TestClient) -> None:
+    candidate_id = _candidate(api_client, "ana")
+    job_id = _job(api_client, "salvar")
+    save_path = f"/candidates/{candidate_id}/jobs/{job_id}/save"
+    collection = f"/candidates/{candidate_id}/applications"
+
+    saved = api_client.post(save_path)
+    assert saved.status_code == 201, saved.text
+    application = saved.json()
+    assert application["candidate_id"] == candidate_id
+    assert application["job_id"] == job_id
+    assert application["status"] == "salva"
+    assert application["applied_at"] is None
+    path = f"{collection}/{application['id']}"
+
+    planned = api_client.patch(path, json={"status": "planejada"})
+    assert planned.status_code == 200
+    assert planned.json()["status"] == "planejada"
+    applied = api_client.patch(path, json={"status": "aplicada"})
+    assert applied.status_code == 200
+    assert applied.json()["status"] == "aplicada"
+    assert api_client.post(save_path).status_code == 409
+    assert [row["id"] for row in api_client.get(collection).json()] == [
+        application["id"]
+    ]
+
+    detail = api_client.get(path)
+    assert detail.status_code == 200
+    assert detail.json()["status"] == "aplicada"
+    history = detail.json()["status_history"]
+    assert [(row["from_status"], row["to_status"]) for row in history] == [
+        (None, "salva"),
+        ("salva", "planejada"),
+        ("planejada", "aplicada"),
+    ]
+    assert applied.json()["applied_at"] == history[-1]["changed_at"]
+
+
+def test_archive_job_hides_it_by_default_and_preserves_application(
+    api_client: TestClient,
+) -> None:
+    candidate_id = _candidate(api_client, "ana")
+    job_id = _job(api_client, "arquivar")
+    collection = f"/candidates/{candidate_id}/applications"
+    application_id = _apply(api_client, collection, job_id)
+
+    path = f"/jobs/{job_id}/archive"
+    for _ in range(2):
+        archived = api_client.post(path)
+        assert archived.status_code == 200, archived.text
+        assert archived.json()["id"] == job_id
+        assert archived.json()["is_archived"] is True
+
+    assert api_client.get("/jobs").json()["items"] == []
+    visible = api_client.get("/jobs", params={"include_archived": "true"})
+    assert visible.status_code == 200
+    assert [item["id"] for item in visible.json()["items"]] == [job_id]
+    detail = api_client.get(f"{collection}/{application_id}")
+    assert detail.status_code == 200
+    assert detail.json()["status"] == "salva"
+    assert len(detail.json()["status_history"]) == 1
+
+
+def test_job_actions_return_not_found_for_missing_references(
+    api_client: TestClient,
+) -> None:
+    candidate_id = _candidate(api_client, "ana")
+    job_id = _job(api_client, "referencia")
+    missing = UUID(int=1)
+
+    for path in (
+        f"/jobs/{missing}/archive",
+        f"/candidates/{missing}/jobs/{job_id}/save",
+        f"/candidates/{candidate_id}/jobs/{missing}/save",
+    ):
+        response = api_client.post(path)
+        assert response.status_code == 404
+        assert response.json()["error"] == "not_found"
+
+
 def test_application_history_and_notes(api_client: TestClient) -> None:
     candidate_id = _candidate(api_client, "ana")
     collection = f"/candidates/{candidate_id}/applications"

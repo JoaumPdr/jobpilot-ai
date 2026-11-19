@@ -13,10 +13,12 @@ from typing import Annotated
 from fastapi import APIRouter, File, Form, Query, Response, UploadFile, status
 
 from app.api.dependencies import (
+    ApplicationServiceDep,
     JobDedupServiceDep,
     JobImportServiceDep,
     JobServiceDep,
 )
+from app.schemas.applications import ApplicationCreate, ApplicationRead
 from app.schemas.dedup import (
     DuplicateConfirm,
     DuplicateGroupList,
@@ -166,3 +168,20 @@ def undo_duplicate_job(job_id: uuid.UUID, service: JobDedupServiceDep) -> Respon
     """Devolve a vaga à revisão, limpando `duplicate_of_job_id`."""
     service.undo_duplicate(job_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/jobs/{job_id}/archive", summary="Arquiva uma vaga")
+def archive_job(job_id: uuid.UUID, service: JobServiceDep) -> JobRead:
+    return JobRead.model_validate(service.archive(job_id))
+
+
+@router.post(
+    "/candidates/{candidate_id}/jobs/{job_id}/save",
+    status_code=status.HTTP_201_CREATED,
+    summary="Salva uma vaga para um candidato",
+)
+def save_job(
+    candidate_id: uuid.UUID, job_id: uuid.UUID, service: ApplicationServiceDep
+) -> ApplicationRead:
+    application = service.create(candidate_id, ApplicationCreate(job_id=job_id))
+    return ApplicationRead.model_validate(application)

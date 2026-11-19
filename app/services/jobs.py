@@ -16,7 +16,7 @@ from typing import Protocol
 
 from sqlalchemy.exc import IntegrityError
 
-from app.core.errors import ConflictError
+from app.core.errors import ConflictError, NotFoundError
 from app.models import Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
 from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
@@ -34,6 +34,8 @@ class JobRepositoryProtocol(Protocol):
 
     def list_page(self, query: JobListQuery) -> list[Job]: ...
 
+    def get(self, job_id: uuid.UUID) -> Job | None: ...
+
     def get_by_source_external_id(
         self, source: str, external_id: str
     ) -> Job | None: ...
@@ -50,7 +52,7 @@ class JobRepositoryProtocol(Protocol):
 
 
 class JobService:
-    """Casos de uso de listagem e cadastro manual de vagas."""
+    """Casos de uso do catálogo de vagas."""
 
     def __init__(self, jobs: JobRepositoryProtocol) -> None:
         self._jobs = jobs
@@ -59,6 +61,15 @@ class JobService:
         """Devolve a página e sinaliza se ainda há vagas para os mesmos filtros."""
         jobs = self._jobs.list_page(query)
         return jobs[: query.limit], len(jobs) > query.limit
+
+    def archive(self, job_id: uuid.UUID) -> Job:
+        """Oculta a vaga na listagem padrão e preserva as relações existentes."""
+        job = self._jobs.get(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+        job.is_archived = True
+        self._jobs.commit()
+        return job
 
     def create_manual(self, data: JobCreate) -> tuple[Job, list[Job]]:
         """Grava a vaga normalizada e devolve as duplicatas prováveis.
