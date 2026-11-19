@@ -234,6 +234,18 @@ class FakeJobRepository:
     def list_by_fingerprint(self, fingerprint: str) -> list[Job]:
         return [job for job in self.items.values() if job.fingerprint == fingerprint]
 
+    def get(self, job_id: uuid.UUID) -> Job | None:
+        return self.items.get(job_id)
+
+    def list_dedup_scan(self, *, limit: int) -> list[Job]:
+        candidates = [
+            job
+            for job in self.items.values()
+            if not job.is_archived and job.duplicate_of_job_id is None
+        ]
+        candidates.sort(key=lambda job: (job.created_at, str(job.id)))
+        return candidates[:limit]
+
     def find_existing_canonical_urls(self, urls: list[str]) -> set[str]:
         wanted = set(urls)
         return {
@@ -255,6 +267,8 @@ class FakeJobRepository:
     def add(self, job: Job) -> Job:
         if job.id is None:
             job.id = uuid.uuid4()
+        if job.created_at is None:
+            job.created_at = datetime.now(UTC)
         self.items[job.id] = job
         return job
 

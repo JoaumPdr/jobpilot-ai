@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T06** — perfil, cadastro manual e
-> importação CSV de vagas.
+> `GUIA_DOCS_E_GIT.md`). Estado atual: **F1-T07** — perfil, cadastro manual,
+> importação CSV e revisão de duplicatas de vagas.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** JSON (`Content-Type: application/json`)
@@ -37,14 +37,15 @@ dos erros, permitindo correlacionar com os logs estruturados.
 | `error` | HTTP | Quando |
 |---------|------|--------|
 | `validation_error` | 422 | payload/path inválido (Pydantic) |
-| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência) ou problema do arquivo inteiro na importação CSV |
-| `not_found` | 404 | candidato, preferências, habilidade ou experiência inexistentes |
-| `conflict` | 409 | e-mail, nome de habilidade, par candidato/habilidade ou vaga já existentes |
+| `invalid_data` | 422 | regra que só pode ser checada com o estado atual (ex.: faixa de datas no `PATCH` de experiência, auto-referência/cadeia na revisão de duplicatas) ou problema do arquivo inteiro na importação CSV |
+| `not_found` | 404 | candidato, preferências, habilidade, experiência ou vaga inexistentes |
+| `conflict` | 409 | e-mail, nome de habilidade, par candidato/habilidade, vaga já existente ou vaga já marcada como duplicata |
 | `bad_request` / `method_not_allowed` / … | 4xx | erros HTTP do próprio FastAPI, padronizados |
 | `internal_server_error` | 500 | falha inesperada (sem detalhes internos) |
 
-`details` aparece em `422` (campos inválidos) e no `409` de vaga duplicada
-(camada que detectou e dados da vaga existente).
+`details` aparece em `422` (campos inválidos, regras de estado e arquivo CSV),
+no `409` de vaga duplicada (camada que detectou e dados da vaga existente) e nos
+erros de revisão de duplicatas (vaga já marcada, cadeia, auto-referência).
 
 ### UUIDs
 
@@ -391,8 +392,8 @@ ou `422 invalid_data`.
 
 ## Vagas
 
-Nesta versão existem o cadastro manual e a importação CSV. Listagem, filtros e
-revisão de duplicatas chegam nas F1-T07/F1-T08.
+Nesta versão existem o cadastro manual, a importação CSV e a revisão de
+duplicatas. Listagem e filtros chegam na F1-T08.
 
 ### `POST /jobs`
 
@@ -443,7 +444,8 @@ fragmento, barra final ou porta padrão).
    com a vaga criada e `duplicates[]` listando as parecidas (`layer = "fingerprint"`).
 
 Nada é apagado nem marcado automaticamente: a confirmação via
-`duplicate_of_job_id` é da F1-T07.
+`duplicate_of_job_id` é feita na revisão de duplicatas (abaixo). A camada 4
+(similaridade textual) só é avaliada nessa revisão.
 
 **Resposta `201`**
 
@@ -584,6 +586,99 @@ item em `errors`, mas conta uma única vez em `rejected`.
 O problema do arquivo inteiro é distinguido do problema de linha justamente por
 não criar lote: nada foi importado, e o usuário corrige o arquivo e reenvia.
 
+### Revisão de duplicatas
+
+O que as camadas 1 e 2 não bloquearam na escrita vira **sugestão** aqui. A
+revisão agrupa vagas por dois critérios:
+
+| `layer` | Critério |
+|---------|----------|
+| `fingerprint` | mesmo hash de empresa + título + localização (camada 3) |
+| `similarity` | títulos parecidos (nota ≥ 85/100) **na mesma empresa** (camada 4) |
+
+Nada é apagado ou mesclado automaticamente: confirmar apenas grava
+`duplicate_of_job_id` na vaga marcada, que continua existindo e aponta para a
+original.
+
+#### `GET /jobs/duplicates`
+
+Lista os grupos suspeitos. Parâmetros opcionais:
+
+- `layer`: `fingerprint` ou `similarity` — filtra pelo critério.
+- `limit`: 1–200 (default `50`) — máximo de grupos devolvidos.
+
+```json
+{
+  "groups": [
+    {
+      "layer": "similarity",
+      "similarity": 95.2,
+      "canonical_job_id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12",
+      "jobs": [
+        {
+          "id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12",
+          "title": "Engenheiro de Dados Sênior",
+          "company": "Empresa X",
+          "location": "São Paulo",
+          "source": "portal-a",
+          "canonical_url": "https://empresa.com/vagas/1",
+          "posted_at": "2026-11-10T09:00:00Z",
+          "created_at": "2026-11-18T12:00:00Z",
+          "duplicate_of_job_id": null
+        },
+        {
+          "id": "7c6d5e4f-3a2b-4c1d-9e8f-0a1b2c3d4e5f",
+          "title": "Engenheiro de Dados Sr.",
+          "company": "Empresa X",
+          "location": "Remoto",
+          "source": "portal-b",
+          "canonical_url": "https://outro.com/vagas/9",
+          "posted_at": null,
+          "created_at": "2026-11-19T01:00:00Z",
+          "duplicate_of_job_id": null
+        }
+      ]
+    }
+  ],
+  "scanned_jobs": 128,
+  "truncated": false
+}
+```
+
+- `jobs` vem da vaga mais antiga para a mais recente; `canonical_job_id` é a mais
+  antiga e a referência natural para confirmar.
+- Vagas arquivadas e já marcadas como duplicata **não** entram na varredura.
+- Cada vaga aparece em no máximo um grupo (o fingerprint tem prioridade sobre a
+  similaridade, para não repetir o mesmo par).
+- `scanned_jobs` informa quantas vagas foram comparadas. `truncated = true`
+  significa que o catálogo passou do teto da varredura (5 000 vagas): reduza o
+  catálogo ou revise por partes.
+- **Erros:** `422 validation_error` para `layer`/`limit` inválidos.
+
+#### `POST /jobs/{job_id}/duplicate`
+
+Confirma que a vaga do path é duplicata de outra. **Nada é apagado.**
+
+```json
+{ "duplicate_of_job_id": "3f1c2a9e-6b7d-4c8a-9e10-2a4b6c8d0e12" }
+```
+
+**Resposta `200`:** a vaga marcada, no formato de `JobRead`, com
+`duplicate_of_job_id` preenchido.
+
+| Situação | Resposta |
+|----------|----------|
+| vaga ou referência inexistente | `404 not_found` |
+| vaga já marcada como duplicata de **outra** | `409 conflict` (desfaça antes) |
+| a referência já é duplicata de outra (cadeia) | `422 invalid_data` |
+| a vaga aponta para si mesma | `422 invalid_data` |
+| repetir a mesma confirmação | `200` idempotente |
+
+#### `DELETE /jobs/{job_id}/duplicate`
+
+Desfaz a marcação e devolve a vaga à revisão. **Resposta:** `204` sem corpo.
+**Erros:** `404` (vaga inexistente), `422 invalid_data` (vaga não está marcada).
+
 ---
 
 ## Saúde
@@ -593,5 +688,5 @@ não criar lote: nada foi importado, e o usuário corrige o arquivo e reenvia.
 
 ## Fora desta versão
 
-- Listagem/filtros de vagas, revisão de duplicatas, matching, candidaturas, LLM
-  e pipeline (fases seguintes).
+- Listagem/filtros de vagas, matching, candidaturas, LLM e pipeline (fases
+  seguintes).

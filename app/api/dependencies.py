@@ -22,6 +22,7 @@ from app.repositories.profile import (
     SkillRepository,
 )
 from app.services.experiences import ExperienceService
+from app.services.job_dedup import JobDedupService
 from app.services.job_import import JobImportService
 from app.services.jobs import JobService
 from app.services.profile import ProfileService
@@ -62,8 +63,14 @@ def get_job_import_service(db: DbSession) -> JobImportService:
     )
 
 
+def get_job_dedup_service(db: DbSession) -> JobDedupService:
+    """Monta o serviço de revisão de duplicatas com a sessão da requisição."""
+    return JobDedupService(JobRepository(db))
+
+
 ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 SkillServiceDep = Annotated[SkillService, Depends(get_skill_service)]
 ExperienceServiceDep = Annotated[ExperienceService, Depends(get_experience_service)]
 JobServiceDep = Annotated[JobService, Depends(get_job_service)]
 JobImportServiceDep = Annotated[JobImportService, Depends(get_job_import_service)]
+JobDedupServiceDep = Annotated[JobDedupService, Depends(get_job_dedup_service)]

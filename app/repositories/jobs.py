@@ -7,6 +7,7 @@ dublê em memória e a otimização (índice, limite, ordenação) mora em um s�
 
 from __future__ import annotations
 
+import uuid
 from collections.abc import Sequence
 
 from sqlalchemy import select, tuple_
@@ -51,6 +52,24 @@ class JobRepository(BaseRepository):
             .where(Job.fingerprint == fingerprint)
             .order_by(Job.created_at)
             .limit(MAX_FINGERPRINT_MATCHES)
+        )
+        return list(self._db.scalars(stmt))
+
+    def get(self, job_id: uuid.UUID) -> Job | None:
+        """Busca pelo identificador, sem carregar relações."""
+        return self._db.get(Job, job_id)
+
+    def list_dedup_scan(self, *, limit: int) -> list[Job]:
+        """Vagas que ainda podem ser revisadas, da mais antiga para a mais nova.
+
+        Arquivadas e já confirmadas como duplicata ficam de fora: a revisão só
+        interessa ao que ainda não teve decisão.
+        """
+        stmt = (
+            select(Job)
+            .where(Job.is_archived.is_(False), Job.duplicate_of_job_id.is_(None))
+            .order_by(Job.created_at, Job.id)
+            .limit(limit)
         )
         return list(self._db.scalars(stmt))
 
