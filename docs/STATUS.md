@@ -17,12 +17,12 @@
 | **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T06.md` (a criar ao iniciar) |
 | **Branch da tarefa** | `feat/f1-t06-importacao-csv` (a criar a partir da fase) |
 | **Estado da tarefa** | não iniciada — ficha e branch a criar |
-| **Último commit** | `0a3ca2b` — Merge pull request #13 (F1-T05) |
+| **Último commit** | `163ea6b` — docs(status): registrar merge do PR #13 e proxima F1-T06 (o commit deste arquivo é posterior e só ajusta estes campos) |
 | **Testes** | verdes (201 passed no merge da F1-T05) |
-| **CI** | verde no merge do PR #13 na `phase/01-nucleo-sem-ia` (run `44439397111`) |
+| **CI** | verde no merge do PR #13 (run `44439397111`) e no push do registro de STATUS (run `44439591153`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | em dia |
-| **Último push** | 2026-11-19 01:46 (UTC) — merge do PR #13 na `phase/01-nucleo-sem-ia` |
+| **Último push** | 2026-11-19 01:48 (UTC) — registro de STATUS pós-PR #13 na `phase/01-nucleo-sem-ia` |
 | **PR aberto** | nenhum após a integração do PR #13 |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **MCP do GitHub** | indisponível; `gh` CLI autenticado usado como alternativa (PRs e CI consultados) |
