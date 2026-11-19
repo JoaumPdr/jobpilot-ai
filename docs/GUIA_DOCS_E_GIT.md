@@ -38,6 +38,7 @@
 | Nova rota / alteração de contrato | `docs/api.md`, README (se afetar uso) |
 | Nova migração / tabela / coluna | `docs/data-model.md` |
 | Nova variável de ambiente | `.env.example`, README (seção configuração) |
+| Mudança no pacote local, na persistência ou nos procedimentos de backup e restauração | README (pré-requisitos, configuração e execução) e procedimentos operacionais correspondentes. Na F7-T09, registrar a evidência de instalação limpa no `RELATORIO.md` |
 | Mudança de regra de score/peso | `docs/matching-methodology.md`, incrementar `scoring_version`, `RELATORIO.md` |
 | Novo prompt ou mudança de prompt | `prompts/` (nova `prompt_version`), `docs/llm-strategy.md` |
 | Mudança de fluxo/nó do pipeline | `docs/pipeline.md`, `design.md` |
@@ -49,7 +50,7 @@
 1. Nome, **link do repositório no GitHub e badge de CI**, descrição em 2–3 linhas e **objetivo do repositório** (portfólio + demonstração/estudo de engenharia de dados e **orquestração multiagente**, desenvolvido com apoio da Alethe e arquivos de instruções).
 2. **Princípios** (recomenda e prepara; usuário decide; sem envio automático; sem inventar fatos).
 3. Status atual (fase) e roadmap resumido com links.
-4. Pré-requisitos (incluindo **`uv`** e Docker), instalação (`uv sync`), configuração (`.env`), execução, testes e lint (sempre via `uv run`).
+4. Para desenvolvimento, documentar pré-requisitos (incluindo **`uv`** e Docker), instalação (`uv sync`), configuração (`.env`), execução, testes e lint (via `uv run`). Quando o pacote local for entregue, documentar separadamente os pré-requisitos e a instalação por Docker Compose, a configuração inicial, o acesso à interface e os procedimentos de backup e restauração ou seus links.
 5. Arquitetura resumida com diagrama e link para `design.md`.
 6. Estrutura de pastas.
 7. Como contribuir/retomar o desenvolvimento (aponta para `docs/STATUS.md` e `docs/ALETHE_INSTRUCOES.md`).
