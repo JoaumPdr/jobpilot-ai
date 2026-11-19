@@ -16,7 +16,7 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 ## Status Atual
 
-**Fase 0 — Fundação** (em andamento)
+**Fase 1 — Núcleo sem IA** (em andamento)
 
 Roadmap:
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
@@ -26,7 +26,7 @@ Roadmap:
 - [ ] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
 - [ ] Fase 5: Assistente de currículo → v0.2.0
 - [ ] Fase 6: Dashboard e analytics → v0.3.0
-- [ ] Fase 7: Hardening e release → **v1.0.0**
+- [ ] Fase 7: Hardening e release → **v1.0.0** com distribuição local por Docker Compose, interface no navegador, configuração documentada, dados persistentes e backup/restauração testados em instalação limpa
 
 ## Pré-requisitos
 
