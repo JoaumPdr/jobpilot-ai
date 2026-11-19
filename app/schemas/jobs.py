@@ -178,6 +178,14 @@ class JobListQuery(BaseModel):
     limit: int = Field(default=50, ge=1, le=100)
     offset: int = Field(default=0, ge=0, le=2**63 - 1)
 
+    @field_validator("q", "location", "source")
+    @classmethod
+    def _validate_filter_text(cls, value: str | None) -> str | None:
+        """Rejeita o caractere nulo antes de enviar o texto ao PostgreSQL."""
+        if value is not None and "\x00" in value:
+            raise ValueError("O filtro não pode conter o caractere nulo.")
+        return value
+
     @model_validator(mode="after")
     def _validate_posted_range(self) -> JobListQuery:
         if (

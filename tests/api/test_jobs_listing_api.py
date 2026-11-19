@@ -166,6 +166,7 @@ def test_list_jobs_paginates_with_stable_order_and_empty_page(
         {"work_mode": "inválido"},
         {"seniority": "inválido"},
         {"q": "  "},
+        {"q": "dados\x00"},
         {"include_duplicates": "não"},
         {"posted_from": "2026-11-19T00:00:00"},
         {"posted_from": "2026-11-19T00:00:00Z", "posted_to": "2026-11-18T00:00:00Z"},

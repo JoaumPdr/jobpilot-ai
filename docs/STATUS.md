@@ -18,12 +18,12 @@
 | **Branch da tarefa** | `feat/f1-t08-listagem-filtros` |
 | **Estado da tarefa** | implementada, pendente de integração |
 | **Último commit da fase confirmado** | `18dd9be` — merge do PR #17 (planejamento da distribuição). Último merge funcional da fase: `430dc17` (F1-T07) |
-| **Testes** | **275 passed** com PostgreSQL. São 22 testes novos, incluindo a medição do RNF-09 com 10 mil vagas. Ruff e formatação verdes |
+| **Testes** | **276 passed** com PostgreSQL. São 23 testes novos, incluindo a medição do RNF-09 com 10 mil vagas. Ruff e formatação verdes |
 | **CI** | último confirmado no PR #17 (run `44463322179`) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #17 |
 | **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `18dd9be` do PR #17 na fase |
-| **PR atual** | integração da F1-T08 para `phase/01-nucleo-sem-ia` |
+| **PR atual** | [#18](https://github.com/JoaumPdr/jobpilot-ai/pull/18) — F1-T08 para `phase/01-nucleo-sem-ia` |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
