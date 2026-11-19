@@ -109,6 +109,12 @@
 - **Decisões e motivos.** A unicidade por candidato e vaga evita registros concorrentes duplicados. A exclusão de perfil remove seus históricos, e as vagas vinculadas podem ser arquivadas com o histórico preservado.
 - **Testes.** 13 testes de constraints e 289 testes na suíte completa. O ciclo de migração validou a preservação de registros de perfil e vaga em PostgreSQL. A comparação do schema detectou somente duas diferenças de índices já presentes na revisão anterior.
 
+### F1-T10 — Serviço e rotas de candidaturas (2026-11-19)
+
+- **O que foi feito.** Rotas de criação, listagem, consulta e edição de candidaturas por candidato. O filtro por status de candidatura combina com os filtros de `GET /jobs`.
+- **Decisões e motivos.** Estado e histórico são gravados na mesma transação. Um bloqueio na linha da candidatura serializa atualizações concorrentes e preserva a sequência de transições.
+- **Testes.** 49 casos unitários para o grafo de estados e três testes de API. A suíte completa passou com 341 testes em PostgreSQL.
+
 ## Fases 2–7
 
 *(A serem preenchidas conforme avanço das fases)*

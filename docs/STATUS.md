@@ -14,27 +14,28 @@
 | **Fase atual** | Fase 1 — Núcleo sem IA (**em andamento: F1-T01 a F1-T09 integradas**) |
 | **Branch da fase** | `phase/01-nucleo-sem-ia` (criada a partir de `develop` e publicada) |
 | **Tarefa atual** | F1-T10 — Serviço e rotas de candidaturas e filtro por status |
-| **Ficha da tarefa** | `docs/tasks/FASE-01/F1-T10.md` (a criar ao iniciar) |
-| **Branch da tarefa** | `feat/f1-t10-fluxo-candidaturas` (a criar a partir da fase) |
-| **Estado da tarefa** | não iniciada |
+| **Ficha da tarefa** | [F1-T10](tasks/FASE-01/F1-T10.md) |
+| **Branch da tarefa** | `feat/f1-t10-fluxo-candidaturas` |
+| **Estado da tarefa** | implementada, aguardando integração |
 | **Último merge funcional da fase** | `1b7f7da` — PR #19 (F1-T09), seguido pelo registro desta integração |
-| **Testes** | **289 passed** com PostgreSQL, incluindo 13 testes novos. Ciclo de migração validado. Ruff e formatação verdes |
-| **CI** | verde no PR #19 (run `44466785158`) |
+| **Testes** | **341 passed** com PostgreSQL, incluindo 52 testes novos. Ruff e formatação verdes |
+| **CI** | conferir a execução do head publicado no PR #20 |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/01-nucleo-sem-ia` atualizada por fast-forward após o PR #19 |
-| **Último estado remoto confirmado** | 2026-11-19 (UTC), merge `1b7f7da` do PR #19 na fase |
-| **PR atual** | nenhum para a F1-T10 |
+| **Sincronização com o remoto** | branch da tarefa publicada com upstream |
+| **Último estado remoto confirmado** | fase em `e1c9514`, registro posterior ao merge do PR #19 |
+| **PR atual** | [PR #20](https://github.com/JoaumPdr/jobpilot-ai/pull/20) para a branch da fase |
 | **Última tag publicada** | `fase-00` → aponta para `cbbeb65` (tag anotada `28f5be7`, merge commit em `develop`, CI verde) |
 | **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Criar a ficha e a branch da F1-T10 e preparar o serviço e as rotas de candidaturas, com histórico de transições e filtro por status na listagem de vagas.
+> Conferir o CI do PR #20 e, com autorização e CI verde, integrar a F1-T10 e registrar a retomada na F1-T11.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F1-T10 implementada (2026-11-19 UTC).** Candidaturas com rotas por candidato, observações editáveis e histórico gravado junto da transição. `GET /jobs` aceita status da candidatura combinado com candidato e os filtros existentes. A suíte de partida passou com 289 testes. A suíte com a entrega passou com 341 testes. Execução direta no perfil Base da Alethe, com etapas do `plan-execute` e revisão local do diff.
 - **F1-T09 implementada (2026-11-19 UTC):** modelos de candidaturas e histórico, com unicidade por par candidato/vaga, FKs e validação de status na migração `000000000004`. Suíte com 289 testes e ciclo de migração validado em PostgreSQL.
 - **F1-T09 integrada (2026-11-19 UTC):** [PR #19](https://github.com/JoaumPdr/jobpilot-ai/pull/19) mesclado em `1b7f7da` com CI verde. Título do PR com o identificador `(F1-T09)` ao final, conforme solicitado pelo JP.
 - **F1-T08 implementada (2026-11-19 UTC):** `GET /jobs` com filtros combináveis, paginação estável por data de cadastro e UUID, e opções independentes para incluir arquivadas e duplicatas confirmadas. O JP aprovou entregar o filtro por status de candidatura na F1-T10, após o modelo da F1-T09.
@@ -72,8 +73,8 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada:** F1-T09 (PR #19). **Próxima:** F1-T10 — serviço e rotas de candidaturas e filtro por status.
-**Planejamento detalhado:** ficha da F1-T09 encerrada. Criar a ficha da F1-T10 ao iniciar. Critérios canônicos: `docs/BACKLOG.md` → F1-T10.
+**Última tarefa integrada.** F1-T09 (PR #19). A F1-T10 está em validação para integração no PR #20.
+**Planejamento detalhado.** [Ficha da F1-T10](tasks/FASE-01/F1-T10.md).
 
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
@@ -103,6 +104,8 @@
 - [x] Integrar a F1-T08 com CI verde (PR #18)
 - [x] Modelos, migração, testes e documentação da F1-T09
 - [x] Integrar a F1-T09 com CI verde (PR #19)
+- [x] Criar ficha e branch da F1-T10, implementar rotas e filtro, validar suíte local e abrir o PR #20
+- [ ] Confirmar CI verde, mesclar o PR #20 com autorização e marcar o backlog
 
 ### Itens fora do escopo da Fase 0 (resolvido)
 
