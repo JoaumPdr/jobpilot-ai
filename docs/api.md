@@ -407,21 +407,24 @@ filtros forem os mesmos.
 | `seniority` | `estágio`, `júnior`, `pleno`, `sênior`, `especialista` ou `desconhecido`. |
 | `source` | Nome exato da fonte cadastrada. |
 | `posted_from`, `posted_to` | Limites inclusivos e opcionais para `posted_at`. Use data e hora com fuso, como `2026-11-18T12:00:00Z`. Vagas sem data de publicação ficam fora quando houver qualquer limite. |
+| `application_status` | Status atual da candidatura. Aceita `salva`, `planejada`, `aplicada`, `entrevista`, `oferta`, `rejeitada` ou `encerrada`. |
+| `candidate_id` | UUID do candidato. Obrigatório com `application_status`. Quando usado sozinho, mantém a listagem geral. |
 | `include_archived` | Use `true` para incluir arquivadas. Padrão `false`. |
 | `include_duplicates` | Use `true` para incluir duplicatas confirmadas. Padrão `false`. |
 | `limit`, `offset` | Tamanho da página de 1 a 100 (padrão 50) e quantidade de registros a pular (padrão 0). |
 
 Os filtros são combinados por interseção. Por exemplo, `GET /jobs?q=dados&work_mode=remoto&limit=20`
 lista a primeira página das vagas remotas que correspondem ao texto.
+Com `candidate_id` e `application_status`, a página inclui somente vagas com
+candidatura desse candidato no status informado.
 
 **Resposta `200`.** O corpo contém `items` (vagas no mesmo formato `JobRead`
 usado pelo cadastro), `limit`, `offset` e `has_more`. Quando `has_more` for
 `true`, mantenha os filtros e use `offset + limit` para a próxima página.
 Páginas sem resultados retornam `items: []` e `has_more: false`.
 
-**Erro `422 validation_error`.** Parâmetros desconhecidos, valores inválidos
-ou intervalo invertido. O filtro por status da candidatura está previsto
-para a F1-T10, após os modelos de candidaturas da F1-T09.
+**Erro `422 validation_error`.** Parâmetros desconhecidos, valores inválidos,
+intervalo invertido ou filtro de status sem `candidate_id`.
 
 ### `POST /jobs`
 
@@ -714,7 +717,32 @@ Desfaz a marcação e devolve a vaga à revisão. **Resposta:** `204` sem corpo.
 `GET /health` retorna `200` com o status da aplicação e do banco
 (`healthy`/`degraded`). Não valida o contrato de perfil.
 
+## Candidaturas
+
+| Método e rota | Resposta |
+|---|---|
+| `POST /candidates/{candidate_id}/applications` | `201` com a candidatura criada em `salva`. Envie `job_id` e, opcionalmente, `notes`. Candidato ou vaga ausente retorna `404`. Uma candidatura existente para o mesmo par retorna `409`. |
+| `GET /candidates/{candidate_id}/applications` | `200` com as candidaturas do candidato, das mais recentes às mais antigas. Candidato ausente retorna `404`. |
+| `GET /candidates/{candidate_id}/applications/{application_id}` | `200` com a candidatura e seu `status_history`, do mais antigo ao mais recente. Candidatura ausente para esse candidato retorna `404`. |
+| `PATCH /candidates/{candidate_id}/applications/{application_id}` | `200` com a candidatura atualizada. Envie `status`, `notes` ou ambos. Candidatura ausente para esse candidato retorna `404`. |
+
+A candidatura contém `id`, `candidate_id`, `job_id`, `status`, `notes`,
+`applied_at`, `created_at` e `updated_at`. Para limpar as observações, envie
+`{"notes": null}`. A edição de observações preserva o histórico de status.
+
+O fluxo principal é `salva` → `planejada` → `aplicada` → `entrevista` → `oferta`.
+De qualquer um desses estados, é possível ir para `rejeitada` ou `encerrada`,
+que são terminais. Ao chegar pela primeira vez a `aplicada`, a API preenche
+`applied_at`. Uma transição fora do fluxo retorna `422 invalid_data`.
+
+O histórico registra a criação com `from_status: null` e cada transição com
+`from_status`, `to_status`, `changed_at` e `note`. Para acrescentar uma nota ao
+evento, envie `transition_note` junto de `status`, como neste exemplo.
+
+```json
+{"status": "planejada", "transition_note": "Revisar currículo."}
+```
+
 ## Fora desta versão
 
-- Filtro por status da candidatura, matching, candidaturas, LLM e pipeline (fases
-  seguintes).
+- Matching, LLM e pipeline.

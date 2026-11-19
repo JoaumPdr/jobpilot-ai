@@ -78,7 +78,13 @@ class Application(Base):
     candidate: Mapped[Candidate] = relationship("Candidate")
     job: Mapped[Job] = relationship("Job")
     status_history: Mapped[list[ApplicationStatusHistory]] = relationship(
-        back_populates="application", cascade="all, delete", passive_deletes=True
+        back_populates="application",
+        cascade="all, delete",
+        passive_deletes=True,
+        order_by=lambda: (
+            ApplicationStatusHistory.changed_at,
+            ApplicationStatusHistory.id,
+        ),
     )
 
     __table_args__ = (

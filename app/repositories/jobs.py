@@ -13,6 +13,7 @@ from collections.abc import Sequence
 from sqlalchemy import or_, select, tuple_
 
 from app.models import Job
+from app.models.application import Application
 from app.repositories.base import BaseRepository
 from app.schemas.jobs import JobListQuery
 
@@ -48,6 +49,16 @@ class JobRepository(BaseRepository):
             stmt = stmt.where(Job.posted_at >= query.posted_from)
         if query.posted_to is not None:
             stmt = stmt.where(Job.posted_at <= query.posted_to)
+        if query.application_status is not None:
+            stmt = stmt.where(
+                select(Application.id)
+                .where(
+                    Application.job_id == Job.id,
+                    Application.candidate_id == query.candidate_id,
+                    Application.status == query.application_status.value,
+                )
+                .exists()
+            )
         if not query.include_archived:
             stmt = stmt.where(Job.is_archived.is_(False))
         if not query.include_duplicates:

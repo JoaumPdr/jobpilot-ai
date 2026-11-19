@@ -27,6 +27,7 @@ from pydantic import (
 )
 
 from app.models import Job
+from app.models.application import ApplicationStatus
 from app.models.job import Seniority, WorkMode
 from app.services.normalization import canonicalize_url
 
@@ -173,6 +174,8 @@ class JobListQuery(BaseModel):
     source: str | None = Field(default=None, min_length=1, max_length=100)
     posted_from: AwareDatetime | None = None
     posted_to: AwareDatetime | None = None
+    candidate_id: uuid.UUID | None = None
+    application_status: ApplicationStatus | None = None
     include_archived: bool = False
     include_duplicates: bool = False
     limit: int = Field(default=50, ge=1, le=100)
@@ -187,7 +190,9 @@ class JobListQuery(BaseModel):
         return value
 
     @model_validator(mode="after")
-    def _validate_posted_range(self) -> JobListQuery:
+    def _validate_filter_combination(self) -> JobListQuery:
+        if self.application_status is not None and self.candidate_id is None:
+            raise ValueError("Informe candidate_id ao filtrar por application_status.")
         if (
             self.posted_from is not None
             and self.posted_to is not None
