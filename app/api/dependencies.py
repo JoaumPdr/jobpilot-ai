@@ -12,6 +12,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.repositories.applications import ApplicationRepository
 from app.repositories.imports import ImportBatchRepository
 from app.repositories.jobs import JobRepository
 from app.repositories.profile import (
@@ -21,6 +22,7 @@ from app.repositories.profile import (
     PreferenceRepository,
     SkillRepository,
 )
+from app.services.applications import ApplicationService
 from app.services.experiences import ExperienceService
 from app.services.job_dedup import JobDedupService
 from app.services.job_import import JobImportService
@@ -68,6 +70,14 @@ def get_job_dedup_service(db: DbSession) -> JobDedupService:
     return JobDedupService(JobRepository(db))
 
 
+def get_application_service(db: DbSession) -> ApplicationService:
+    """Monta os repositórios que participam da mesma transação."""
+    return ApplicationService(
+        ApplicationRepository(db), CandidateRepository(db), JobRepository(db)
+    )
+
+
+ApplicationServiceDep = Annotated[ApplicationService, Depends(get_application_service)]
 ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 SkillServiceDep = Annotated[SkillService, Depends(get_skill_service)]
 ExperienceServiceDep = Annotated[ExperienceService, Depends(get_experience_service)]
