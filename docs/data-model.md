@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Revisado em 2026-11-19 (F1-T13). A revisão Alembic ao fim da fase é `000000000004`.
+> Revisado em 2026-11-23 (F2-T02). A revisão Alembic atual é `000000000005`.
 
 ## Visão geral
 
@@ -21,7 +21,8 @@
   duplicata usa `ON DELETE SET NULL` — nada é perdido em cascata.
 - **Migrações:** `migrations/versions/000000000002_profile_tables.py` (perfil) e
   `000000000003_job_tables.py` (vagas), seguidas por
-  `000000000004_application_tables.py` (candidaturas). Cada revisão tem
+  `000000000004_application_tables.py` (candidaturas) e
+  `000000000005_job_skills.py` (requisitos extraídos). Cada revisão tem
   `upgrade` e `downgrade`.
 
 ## Diagrama
@@ -36,6 +37,8 @@ erDiagram
     jobs |o--o{ jobs : "referência de duplicatas confirmadas"
     candidates ||--o{ applications : "possui"
     jobs ||--o{ applications : "recebe"
+    jobs ||--o{ job_skills : "requer"
+    skills ||--o{ job_skills : "identifica"
     applications ||--o{ application_status_history : "registra"
 
     candidates {
@@ -132,6 +135,17 @@ erDiagram
         uuid duplicate_of_job_id FK "opcional"
         timestamptz created_at
         timestamptz updated_at
+    }
+
+    job_skills {
+        uuid id PK
+        uuid job_id FK
+        uuid skill_id FK
+        varchar requirement_type "obrigatorio ou desejavel"
+        float weight "opcional"
+        float confidence "0 a 1"
+        text evidence_snippet "trecho literal"
+        varchar extraction_method
     }
 
     applications {
@@ -388,9 +402,22 @@ O banco de teste é isolado (`jobpilot_test`), criado pela fixture a partir de
 `alembic upgrade head` na sessão. A fixture **aborta** se o alvo não terminar
 em `_test` ou for igual ao banco de desenvolvimento.
 
+## Requisitos extraídos (`job_skills`, F2-T02)
+
+Cada par `(job_id, skill_id)` é único. Apagar uma vaga remove seus requisitos
+em cascata. A referência ao catálogo `skills` impede a exclusão de uma
+habilidade ainda usada por uma vaga. `skill_id` tem índice próprio.
+
+A extração grava `extraction_method = deterministico`, tipo obrigatório ou
+desejável, confiança entre 0 e 1 e um trecho literal da descrição. O peso
+fica nulo até a etapa de score. Cadastro e importação gravam a extração na
+transação da vaga. O serviço `JobService.refresh_requirements(job_id)`
+reprocessa uma vaga existente e substitui o conjunto anterior sob bloqueio
+da vaga. O downgrade remove `job_skills` e preserva vagas e catálogo.
+
 ## Próximas tabelas (fora desta tarefa)
 
-`job_skills`, `job_matches`, `llm_cache`, `pipeline_runs`, `resume_versions` e
+`job_matches`, `llm_cache`, `pipeline_runs`, `resume_versions` e
 `interviews` (ver `PLANO.md` §5).
 
 ## Pendência registrada

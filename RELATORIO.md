@@ -145,6 +145,17 @@
 - O catálogo rejeita aliases ambíguos no carregamento. O relatório agrega termos desconhecidos em memória e ordena por frequência, com desempate alfabético. [Ficha da F2-T01](docs/tasks/FASE-02/F2-T01.md)
 - A suíte com PostgreSQL passou com 387 testes, 27 sobre a taxonomia. Cobertura de linhas de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação passaram.
 
+### F2-T02 — Extrator determinístico de requisitos (2026-11-23)
+
+- O extrator classifica habilidades da taxonomia como obrigatórias ou desejáveis
+  a partir de seções e gatilhos em português e inglês. Guarda a confiança da
+  regra e um trecho literal da vaga. [Ficha da F2-T02](docs/tasks/FASE-02/F2-T02.md)
+- A migração `000000000005` adiciona `job_skills`. Cadastro manual e importação
+  persistem os requisitos na transação da vaga, e o serviço permite reprocessar
+  vagas anteriores. [Modelo de dados](docs/data-model.md#requisitos-extraídos-job_skills-f2-t02)
+- A suíte passou com 400 testes em PostgreSQL, 13 novos. Cobertura de linhas de
+  96,74% em `app` e 95,17% em `app/services`. Ruff e formatação passaram.
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

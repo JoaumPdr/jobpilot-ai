@@ -16,6 +16,7 @@ from app.models.candidate import Candidate
 from app.models.experience import CandidateExperience
 from app.models.import_batch import ImportBatch, ImportKind
 from app.models.job import Job, Seniority, WorkMode
+from app.models.job_skill import JobSkill
 from app.models.preferences import CandidatePreference
 from app.models.skill import CandidateSkill, Skill
 
@@ -31,6 +32,7 @@ __all__ = [
     "ImportBatch",
     "ImportKind",
     "Job",
+    "JobSkill",
     "Seniority",
     "Skill",
     "WorkMode",
