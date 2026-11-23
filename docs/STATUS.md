@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-23 (UTC) |
 | **Fase atual** | Fase 2 — Matching |
 | **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
-| **Tarefa atual** | F2-T01 — Taxonomia de skills, em `feat/f2-t01-taxonomia-skills` |
-| **Ficha da tarefa** | [F2-T01](tasks/FASE-02/F2-T01.md) |
-| **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
+| **Última tarefa integrada** | [F2-T01 — Taxonomia de skills](tasks/FASE-02/F2-T01.md), em `62649a8` |
+| **Próxima tarefa** | F2-T02 — Extrator determinístico de requisitos |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **387 testes aprovados** com PostgreSQL, 27 novos. Cobertura de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação verdes |
-| **CI** | Conferir o CI do [PR #28 da F2-T01](https://github.com/JoaumPdr/jobpilot-ai/pull/28) antes de integrar |
+| **CI** | [CI do PR #28](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45279893833) aprovado na revisão `6b109a6` antes do merge |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` local e no GitHub conferidos em `e8d65d2`. As branches `phase/02-matching` e `feat/f2-t01-taxonomia-skills` foram publicadas |
+| **Sincronização com o remoto** | `phase/02-matching` atualizada localmente por fast-forward após o merge do PR #28. Branch da F2-T01 preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | MCP consultou branches, mas retornou 403 ao abrir PR. `gh` autenticado autorizado para abrir e acompanhar o PR #28 |
+| **GitHub** | `gh` autenticado usado com autorização para abrir, acompanhar e mesclar o PR #28. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir os checks do [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) com `gh pr checks 28` antes da integração em `phase/02-matching`.
+> Ler os critérios da F2-T02 no backlog e preparar a tarefa a partir de `phase/02-matching` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T01 integrada (2026-11-23 UTC).** O [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) foi mesclado com histórico e autorização em `62649a8`, após CI verde na revisão `6b109a6`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T02.
 - **PR da F2-T01 aberto (2026-11-23 UTC).** O [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) foi aberto com `gh` autenticado após autorização do JP. O MCP do GitHub recusou a abertura com 403.
 - **F2-T01 implementada (2026-11-23 UTC).** Catálogo em TOML com 184 habilidades em 9 categorias, busca por nome ou alias e relatório em memória dos termos não reconhecidos. A suíte de partida teve 360 testes aprovados e a da entrega, 387. Política Base e hook passivo do JobPilot confirmados. Execução direta em `gpt-6.2-sol` com esforço `medium`.
 - **F1-GATE concluído (2026-11-19 UTC).** O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) foi mesclado com autorização em `bbea363`. O CI do merge passou em `develop`, e a tag anotada `fase-01` foi publicada e conferida no GitHub. Ponto de retomada na F2-T01.
@@ -86,12 +87,12 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F1-GATE](tasks/FASE-01/F1-GATE.md), PR #26.
-**Tarefa atual.** [F2-T01](tasks/FASE-02/F2-T01.md), com implementação validada.
+**Última tarefa integrada.** [F2-T01](tasks/FASE-02/F2-T01.md), PR #28.
+**Próxima tarefa.** F2-T02, conforme os critérios no [backlog](BACKLOG.md).
 
 - [x] Criar as branches da Fase 2 e da F2-T01 a partir de `develop` sincronizada
 - [x] Implementar e testar o catálogo, o índice de aliases e o relatório
-- [ ] Confirmar o CI do PR e integrar a F2-T01 na branch da fase
+- [x] Confirmar o CI do PR e integrar a F2-T01 na branch da fase
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
@@ -148,7 +149,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | em andamento | — | F2-T01 em integração |
+| 2 — Matching | em andamento | — | F2-T01 integrada, F2-T02 por iniciar |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
