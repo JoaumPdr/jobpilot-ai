@@ -137,6 +137,14 @@
 - A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
 - O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) integrou a fase em `develop` com histórico no commit `bbea363`. Depois do [CI verde em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327), a tag anotada [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) foi publicada nesse commit.
 
-## Fases 2–7
+## Fase 2 — Matching
+
+### F2-T01 — Taxonomia de skills (2026-11-23)
+
+- O [catálogo TOML](data/taxonomy/skills.toml) reúne 184 habilidades em 9 categorias, com aliases em português e inglês. A consulta ignora caixa, acentos e variações de espaço, e preserva pontuação significativa em termos como `C++` e `C#`.
+- O catálogo rejeita aliases ambíguos no carregamento. O relatório agrega termos desconhecidos em memória e ordena por frequência, com desempate alfabético. [Ficha da F2-T01](docs/tasks/FASE-02/F2-T01.md)
+- A suíte com PostgreSQL passou com 387 testes, 27 sobre a taxonomia. Cobertura de linhas de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação passaram.
+
+## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

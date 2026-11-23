@@ -79,7 +79,7 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] F2-T01 | **Taxonomia de skills** (arquivo versionado em `data/`, categorias, aliases PT/EN) + serviço de normalização de termos | F1-GATE | Pelo menos ~150 skills iniciais de tecnologia/dados; busca por alias; relatório de termos não reconhecidos; testes |
+| [x] F2-T01 | **Taxonomia de skills** (arquivo versionado em `data/`, categorias, aliases PT/EN) + serviço de normalização de termos. [Ficha](tasks/FASE-02/F2-T01.md) | F1-GATE | Pelo menos ~150 skills iniciais de tecnologia/dados; busca por alias; relatório de termos não reconhecidos; testes |
 | [ ] F2-T02 | **Extrator determinístico de requisitos** (seções "requisitos/diferenciais", palavras-gatilho, taxonomia) → `job_skills` | F2-T01 | Classifica obrigatório vs desejável com `confidence` e `evidence_snippet`; funciona em PT e EN; função pura testada |
 | [ ] F2-T03 | **Filtros eliminatórios** (knockouts) separados do score | F1-GATE | Flags geradas a partir de `knockout_rules` e preferências; vaga com flag não entra na média; testes por regra |
 | [ ] F2-T04 | **Score determinístico explicável** + configuração de pesos versionada + `scoring_version` | F2-T02, F2-T03 | Fórmula e níveis de correspondência conforme `PLANO.md` §7; "não confirmado" fora do cálculo e listado; mesma entrada → mesmo score; `docs/matching-methodology.md` criado |
