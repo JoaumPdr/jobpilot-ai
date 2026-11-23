@@ -14,11 +14,11 @@
 | **Fase atual** | Fase 2 — Matching |
 | **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
 | **Última tarefa integrada** | [F2-T02 — Extrator determinístico de requisitos](tasks/FASE-02/F2-T02.md), em `24ce540` |
-| **Próxima tarefa** | F2-T03 — Filtros eliminatórios |
-| **Estado da próxima tarefa** | não iniciada |
+| **Tarefa atual** | [F2-T03 — Filtros eliminatórios](tasks/FASE-02/F2-T03.md), em `feat/f2-t03-filtros-eliminatorios` |
+| **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
-| **Testes** | **400 testes aprovados** com PostgreSQL, 13 novos. Cobertura de 96,74% em `app` e 95,17% em `app/services`. Ruff e formatação verdes |
-| **CI** | [CI do PR #29](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45290129875) aprovado na revisão `e9ac9ec` antes do merge |
+| **Testes** | **420 testes aprovados** com PostgreSQL, 20 novos. Cobertura de 96,90% em `app` e 95,27% em `app/services`. Ruff e formatação verdes |
+| **CI** | Conferir o CI do PR da F2-T03 antes de integrar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | `phase/02-matching` atualizada por fast-forward após o merge do PR #29. Branch da F2-T02 preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
@@ -28,12 +28,13 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ler os critérios da F2-T03 no backlog e preparar a tarefa a partir de `phase/02-matching` sincronizada.
+> Conferir o CI do PR de `feat/f2-t03-filtros-eliminatorios` para `phase/02-matching` antes da integração.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T03 implementada (2026-11-23 UTC).** Flags eliminatórias com decisão de elegibilidade, validação das listas de preferências e leitura dos requisitos obrigatórios persistidos. 400 testes na partida e 420 na entrega. Política Base e hook passivo confirmados. Execução direta com `gpt-6.2-sol` em `high`.
 - **F2-T02 integrada (2026-11-23 UTC).** O [PR #29](https://github.com/JoaumPdr/jobpilot-ai/pull/29) foi mesclado com histórico e autorização em `24ce540`, após CI verde na revisão `e9ac9ec`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T03.
 - **F2-T02 implementada (2026-11-23 UTC).** Extração determinística em PT/EN, persistência em `job_skills` no cadastro e na importação e reprocessamento de vagas existentes. 387 testes na partida, 400 na entrega, com ciclo da migração em PostgreSQL. Execução direta com `gpt-6.2-sol` em `high`, após ajuste confirmado pelo JP. Política Base e hook passivo confirmados.
 - **Limpeza de branches autorizada (2026-11-23 UTC).** Excluídas sete branches locais e seis remotas de `docs/*`, `test/*` e `fix/*`. Todas as pontas já pertenciam a `origin/develop` e nenhuma tinha PR aberto. A branch `docs/f1-t01-padronizacao-documental` existia só localmente.
@@ -91,8 +92,10 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** [F2-T02](tasks/FASE-02/F2-T02.md), PR #29.
-**Próxima tarefa.** F2-T03, conforme os critérios no [backlog](BACKLOG.md).
+**Tarefa atual.** [F2-T03](tasks/FASE-02/F2-T03.md), implementação validada localmente.
 
+- [x] Implementar e testar as regras eliminatórias e a avaliação de elegibilidade
+- [ ] Confirmar o CI do PR e integrar a F2-T03 na branch da fase
 - [x] Extrair e persistir requisitos do cadastro manual e da importação, com suporte a reprocessamento
 - [x] Confirmar o CI do PR e integrar a F2-T02 na branch da fase
 - [x] Criar as branches da Fase 2 e da F2-T01 a partir de `develop` sincronizada
@@ -154,7 +157,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | em andamento | — | F2-T02 integrada, F2-T03 por iniciar |
+| 2 — Matching | em andamento | — | F2-T02 integrada, F2-T03 em integração |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |

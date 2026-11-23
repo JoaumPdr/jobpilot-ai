@@ -191,7 +191,10 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
   "work_modes": ["remoto"],
   "seniority_levels": ["pleno"],
   "min_salary": "12000.00",
-  "knockout_rules": { "exclude_companies": ["Empresa X"] }
+  "knockout_rules": {
+    "exclude_companies": ["Empresa X"],
+    "exclude_required_skills": ["Postgres"]
+  }
 }
 ```
 
@@ -199,7 +202,19 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
 |-------|------|--------|
 | `desired_titles`, `locations`, `work_modes`, `seniority_levels` | lista de strings | itens aparados; vazios descartados; até 200 caracteres por item |
 | `min_salary` | número decimal | `>= 0`, até 12 dígitos e 2 casas; sem coluna de moeda nesta fase |
-| `knockout_rules` | objeto JSON | chaves livres até a F2-T03 |
+| `knockout_rules` | objeto JSON | `exclude_companies` e `exclude_required_skills` aceitam listas de textos não vazios. Outras chaves são preservadas |
+
+`exclude_companies` compara o nome completo da empresa após normalizar caixa,
+acentos e espaços. `exclude_required_skills` aceita nomes e aliases da
+taxonomia e só elimina quando a vaga exige a habilidade. Lista vazia
+desativa a respectiva regra. Chaves extras, como `max_commute_km`, ficam
+armazenadas para compatibilidade com preferências anteriores.
+
+O matching também avalia `work_modes` e `locations` quando a vaga informa
+valores comparáveis. A modalidade remota é configurada em `work_modes`.
+Localizações podem incluir UF ou país, e componentes conhecidos em ambos
+os lados precisam coincidir. Uma vaga sem localização comparável ou sem
+modalidade conhecida fica elegível nessas regras.
 
 **Erros:** `404` (candidato inexistente), `422` (valores inválidos).
 

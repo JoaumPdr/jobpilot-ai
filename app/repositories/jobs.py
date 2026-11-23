@@ -14,7 +14,7 @@ from sqlalchemy import delete, func, or_, select, tuple_
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, SessionTransaction
 
-from app.matching.job_requirements import ExtractedRequirement
+from app.matching.job_requirements import ExtractedRequirement, RequirementType
 from app.matching.skill_taxonomy import TaxonomySkill
 from app.models import Job, JobSkill, Skill
 from app.models.application import Application
@@ -121,6 +121,18 @@ class JobRepository(BaseRepository):
             .with_for_update()
             .execution_options(populate_existing=True)
         )
+
+    def list_required_skill_names(self, job_id: uuid.UUID) -> list[str]:
+        """Busca as habilidades obrigatórias para avaliar exclusões da vaga."""
+        stmt = (
+            select(Skill.canonical_name)
+            .join(JobSkill, JobSkill.skill_id == Skill.id)
+            .where(
+                JobSkill.job_id == job_id,
+                JobSkill.requirement_type == RequirementType.REQUIRED.value,
+            )
+        )
+        return list(self._db.scalars(stmt))
 
     def save_requirements(
         self,
