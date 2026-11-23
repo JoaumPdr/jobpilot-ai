@@ -18,22 +18,23 @@
 | **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **387 testes aprovados** com PostgreSQL, 27 novos. Cobertura de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação verdes |
-| **CI** | Conferir o CI do PR da F2-T01 antes de integrar |
+| **CI** | Conferir o CI do [PR #28 da F2-T01](https://github.com/JoaumPdr/jobpilot-ai/pull/28) antes de integrar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` local e no GitHub conferidos em `e8d65d2` na abertura da Fase 2 |
+| **Sincronização com o remoto** | `develop` local e no GitHub conferidos em `e8d65d2`. As branches `phase/02-matching` e `feat/f2-t01-taxonomia-skills` foram publicadas |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | MCP disponível e autenticado. Git usado para sincronizar branches |
+| **GitHub** | MCP consultou branches, mas retornou 403 ao abrir PR. `gh` autenticado autorizado para abrir e acompanhar o PR #28 |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o estado do PR de `feat/f2-t01-taxonomia-skills` para `phase/02-matching` e confirmar o CI antes da integração.
+> Conferir os checks do [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) com `gh pr checks 28` antes da integração em `phase/02-matching`.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **PR da F2-T01 aberto (2026-11-23 UTC).** O [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) foi aberto com `gh` autenticado após autorização do JP. O MCP do GitHub recusou a abertura com 403.
 - **F2-T01 implementada (2026-11-23 UTC).** Catálogo em TOML com 184 habilidades em 9 categorias, busca por nome ou alias e relatório em memória dos termos não reconhecidos. A suíte de partida teve 360 testes aprovados e a da entrega, 387. Política Base e hook passivo do JobPilot confirmados. Execução direta em `gpt-6.2-sol` com esforço `medium`.
 - **F1-GATE concluído (2026-11-19 UTC).** O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) foi mesclado com autorização em `bbea363`. O CI do merge passou em `develop`, e a tag anotada `fase-01` foi publicada e conferida no GitHub. Ponto de retomada na F2-T01.
 - **F1-GATE validado tecnicamente (2026-11-19 UTC).** A ficha reúne as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação. A suíte local passou com 360 testes. Cobertura de 96,60% em `app` e 95,33% em `app/services`. Execução direta com Sol/Medium, política e hook confirmados. [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) aberto para `develop`.
