@@ -10,30 +10,31 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA concluída. Próxima fase: Fase 2 — Matching |
-| **Branch base** | `develop`. A próxima branch de fase será `phase/02-matching` |
-| **Próxima tarefa** | F2-T01 — Taxonomia de skills |
-| **Ficha da tarefa** | a avaliar no início da F2-T01 |
-| **Estado da próxima tarefa** | não iniciada |
+| **Última atualização** | 2026-11-23 (UTC) |
+| **Fase atual** | Fase 2 — Matching |
+| **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
+| **Tarefa atual** | F2-T01 — Taxonomia de skills, em `feat/f2-t01-taxonomia-skills` |
+| **Ficha da tarefa** | [F2-T01](tasks/FASE-02/F2-T01.md) |
+| **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
-| **Testes** | **360 testes aprovados** com PostgreSQL. Cobertura de linhas de 96,60% em `app` e 95,33% em `app/services`. Ruff e formatação verdes |
-| **CI** | cobertura, Ruff e migração verdes no merge da Fase 1 em `develop` ([run 44610945327](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327)) |
+| **Testes** | **387 testes aprovados** com PostgreSQL, 27 novos. Cobertura de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação verdes |
+| **CI** | Conferir o CI do PR da F2-T01 antes de integrar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` atualizado por fast-forward após o PR #26. Branch `phase/01-nucleo-sem-ia` preservada no remoto |
+| **Sincronização com o remoto** | `develop` local e no GitHub conferidos em `e8d65d2` na abertura da Fase 2 |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
+| **GitHub** | MCP disponível e autenticado. Git usado para sincronizar branches |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ler os critérios da F2-T01 no backlog e preparar a branch `phase/02-matching` a partir de `develop` sincronizada.
+> Conferir o estado do PR de `feat/f2-t01-taxonomia-skills` para `phase/02-matching` e confirmar o CI antes da integração.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T01 implementada (2026-11-23 UTC).** Catálogo em TOML com 184 habilidades em 9 categorias, busca por nome ou alias e relatório em memória dos termos não reconhecidos. A suíte de partida teve 360 testes aprovados e a da entrega, 387. Política Base e hook passivo do JobPilot confirmados. Execução direta em `gpt-6.2-sol` com esforço `medium`.
 - **F1-GATE concluído (2026-11-19 UTC).** O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) foi mesclado com autorização em `bbea363`. O CI do merge passou em `develop`, e a tag anotada `fase-01` foi publicada e conferida no GitHub. Ponto de retomada na F2-T01.
 - **F1-GATE validado tecnicamente (2026-11-19 UTC).** A ficha reúne as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação. A suíte local passou com 360 testes. Cobertura de 96,60% em `app` e 95,33% em `app/services`. Execução direta com Sol/Medium, política e hook confirmados. [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) aberto para `develop`.
 - **F1-T13 integrada (2026-11-19 UTC).** O [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) foi mesclado com autorização em `5fa4999`. A branch local da fase avançou por fast-forward e o CI do merge passou. O gate de saída é o ponto de retomada.
@@ -85,8 +86,11 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** [F1-GATE](tasks/FASE-01/F1-GATE.md), PR #26.
-**Próxima tarefa.** F2-T01, conforme os critérios no [backlog](BACKLOG.md).
+**Tarefa atual.** [F2-T01](tasks/FASE-02/F2-T01.md), com implementação validada.
 
+- [x] Criar as branches da Fase 2 e da F2-T01 a partir de `develop` sincronizada
+- [x] Implementar e testar o catálogo, o índice de aliases e o relatório
+- [ ] Confirmar o CI do PR e integrar a F2-T01 na branch da fase
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
@@ -143,7 +147,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | não iniciada | — | — |
+| 2 — Matching | em andamento | — | F2-T01 em integração |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
@@ -203,6 +207,7 @@
 
 ## 8. Observações
 
+- **Base da Fase 2 (2026-11-23):** a tag `fase-01` continua apontando para o merge do gate em `bbea363`. A ponta de `develop` avançou para `e8d65d2` com o encerramento documental do [PR #27](https://github.com/JoaumPdr/jobpilot-ai/pull/27). Esse merge manteve a F2-T01 como ponto de retomada.
 - **Divergência corrigida em 2026-11-18:** o §1 dizia último commit `396e851` (merge do PR #12) e push às 22:34 UTC; o Git/GitHub mostravam `05f69aa` ("docs(status): encerrar sessao...") com push às 22:35 UTC e CI verde (run `44191524901`). Era só documentação posterior ao merge; campos corrigidos. Nenhuma outra divergência.
 - **Docker Desktop encerrou sozinho durante a sessão (2026-11-17):** a segunda execução completa de testes gerou 82 erros de conexão; o container `jobpilot-postgres` foi reiniciado (`docker compose up -d`) e a suíte voltou a verde (184 passed). Nenhuma falha de código.
 - **Divergência corrigida em 2026-11-17:** o §1 dizia "F1-T02-b não iniciada; ficha a criar", mas o Git já tinha a ficha (`186b575`), a branch publicada e ~1.900 linhas de implementação não commitadas. Confiado o Git; STATUS corrigido e o trabalho revisado, testado e commitado (`d6513a6`, `eb7481d`). Nenhum outro campo divergia do remoto.
