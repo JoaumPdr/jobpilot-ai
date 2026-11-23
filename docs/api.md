@@ -435,6 +435,10 @@ preservados, espaços colapsados), `work_mode`/`seniority` são convertidos para
 os valores internos e a URL gera `canonical_url` (sem parâmetros de rastreio,
 fragmento, barra final ou porta padrão).
 
+Os requisitos reconhecidos na descrição são gravados com a vaga. O extrator
+usa seções e gatilhos em português e inglês e resolve termos pela taxonomia.
+O formato da resposta continua igual. [Requisitos extraídos](data-model.md#requisitos-extraídos-job_skills-f2-t02)
+
 ```json
 {
   "title": "Engenheira de Dados",

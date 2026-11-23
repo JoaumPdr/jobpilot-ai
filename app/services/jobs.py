@@ -12,11 +12,14 @@ O serviço não conhece HTTP: levanta `ConflictError` e o handler padroniza.
 from __future__ import annotations
 
 import uuid
+from collections.abc import Sequence
+from functools import cache
 from typing import Protocol
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.errors import ConflictError, NotFoundError
+from app.matching.job_requirements import ExtractedRequirement, RequirementExtractor
 from app.models import Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
 from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
@@ -27,6 +30,14 @@ from app.services.normalization import (
     normalize_seniority,
     normalize_work_mode,
 )
+from app.services.skill_taxonomy import load_skill_taxonomy
+
+
+@cache
+def _requirement_extractor() -> RequirementExtractor:
+    # Os aliases são versionados junto da aplicação. Cada processo compila
+    # o índice uma vez para o cadastro manual e os lotes de CSV.
+    return RequirementExtractor(load_skill_taxonomy())
 
 
 class JobRepositoryProtocol(Protocol):
@@ -35,6 +46,16 @@ class JobRepositoryProtocol(Protocol):
     def list_page(self, query: JobListQuery) -> list[Job]: ...
 
     def get(self, job_id: uuid.UUID) -> Job | None: ...
+
+    def get_for_update(self, job_id: uuid.UUID) -> Job | None: ...
+
+    def save_requirements(
+        self,
+        job: Job,
+        requirements: Sequence[ExtractedRequirement],
+        *,
+        replace: bool = False,
+    ) -> None: ...
 
     def get_by_source_external_id(
         self, source: str, external_id: str
@@ -87,6 +108,27 @@ class JobService:
             raise self._integrity_conflict() from exc
 
         return job, probable
+
+    def refresh_requirements(
+        self, job_id: uuid.UUID
+    ) -> tuple[ExtractedRequirement, ...]:
+        """Reextrai requisitos de uma vaga existente e substitui seu snapshot.
+
+        Levanta NotFoundError se o identificador não existir. Se o texto não
+        contiver requisitos, o novo snapshot fica vazio.
+        """
+        job = self._jobs.get_for_update(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+
+        try:
+            requirements = _requirement_extractor().extract(job.description)
+            self._jobs.save_requirements(job, requirements, replace=True)
+            self._jobs.commit()
+        except (OSError, SQLAlchemyError, ValueError):
+            self._jobs.rollback()
+            raise
+        return requirements
 
     def prepare_job(
         self,
@@ -147,7 +189,12 @@ class JobService:
             posted_at=data.posted_at,
             import_batch_id=import_batch_id,
         )
+        requirements = (
+            _requirement_extractor().extract(job.description) if job.description else ()
+        )
         self._jobs.add(job)
+        if requirements:
+            self._jobs.save_requirements(job, requirements)
         return job, probable[:MAX_FINGERPRINT_MATCHES]
 
     def _ensure_not_exact_duplicate(self, data: JobCreate, canonical_url: str) -> None:
