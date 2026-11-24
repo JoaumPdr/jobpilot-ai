@@ -198,6 +198,17 @@
   incluindo três novos. Cobertura de linhas de 97,14% em `app` e 95,14%
   nos serviços.
 
+### F2-T06 — Golden set e avaliação do matching (2026-11-24)
+
+- Curadoria de 34 vagas reais do Djinni, com descrições técnicas expurgadas
+  em inglês e adaptadas para português e rótulos manuais. A avaliação usa
+  um perfil sintético de dados e backend. [Procedência](data/golden/README.md)
+- A versão `deterministico-v1` obteve 99,24% de precisão, 67,53% de revocação
+  e 86,48% de concordância ordinal. O script reproduz as métricas a partir
+  do snapshot local. [Relatório gerado](docs/evaluation.md)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 440 testes,
+  três novos. Cobertura de 97,14% em `app` e 95,14% nos serviços.
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

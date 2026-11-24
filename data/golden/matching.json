@@ -1,0 +1,200 @@
+{
+  "source_revision": "b56a6054c10f1266a141e37c8df66c79ff2863af",
+  "candidate_skills": [
+    "Python", "SQL", "PostgreSQL", "AWS", "Docker", "Git", "Linux", "FastAPI",
+    "Django", "Redis", "Kafka", "ETL", "Apache Airflow", "pandas", "Terraform",
+    "Bash", "CI/CD", "PySpark", "pytest", "REST API", "HTML", "CSS"
+  ],
+  "confirmed_absent": [
+    "Java", "Kotlin", "C++", "C#", ".NET", "TypeScript", "JavaScript", "React",
+    "Vue.js", "Angular", "Redux", "Node.js", "PHP", "Ansible", "Kubernetes",
+    "Jenkins", "Azure", "SQL Server", "Selenium"
+  ],
+  "cases": [
+    {
+      "id": "GS-001", "source_row": 2400, "language": "en", "role": "Mobile",
+      "description": "The mobile position calls for Kotlin experience.\nRequirements: Kotlin is a must.\nPreferred: familiarity with GraphQL and Git.",
+      "required": ["Kotlin"], "preferred": ["GraphQL", "Git"], "compatibility": "low"
+    },
+    {
+      "id": "GS-002", "source_row": 2401, "language": "pt-BR", "role": "Mobile",
+      "description": "O código do time combina Java e Kotlin.\nDiferencial: já ter usado Jenkins.",
+      "required": [], "preferred": ["Jenkins"], "compatibility": "low"
+    },
+    {
+      "id": "GS-003", "source_row": 2402, "language": "en", "role": "Mobile",
+      "description": "What you bring\n• Strong Java expertise.\n• Practical understanding of C++.\nThe team works in an agile environment.",
+      "required": ["Java", "C++"], "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-004", "source_row": 14512, "language": "pt-BR", "role": "Frontend",
+      "description": "Requisitos técnicos: HTML, CSS e JavaScript.\nExperiência com Agile e Scrum será um diferencial.",
+      "required": ["HTML", "CSS", "JavaScript"], "preferred": ["Agile", "Scrum"], "compatibility": "low"
+    },
+    {
+      "id": "GS-005", "source_row": 14513, "language": "en", "role": "Frontend",
+      "description": "Skills and experience\n• JavaScript with React or Vue.js.\n• Familiarity with AWS and Azure, Docker, Kubernetes and Jenkins.\n• Understanding of REST services and Agile.\nPreferred qualifications: prior NodeJS work.",
+      "required": ["JavaScript", "React", "Vue.js", "AWS", "Azure", "Docker", "Kubernetes", "Jenkins", "REST API", "Agile"],
+      "preferred": ["Node.js"], "compatibility": "low"
+    },
+    {
+      "id": "GS-006", "source_row": 14514, "language": "pt-BR", "role": "Dados",
+      "description": "Qualificações obrigatórias\n- Experiência em Azure e SQL Server.",
+      "required": ["Azure", "SQL Server"], "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-007", "source_row": 24600, "language": "en", "role": "Infraestrutura",
+      "description": "Responsibilities: support pipelines running on Azure and Jenkins.\nTechnical requirements:\n- Terraform and Ansible experience.\n- Docker and K8s; Linux, Bash and Python.\n- Experience with CI/CD.\nAWS experience is preferable.",
+      "required": ["Terraform", "Ansible", "Docker", "Kubernetes", "Linux", "Bash", "Python", "CI/CD"],
+      "preferred": ["AWS"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-008", "source_row": 24601, "language": "pt-BR", "role": "Infraestrutura",
+      "description": "Você precisa ter vivência em Linux e saber programar em Python e Bash. Experiência com Google Cloud e Kubernetes. Usar CI/CD e Terraform com Jenkins e conhecer Grafana e Prometheus.",
+      "required": ["Linux", "Python", "Bash", "Google Cloud Platform", "Kubernetes", "CI/CD", "Terraform", "Jenkins", "Grafana", "Prometheus"],
+      "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-009", "source_row": 24602, "language": "en", "role": "Infraestrutura",
+      "description": "Requirements: work with Azure or AWS, Terraform, and Ansible.\nBuild CI/CD pipelines with Jenkins or GitLab CI.\nUnderstand microservices and Kubernetes.\nPython is preferred for scripting.",
+      "required": ["Azure", "AWS", "Terraform", "Ansible", "CI/CD", "Jenkins", "GitLab CI/CD", "Microservices", "Kubernetes"],
+      "preferred": ["Python"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-010", "source_row": 24603, "language": "pt-BR", "role": "Infraestrutura",
+      "description": "Requisitos mínimos: Jenkins e CI/CD, scripts em Python e Bash, Kubernetes e Linux.\nVivência com AWS, Prometheus, C++ e Terraform. Conhecimento de Helm.",
+      "required": ["Jenkins", "CI/CD", "Python", "Bash", "Kubernetes", "Linux", "AWS", "Prometheus", "C++", "Terraform", "Helm"],
+      "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-011", "source_row": 39000, "language": "pt-BR", "role": "Full stack",
+      "description": "O que você traz\n- Python e experiência em Django ou Flask.\n- HTML, CSS, JavaScript e Vue.js.\n- AWS e familiaridade com Docker ou Kubernetes.",
+      "required": ["Python", "Django", "Flask", "HTML", "CSS", "JavaScript", "Vue.js", "AWS", "Docker", "Kubernetes"],
+      "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-012", "source_row": 39001, "language": "en", "role": "Full stack",
+      "description": "You should have experience with Python, Flask or Django, and frontend work in JavaScript, Vue.js, HTML and CSS. Working with Git is part of the job profile.\nExperience with CI/CD is a bonus.",
+      "required": ["Python", "Flask", "Django", "JavaScript", "Vue.js", "HTML", "CSS", "Git"],
+      "preferred": ["CI/CD"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-013", "source_row": 39002, "language": "pt-BR", "role": "Full stack",
+      "description": "Obrigatórios: Python, Flask, Vue.js e Git.\nSQL será um diferencial.",
+      "required": ["Python", "Flask", "Vue.js", "Git"], "preferred": ["SQL"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-014", "source_row": 39004, "language": "en", "role": "Full stack",
+      "description": "Required qualifications:\n• Build with Python and use both Vue and React. Understand JavaScript, HTML and CSS.\n• Use Docker and work with AWS and Terraform. Familiarity with DynamoDB and Git.\n• Familiarity with Agile and Jira.",
+      "required": ["Python", "Vue.js", "React", "JavaScript", "HTML", "CSS", "Docker", "AWS", "Terraform", "DynamoDB", "Git", "Agile", "Jira"],
+      "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-015", "source_row": 39005, "language": "pt-BR", "role": "Full stack",
+      "description": "O frontend da equipe usa TypeScript.\nRequisitos: experiência com Python e FastAPI, HTML, CSS, JavaScript e Vue.js.\nExperiência com PostgreSQL, MySQL e familiaridade com MongoDB, Redis e Elasticsearch.",
+      "required": ["Python", "FastAPI", "HTML", "CSS", "JavaScript", "Vue.js", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Elasticsearch"],
+      "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-016", "source_row": 51002, "language": "en", "role": "Frontend",
+      "description": "Minimum requirements\n- JavaScript knowledge and experience integrating REST endpoints.",
+      "required": ["JavaScript", "REST API"], "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-017", "source_row": 51003, "language": "pt-BR", "role": "Integracao",
+      "description": "É preciso saber SQL e integração por API REST. É necessário programar em JavaScript ou Python.\nNode.js é um diferencial. React ou Vue.js também são desejáveis.",
+      "required": ["SQL", "REST API", "JavaScript", "Python"],
+      "preferred": ["Node.js", "React", "Vue.js"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-018", "source_row": 51006, "language": "en", "role": "Frontend",
+      "description": "Technical requirements: professional JavaScript and CSS.\nWork with REST APIs and microservices.\nExperience in Agile teams and CI/CD.",
+      "required": ["JavaScript", "CSS", "REST API", "Microservices", "Agile", "CI/CD"],
+      "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-019", "source_row": 70800, "language": "en", "role": "Frontend",
+      "description": "Requirements:\nExperience with CI/CD.\nUse GraphQL.",
+      "required": ["CI/CD", "GraphQL"], "preferred": [], "compatibility": "medium"
+    },
+    {
+      "id": "GS-020", "source_row": 70801, "language": "pt-BR", "role": "Frontend",
+      "description": "Requisitos da vaga\nConhecer GraphQL e já ter trabalhado com Redux.",
+      "required": ["GraphQL", "Redux"], "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-021", "source_row": 70805, "language": "en", "role": "Frontend",
+      "description": "Must have: Git.\nHands-on HTML and CSS would be a plus.",
+      "required": ["Git"], "preferred": ["HTML", "CSS"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-022", "source_row": 70807, "language": "pt-BR", "role": "Frontend",
+      "description": "Requisitos: domínio de Git.\nDiferenciais: vivência em Jenkins e Bash.",
+      "required": ["Git"], "preferred": ["Jenkins", "Bash"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-023", "source_row": 95000, "language": "en", "role": "Dados",
+      "description": "Requirements: experience building with Python and Spark.\nJava experience would be a plus.",
+      "required": ["Python", "Apache Spark"], "preferred": ["Java"], "compatibility": "high"
+    },
+    {
+      "id": "GS-024", "source_row": 95001, "language": "pt-BR", "role": "Backend",
+      "description": "Qualificações: saber Python, Linux e Git.\nTambém é desejável conhecer Jenkins ou SQL.",
+      "required": ["Python", "Linux", "Git"], "preferred": ["Jenkins", "SQL"], "compatibility": "high"
+    },
+    {
+      "id": "GS-025", "source_row": 95004, "language": "en", "role": "Backend",
+      "description": "Qualifications\n• Python development and automated tests with pytest.\n• REST endpoints and PostgreSQL.\n• AWS, Linux, Nginx, Git and Jira.\nKafka and Redis experience is desirable.",
+      "required": ["Python", "pytest", "REST API", "PostgreSQL", "AWS", "Linux", "Nginx", "Git", "Jira"],
+      "preferred": ["Kafka", "Redis"], "compatibility": "high"
+    },
+    {
+      "id": "GS-026", "source_row": 115001, "language": "pt-BR", "role": "Sistemas",
+      "description": "O código usa GitLab no dia a dia.\nRequisito obrigatório: C++.\nExperiência em CI/CD é um diferencial.",
+      "required": ["C++"], "preferred": ["CI/CD"], "compatibility": "low"
+    },
+    {
+      "id": "GS-027", "source_row": 132001, "language": "en", "role": "Backend",
+      "description": "Minimum qualifications: professional .NET experience. Experience using Kafka and DynamoDB.",
+      "required": [".NET", "Apache Kafka", "DynamoDB"], "preferred": [], "compatibility": "low"
+    },
+    {
+      "id": "GS-028", "source_row": 132002, "language": "pt-BR", "role": "Full stack",
+      "description": "Requisitos técnicos\n- .NET, REST e prática em equipes Agile.\n- JavaScript, Angular e CSS.\nSQL é desejável.",
+      "required": [".NET", "REST API", "Agile", "JavaScript", "Angular", "CSS"],
+      "preferred": ["SQL"], "compatibility": "low"
+    },
+    {
+      "id": "GS-029", "source_row": 132003, "language": "en", "role": "Infraestrutura",
+      "description": "Current stack: Azure, Terraform, Ansible and Jenkins.\nRequirements: know Azure and Terraform, GitHub Actions, Linux and Git.\nPython is a plus.",
+      "required": ["Azure", "Terraform", "GitHub Actions", "Linux", "Git"],
+      "preferred": ["Python"], "compatibility": "medium"
+    },
+    {
+      "id": "GS-030", "source_row": 132004, "language": "pt-BR", "role": "Backend",
+      "description": "Responsabilidades: manter as entregas do time no Jira.\nRequisitos: Python e Django.\nEntender CI/CD e ter experiência com GitHub Actions.",
+      "required": ["Python", "Django", "CI/CD", "GitHub Actions"], "preferred": [], "compatibility": "high"
+    },
+    {
+      "id": "GS-031", "source_row": 20001, "language": "en", "role": "Dados",
+      "description": "Requirements: use Python and AWS for data work. Comfortable with Git and SQL. Strong Tableau expertise.\nResponsibilities: build SQL reporting and Tableau dashboards.",
+      "required": ["Python", "AWS", "Git", "SQL", "Tableau"], "preferred": [], "compatibility": "high"
+    },
+    {
+      "id": "GS-032", "source_row": 63800, "language": "pt-BR", "role": "QA",
+      "description": "Requisitos: familiaridade com C#, Java ou Kotlin. Uso de Git e Jenkins e conhecimento de SQL.\nSelenium é um diferencial.",
+      "required": ["C#", "Java", "Kotlin", "Git", "Jenkins", "SQL"],
+      "preferred": ["Selenium"], "compatibility": "low"
+    },
+    {
+      "id": "GS-033", "source_row": 91612, "language": "en", "role": "Gestao",
+      "description": "Practical Jira experience is a must. Familiarity with Scrum would be a plus.",
+      "required": ["Jira"], "preferred": ["Scrum"], "compatibility": "low"
+    },
+    {
+      "id": "GS-034", "source_row": 99801, "language": "pt-BR", "role": "Full stack",
+      "description": "Requisitos obrigatórios: trabalhar com NodeJS e React.",
+      "required": ["Node.js", "React"], "preferred": [], "compatibility": "low"
+    }
+  ]
+}
