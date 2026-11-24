@@ -217,6 +217,20 @@
 - A suíte de partida passou com 440 testes em PostgreSQL. A entrega é documental.
   [Ficha da F2-T07](docs/tasks/FASE-02/F2-T07.md)
 
+### F2-T08 — Documentação e relatório da fase (2026-11-24 UTC)
+
+- Cadastro e importação extraem requisitos em PT-BR e EN. O matching avalia
+  os filtros eliminatórios, persiste a versão do score com evidências e permite
+  consultar o ranking e o detalhe por candidato. [Metodologia](docs/matching-methodology.md)
+- O roteiro no Swagger UI liga essas etapas com dados fictícios, do cadastro da
+  habilidade à consulta do ranking. [Roteiro da Fase 2](README.md#fluxo-da-fase-2)
+- A avaliação local documenta 99,24% de precisão, 67,53% de revocação e 86,48%
+  de concordância ordinal nas 34 vagas. Um perfil sintético e uma amostra de
+  conveniência delimitam a interpretação das métricas.
+  [Avaliação reproduzível](docs/evaluation.md)
+- A adoção de embeddings fica condicionada a uma comparação que demonstre ganho.
+  [ADR 0012](docs/adr/0012-adiar-embeddings-multilingues.md) · [Ficha da F2-T08](docs/tasks/FASE-02/F2-T08.md)
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

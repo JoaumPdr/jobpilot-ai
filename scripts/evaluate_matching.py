@@ -212,6 +212,7 @@ def render_report(evaluation: Evaluation) -> str:
             f"{len(evaluation.ranked)} vagas. Revisão da fonte: `{evaluation.source_revision}`."
         ),
         "[Procedência, licenciamento e protocolo](../data/golden/README.md)",
+        "[Metodologia do score](matching-methodology.md)",
         "",
         "## Extração",
         "",
@@ -254,17 +255,38 @@ def render_report(evaluation: Evaluation) -> str:
         ),
         (
             "A avaliação roda localmente e faz zero chamadas a modelos externos. "
+            "Da raiz do repositório, use `--check` para verificar o relatório. "
             "A opção `--timing` mede a média e a mediana de extração mais score por vaga."
         ),
         "",
         "```powershell",
-        "uv run python -m scripts.evaluate_matching",
         "uv run python -m scripts.evaluate_matching --check --timing",
         "```",
         "",
         (
+            "Para regenerar o arquivo após uma mudança de dados ou de apresentação, "
+            "execute `uv run python -m scripts.evaluate_matching`."
+        ),
+        "",
+        "## Interpretação e limites",
+        "",
+        (
+            "A precisão indica a proporção de acertos entre os requisitos previstos. "
+            "A revocação indica a proporção de requisitos rotulados que o extrator recuperou. "
+            "A concordância ordinal mede a ordem relativa das vagas, em pares com rótulos distintos."
+        ),
+        "",
+        (
             "A amostra é de conveniência e avalia um único perfil sintético. A porção "
-            "PT-BR é adaptada de anúncios em inglês. Os números descrevem este conjunto."
+            "PT-BR é adaptada de anúncios em inglês. A medição cobre a extração e o score "
+            "em memória, com as vagas elegíveis. A API, a persistência e as regras "
+            "eliminatórias são exercitadas pela suíte de testes."
+        ),
+        "",
+        (
+            "Este resultado estabelece a linha de base determinística. Uma comparação "
+            "com uma variante semântica nas mesmas vagas é necessária para medir o ganho. "
+            "[Decisão sobre embeddings multilíngues](adr/0012-adiar-embeddings-multilingues.md)"
         ),
         "",
     ]

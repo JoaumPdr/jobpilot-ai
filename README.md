@@ -18,6 +18,8 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 **Fase 1 — Núcleo sem IA** concluída e integrada em `develop`. A API permite cadastrar perfil, importar e filtrar vagas, revisar duplicatas e acompanhar candidaturas. Veja o [roteiro de uso](#fluxo-da-fase-1) e o [marco `fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01).
 
+**Fase 2 — Matching** em andamento em `phase/02-matching`. A API calcula compatibilidade com evidências e permite consultar o ranking por candidato. [Roteiro de matching](#fluxo-da-fase-2) · [Avaliação no golden set](docs/evaluation.md)
+
 Roadmap:
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
 - [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
@@ -128,6 +130,46 @@ Use um banco local de desenvolvimento para os exemplos fictícios abaixo.
 
 Consulte a [API](docs/api.md), o [modelo de dados](docs/data-model.md) e o
 [changelog](CHANGELOG.md) para mais detalhes sobre a fase.
+
+## Fluxo da Fase 2
+
+No Swagger UI, use o `candidate_id` de um perfil fictício recém-criado conforme
+o passo 1 do fluxo da Fase 1. Para o exemplo, o perfil começa sem habilidades.
+
+1. **Declare a habilidade.** Em `POST /candidates/{candidate_id}/skills`,
+   envie `{"canonical_name":"Postgres"}`.
+2. **Cadastre a vaga.** Em `POST /jobs`, envie o JSON abaixo e copie
+   `job.id` da resposta como `job_id`.
+
+   ```json
+   {
+     "title": "Analista de Dados",
+     "company": "Equipe A",
+     "url": "https://example.com/jobs/demo-fase-2",
+     "description": "Requisitos: PostgreSQL e Docker. Diferenciais: Kubernetes.",
+     "work_mode": "remoto",
+     "location": "São Paulo"
+   }
+   ```
+
+3. **Calcule a compatibilidade.** Em `POST /candidates/{candidate_id}/matches/{job_id}`,
+   envie `{"confirmed_absent":["Docker"]}` para registrar essa ausência
+   no cálculo. Na resposta, `scoring_version` é `deterministico-v1` e
+   `match_score` representa 0,35. Confira em `analysis` PostgreSQL em `met`
+   por alias, Docker em `absent` e Kubernetes em `unconfirmed`.
+4. **Consulte o resultado persistido.** Em `GET /candidates/{candidate_id}/matches/{job_id}`,
+   veja os requisitos e os trechos de evidência. Em
+   `GET /candidates/{candidate_id}/matches`, use `work_mode=remoto` para listar
+   o ranking de avaliações calculadas para vagas remotas.
+
+O golden set usa descrições expurgadas e um perfil sintético. Confira da
+raiz do repositório se o relatório corresponde à avaliação local.
+
+```bash
+uv run python -m scripts.evaluate_matching --check
+```
+
+[Rotas de matching](docs/api.md#matching) · [Metodologia](docs/matching-methodology.md) · [Resultados e limitações](docs/evaluation.md)
 
 ## Testes e Qualidade
 
