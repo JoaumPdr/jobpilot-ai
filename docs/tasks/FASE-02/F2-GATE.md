@@ -1,7 +1,7 @@
 # F2-GATE — Gate de saída da Fase 2
 
-- **Integração da fase** — `phase/02-matching` → `develop`.
-- **Estado** — critérios técnicos verificados. PR da fase e tag `fase-02` pendentes.
+- **Integração da fase** — `phase/02-matching` → `develop` pelo [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37).
+- **Estado** — critérios técnicos verificados. PR da fase aberto e tag `fase-02` pendente.
 - **Revisão validada** — `b1f6d28`, sincronizada com o GitHub. `develop` em `e8d65d2` é ancestral da fase.
 - **Estratégia** — execução direta com `gpt-6.2-sol` em esforço `high`. Política Base e hook passivo confirmados.
 - **Critérios** — [Backlog da Fase 2](../../BACKLOG.md#fase-2--matching--branch-phase02-matching--tag-fase-02) · [Plano mestre, §11](../../PLANO.md#11-fases-resultados-e-gates-de-saída)
@@ -19,7 +19,8 @@
 - [x] Suíte completa com 440 testes aprovados em PostgreSQL. Cobertura de 97,14% em `app` e 95,14% em `app/services`, acima dos mínimos de 70% e 85%.
 - [x] Ruff e formatação aprovados. A revisão `b1f6d28` passou também no ciclo Alembic do CI. [CI da branch da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313001607)
 - [x] Roteiro do README, metodologia, avaliação e relatório técnico consolidados na F2-T08. [Ficha da F2-T08](F2-T08.md) · [Roteiro de matching](../../../README.md#fluxo-da-fase-2)
-- [ ] Abrir o PR da fase para `develop` e confirmar os checks da revisão final.
+- [x] Abrir o PR da fase para `develop`.
+- [ ] Confirmar os checks da revisão final do PR.
 - [ ] Mesclar com histórico após autorização, confirmar o CI em `develop` e publicar a tag anotada `fase-02` no commit do merge.
 
 ```powershell
