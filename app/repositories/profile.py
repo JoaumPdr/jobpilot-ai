@@ -25,6 +25,13 @@ from app.repositories.base import BaseRepository
 class CandidateRepository(BaseRepository):
     """Consultas e escritas de `candidates`."""
 
+    def exists(self, candidate_id: uuid.UUID) -> bool:
+        """Verifica o identificador sem carregar currículo ou relações."""
+        return (
+            self._db.scalar(select(Candidate.id).where(Candidate.id == candidate_id))
+            is not None
+        )
+
     def get(self, candidate_id: uuid.UUID) -> Candidate | None:
         """Busca o candidato com preferências, skills e experiências carregadas.
 

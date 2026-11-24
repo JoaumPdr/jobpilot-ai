@@ -8,11 +8,15 @@ dublê em memória e a otimização (índice, limite, ordenação) mora em um s�
 from __future__ import annotations
 
 import uuid
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 
-from sqlalchemy import or_, select, tuple_
+from sqlalchemy import delete, func, or_, select, tuple_
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, SessionTransaction
 
-from app.models import Job
+from app.matching.job_requirements import ExtractedRequirement, RequirementType
+from app.matching.skill_taxonomy import TaxonomySkill
+from app.models import Job, JobSkill, Skill
 from app.models.application import Application
 from app.repositories.base import BaseRepository
 from app.schemas.jobs import JobListQuery
@@ -24,6 +28,11 @@ MAX_FINGERPRINT_MATCHES = 10
 
 class JobRepository(BaseRepository):
     """Consultas e escritas de `jobs`."""
+
+    def __init__(self, db: Session) -> None:
+        super().__init__(db)
+        self._catalog_transaction: SessionTransaction | None = None
+        self._catalog_ids: dict[str, uuid.UUID] = {}
 
     def list_page(self, query: JobListQuery) -> list[Job]:
         """Busca até um item adicional na mesma consulta que lê a página."""
@@ -103,6 +112,130 @@ class JobRepository(BaseRepository):
     def get(self, job_id: uuid.UUID) -> Job | None:
         """Busca pelo identificador, sem carregar relações."""
         return self._db.get(Job, job_id)
+
+    def get_for_update(self, job_id: uuid.UUID) -> Job | None:
+        """Serializa reprocessamentos simultâneos da mesma vaga."""
+        return self._db.scalar(
+            select(Job)
+            .where(Job.id == job_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+
+    def list_required_skill_names(self, job_id: uuid.UUID) -> list[str]:
+        """Busca as habilidades obrigatórias para avaliar exclusões da vaga."""
+        stmt = (
+            select(Skill.canonical_name)
+            .join(JobSkill, JobSkill.skill_id == Skill.id)
+            .where(
+                JobSkill.job_id == job_id,
+                JobSkill.requirement_type == RequirementType.REQUIRED.value,
+            )
+        )
+        return list(self._db.scalars(stmt))
+
+    def list_extracted_requirements(
+        self, job_id: uuid.UUID
+    ) -> list[ExtractedRequirement]:
+        """Reconstitui os requisitos persistidos para o cálculo de matching."""
+        stmt = (
+            select(JobSkill, Skill.canonical_name, Skill.category)
+            .join(Skill, Skill.id == JobSkill.skill_id)
+            .where(JobSkill.job_id == job_id)
+        )
+        return [
+            ExtractedRequirement(
+                TaxonomySkill(name, category or ""),
+                RequirementType(item.requirement_type),
+                item.confidence,
+                item.evidence_snippet,
+            )
+            for item, name, category in self._db.execute(stmt)
+        ]
+
+    def save_requirements(
+        self,
+        job: Job,
+        requirements: Sequence[ExtractedRequirement],
+        *,
+        replace: bool = False,
+    ) -> None:
+        """Adiciona a extração à transação da vaga ou substitui o snapshot."""
+        if replace:
+            self._db.execute(delete(JobSkill).where(JobSkill.job_id == job.id))
+        if not requirements:
+            return
+
+        with self._db.no_autoflush:
+            skill_ids = self._resolve_skill_ids([item.skill for item in requirements])
+        self._db.add_all(
+            JobSkill(
+                job=job,
+                skill_id=skill_ids[item.skill.canonical_name],
+                requirement_type=item.requirement_type.value,
+                confidence=item.confidence,
+                evidence_snippet=item.evidence_snippet,
+                extraction_method="deterministico",
+            )
+            for item in requirements
+        )
+
+    def _resolve_skill_ids(
+        self, skills: Sequence[TaxonomySkill]
+    ) -> dict[str, uuid.UUID]:
+        transaction = self._db.get_transaction() or self._db.begin()
+        if self._catalog_transaction is not transaction:
+            self._catalog_ids.clear()
+            self._catalog_transaction = transaction
+        unknown = {
+            skill.canonical_name: skill
+            for skill in skills
+            if skill.canonical_name not in self._catalog_ids
+        }
+        if not unknown:
+            return self._catalog_ids
+
+        self._catalog_ids.update(self._find_catalog_ids(unknown))
+        missing = [
+            unknown[name] for name in sorted(unknown) if name not in self._catalog_ids
+        ]
+        if missing:
+            # A restrição existente garante um único nome canônico quando
+            # duas transações descobrem a mesma habilidade no mesmo momento.
+            self._db.execute(
+                insert(Skill)
+                .values(
+                    [
+                        {
+                            "canonical_name": skill.canonical_name,
+                            "category": skill.category,
+                            "aliases": list(skill.aliases),
+                        }
+                        for skill in missing
+                    ]
+                )
+                .on_conflict_do_nothing(index_elements=[Skill.canonical_name])
+            )
+            self._catalog_ids.update(
+                self._find_catalog_ids(skill.canonical_name for skill in missing)
+            )
+        return self._catalog_ids
+
+    def _find_catalog_ids(self, names: Iterable[str]) -> dict[str, uuid.UUID]:
+        by_lower = {name.lower(): name for name in names}
+        rows = self._db.execute(
+            select(Skill.canonical_name, Skill.id)
+            .where(func.lower(Skill.canonical_name).in_(by_lower))
+            .order_by(Skill.canonical_name, Skill.id)
+        )
+        resolved: dict[str, uuid.UUID] = {}
+        for stored_name, skill_id in rows:
+            canonical_name = by_lower[stored_name.lower()]
+            if stored_name == canonical_name:
+                resolved[canonical_name] = skill_id
+            else:
+                resolved.setdefault(canonical_name, skill_id)
+        return resolved
 
     def list_dedup_scan(self, *, limit: int) -> list[Job]:
         """Vagas que ainda podem ser revisadas, da mais antiga para a mais nova.

@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Revisado em 2026-11-19 (F1-T13). A revisão Alembic ao fim da fase é `000000000004`.
+> Revisado em 2026-11-24 (F2-T05). A revisão Alembic atual é `000000000006`.
 
 ## Visão geral
 
@@ -21,7 +21,9 @@
   duplicata usa `ON DELETE SET NULL` — nada é perdido em cascata.
 - **Migrações:** `migrations/versions/000000000002_profile_tables.py` (perfil) e
   `000000000003_job_tables.py` (vagas), seguidas por
-  `000000000004_application_tables.py` (candidaturas). Cada revisão tem
+  `000000000004_application_tables.py` (candidaturas) e
+  `000000000005_job_skills.py` (requisitos extraídos), além de
+  `000000000006_job_matches.py` (resultados de matching). Cada revisão tem
   `upgrade` e `downgrade`.
 
 ## Diagrama
@@ -36,6 +38,10 @@ erDiagram
     jobs |o--o{ jobs : "referência de duplicatas confirmadas"
     candidates ||--o{ applications : "possui"
     jobs ||--o{ applications : "recebe"
+    jobs ||--o{ job_skills : "requer"
+    skills ||--o{ job_skills : "identifica"
+    candidates ||--o{ job_matches : "recebe avaliação"
+    jobs ||--o{ job_matches : "é avaliada"
     applications ||--o{ application_status_history : "registra"
 
     candidates {
@@ -130,6 +136,32 @@ erDiagram
         uuid import_batch_id FK "opcional"
         boolean is_archived
         uuid duplicate_of_job_id FK "opcional"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    job_skills {
+        uuid id PK
+        uuid job_id FK
+        uuid skill_id FK
+        varchar requirement_type "obrigatorio ou desejavel"
+        float weight "opcional"
+        float confidence "0 a 1"
+        text evidence_snippet "trecho literal"
+        varchar extraction_method
+    }
+
+    job_matches {
+        uuid id PK
+        uuid candidate_id FK
+        uuid job_id FK
+        varchar scoring_version
+        numeric deterministic_score
+        numeric semantic_score
+        numeric match_score
+        jsonb knockout_flags
+        jsonb analysis
+        jsonb llm_analysis
         timestamptz created_at
         timestamptz updated_at
     }
@@ -388,9 +420,36 @@ O banco de teste é isolado (`jobpilot_test`), criado pela fixture a partir de
 `alembic upgrade head` na sessão. A fixture **aborta** se o alvo não terminar
 em `_test` ou for igual ao banco de desenvolvimento.
 
+## Requisitos extraídos (`job_skills`, F2-T02)
+
+Cada par `(job_id, skill_id)` é único. Apagar uma vaga remove seus requisitos
+em cascata. A referência ao catálogo `skills` impede a exclusão de uma
+habilidade ainda usada por uma vaga. `skill_id` tem índice próprio.
+
+A extração grava `extraction_method = deterministico`, tipo obrigatório ou
+desejável, confiança entre 0 e 1 e um trecho literal da descrição. O peso
+fica nulo até a etapa de score. Cadastro e importação gravam a extração na
+transação da vaga. O serviço `JobService.refresh_requirements(job_id)`
+reprocessa uma vaga existente e substitui o conjunto anterior sob bloqueio
+da vaga. O downgrade remove `job_skills` e preserva vagas e catálogo.
+
+## Resultados de matching (`job_matches`, F2-T05)
+
+O trio `(candidate_id, job_id, scoring_version)` é único. O recálculo usa
+upsert e atualiza o snapshot da mesma versão. O índice de ranking começa
+por candidato e versão e inclui `match_score`. A exclusão de candidato
+ou vaga remove os resultados associados em cascata.
+
+Os scores usam `NUMERIC` e aceitam valores de 0 a 1 ou nulo. Nesta etapa
+`match_score` recebe o valor de `deterministic_score`. As colunas
+`semantic_score` e `llm_analysis` aceitam nulo. O JSONB `analysis` contém
+os requisitos e as evidências da avaliação, e `knockout_flags` guarda as
+causas de exclusão. O downgrade remove só a tabela de resultados.
+[Rotas de matching](api.md#matching)
+
 ## Próximas tabelas (fora desta tarefa)
 
-`job_skills`, `job_matches`, `llm_cache`, `pipeline_runs`, `resume_versions` e
+`llm_cache`, `pipeline_runs`, `resume_versions` e
 `interviews` (ver `PLANO.md` §5).
 
 ## Pendência registrada

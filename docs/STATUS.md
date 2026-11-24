@@ -10,30 +10,53 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-19 (UTC) |
-| **Fase atual** | Fase 1 — Núcleo sem IA concluída. Próxima fase: Fase 2 — Matching |
-| **Branch base** | `develop`. A próxima branch de fase será `phase/02-matching` |
-| **Próxima tarefa** | F2-T01 — Taxonomia de skills |
-| **Ficha da tarefa** | a avaliar no início da F2-T01 |
-| **Estado da próxima tarefa** | não iniciada |
+| **Última atualização** | 2026-11-24 (UTC) |
+| **Fase atual** | Fase 2 — Matching |
+| **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
+| **Última tarefa integrada** | [F2-T08 — Documentação e relatório da Fase 2](tasks/FASE-02/F2-T08.md), em `6600b97` |
+| **Tarefa atual** | [F2-GATE — Validação de saída da Fase 2](tasks/FASE-02/F2-GATE.md), em `phase/02-matching` |
+| **Estado da tarefa** | critérios técnicos aprovados. [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) aberto para `develop` |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
-| **Testes** | **360 testes aprovados** com PostgreSQL. Cobertura de linhas de 96,60% em `app` e 95,33% em `app/services`. Ruff e formatação verdes |
-| **CI** | cobertura, Ruff e migração verdes no merge da Fase 1 em `develop` ([run 44610945327](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327)) |
+| **Testes** | **440 testes aprovados** com PostgreSQL. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff, formatação e reprodução do golden set aprovados |
+| **CI** | [CI da fase na revisão `56916a0`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313865994) aprovado. Conferir os [checks do PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37/checks) antes de integrar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` atualizado por fast-forward após o PR #26. Branch `phase/01-nucleo-sem-ia` preservada no remoto |
+| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `b1f6d28` na partida. Evidências do F2-GATE publicadas na branch da fase |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
-| **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
+| **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), aberto de `phase/02-matching` para `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | MCP indisponível. `gh` autenticado usado para PRs e CI |
+| **GitHub** | `gh` autenticado usado para abrir o PR #37 com autorização. MCP usado para consultas |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ler os critérios da F2-T01 no backlog e preparar a branch `phase/02-matching` a partir de `develop` sincronizada.
+> Conferir o CI do [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) e, com autorização, integrar a Fase 2 em `develop`.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **PR do F2-GATE aberto (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi aberto de `phase/02-matching` para `develop` com `gh` autenticado após autorização do JP.
+- **F2-GATE validado tecnicamente (2026-11-24 UTC).** RF-07 a RF-09 cobertos por testes, `deterministico-v1` ativa e golden set reproduzido. Suíte com 440 testes em PostgreSQL, cobertura de 97,14% em `app` e 95,14% em `app/services`. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados. [Ficha do gate](tasks/FASE-02/F2-GATE.md)
+- **F2-T08 integrada (2026-11-24 UTC).** O [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) foi mesclado com histórico e autorização em `6600b97`, após CI verde na revisão `be9d320`. A branch local da fase avançou por fast-forward. Ponto de retomada no F2-GATE.
+- **PR da F2-T08 aberto (2026-11-24 UTC).** O [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) foi aberto de `docs/f2-t08-documentacao-matching` para `phase/02-matching` com `gh` autenticado após autorização do JP.
+- **F2-T08 documentada (2026-11-24 UTC).** README com roteiro de cálculo, detalhe e ranking, metodologia com fluxo de persistência e relatório de avaliação regenerado com as mesmas métricas. Roteiro confirmado em PostgreSQL isolado, 440 testes aprovados, Ruff e formatação aprovados. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados.
+- **F2-T07 integrada (2026-11-24 UTC).** O [PR #35](https://github.com/JoaumPdr/jobpilot-ai/pull/35) foi mesclado com histórico e autorização em `55064a5`, após CI verde na revisão `09b139e`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T08.
+- **PR da F2-T07 aberto (2026-11-24 UTC).** O [PR #35](https://github.com/JoaumPdr/jobpilot-ai/pull/35) foi aberto de `docs/f2-t07-adiar-embeddings` para `phase/02-matching` com `gh` autenticado após autorização do JP. O MCP do GitHub recusou a abertura com 403.
+- **F2-T07 documentada (2026-11-24 UTC).** O [ADR 0012](adr/0012-adiar-embeddings-multilingues.md) adia a adoção de embeddings até haver evidência comparativa de ganho. O relatório disponível mede a linha de base determinística. Suíte de partida com 440 testes aprovados em PostgreSQL. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados.
+- **F2-T06 integrada (2026-11-24 UTC).** O [PR #34](https://github.com/JoaumPdr/jobpilot-ai/pull/34) foi mesclado com histórico e autorização em `8209788`, após CI verde na revisão `92f139e`. A branch local da fase avançou por fast-forward. Ponto de retomada na decisão condicional da F2-T07.
+- **F2-T06 implementada (2026-11-24 UTC).** Curadoria de 34 vagas expurgadas e rotuladas, script offline e relatório reproduzível. Precisão de 99,24%, revocação de 67,53% e concordância ordinal de 86,48%. 437 testes de partida e 440 na entrega. Execução direta com `gpt-6.2-sol` em `high`. Política Base e hook passivo confirmados.
+- **F2-T05 integrada (2026-11-24 UTC).** O [PR #33](https://github.com/JoaumPdr/jobpilot-ai/pull/33) foi mesclado com histórico e autorização em `673cdd5`, após CI verde na revisão `fb4ed4d`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T06.
+- **F2-T05 implementada (2026-11-24 UTC).** Persistência versionada em `job_matches`, cálculo, ranking e detalhe de matching. Suíte de partida com 434 testes e entrega com 437. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados.
+- **CI atualizado para Node.js 24 (2026-11-24 UTC).** [PR #32](https://github.com/JoaumPdr/jobpilot-ai/pull/32) integrado em `7426146`. `checkout` v7.0.1 e `setup-uv` v10.4.0 passaram no PR e na fase sem a anotação de Node.js 20.
+- **F2-T04 integrada (2026-11-24 UTC).** O [PR #31](https://github.com/JoaumPdr/jobpilot-ai/pull/31) foi mesclado com histórico e autorização em `4c353db`, após CI verde na revisão `003c06a`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T05.
+- **F2-T04 implementada (2026-11-24 UTC).** Cálculo puro, explicação por requisito e configuração `deterministico-v1`. 420 testes na partida e 434 na entrega. Política Base e hook passivo confirmados. Execução direta com `gpt-6.2-sol` em `high`.
+- **F2-T03 integrada (2026-11-24 UTC).** O [PR #30](https://github.com/JoaumPdr/jobpilot-ai/pull/30) foi mesclado com histórico e autorização em `8b740b4`, após CI verde na revisão `c4f597a`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T04.
+- **F2-T03 implementada (2026-11-23 UTC).** Flags eliminatórias com decisão de elegibilidade, validação das listas de preferências e leitura dos requisitos obrigatórios persistidos. 400 testes na partida e 420 na entrega. Política Base e hook passivo confirmados. Execução direta com `gpt-6.2-sol` em `high`.
+- **F2-T02 integrada (2026-11-23 UTC).** O [PR #29](https://github.com/JoaumPdr/jobpilot-ai/pull/29) foi mesclado com histórico e autorização em `24ce540`, após CI verde na revisão `e9ac9ec`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T03.
+- **F2-T02 implementada (2026-11-23 UTC).** Extração determinística em PT/EN, persistência em `job_skills` no cadastro e na importação e reprocessamento de vagas existentes. 387 testes na partida, 400 na entrega, com ciclo da migração em PostgreSQL. Execução direta com `gpt-6.2-sol` em `high`, após ajuste confirmado pelo JP. Política Base e hook passivo confirmados.
+- **Limpeza de branches autorizada (2026-11-23 UTC).** Excluídas sete branches locais e seis remotas de `docs/*`, `test/*` e `fix/*`. Todas as pontas já pertenciam a `origin/develop` e nenhuma tinha PR aberto. A branch `docs/f1-t01-padronizacao-documental` existia só localmente.
+- **F2-T01 integrada (2026-11-23 UTC).** O [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) foi mesclado com histórico e autorização em `62649a8`, após CI verde na revisão `6b109a6`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T02.
+- **PR da F2-T01 aberto (2026-11-23 UTC).** O [PR #28](https://github.com/JoaumPdr/jobpilot-ai/pull/28) foi aberto com `gh` autenticado após autorização do JP. O MCP do GitHub recusou a abertura com 403.
+- **F2-T01 implementada (2026-11-23 UTC).** Catálogo em TOML com 184 habilidades em 9 categorias, busca por nome ou alias e relatório em memória dos termos não reconhecidos. A suíte de partida teve 360 testes aprovados e a da entrega, 387. Política Base e hook passivo do JobPilot confirmados. Execução direta em `gpt-6.2-sol` com esforço `medium`.
 - **F1-GATE concluído (2026-11-19 UTC).** O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) foi mesclado com autorização em `bbea363`. O CI do merge passou em `develop`, e a tag anotada `fase-01` foi publicada e conferida no GitHub. Ponto de retomada na F2-T01.
 - **F1-GATE validado tecnicamente (2026-11-19 UTC).** A ficha reúne as evidências de RF-01 a RF-06, reimportação idempotente, cobertura e documentação. A suíte local passou com 360 testes. Cobertura de 96,60% em `app` e 95,33% em `app/services`. Execução direta com Sol/Medium, política e hook confirmados. [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) aberto para `develop`.
 - **F1-T13 integrada (2026-11-19 UTC).** O [PR #25](https://github.com/JoaumPdr/jobpilot-ai/pull/25) foi mesclado com autorização em `5fa4999`. A branch local da fase avançou por fast-forward e o CI do merge passou. O gate de saída é o ponto de retomada.
@@ -84,9 +107,35 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F1-GATE](tasks/FASE-01/F1-GATE.md), PR #26.
-**Próxima tarefa.** F2-T01, conforme os critérios no [backlog](BACKLOG.md).
+**Última tarefa integrada.** [F2-T08](tasks/FASE-02/F2-T08.md), PR #36.
+**Tarefa atual.** [F2-GATE](tasks/FASE-02/F2-GATE.md), critérios técnicos aprovados.
 
+- [x] Verificar RF-07 a RF-09, golden set e versão de score ativa
+- [x] Registrar evidências do gate e preparar o changelog da Fase 2
+- [x] Abrir o PR #37 da fase para `develop`
+- [ ] Confirmar o CI do PR #37 e integrar com autorização
+- [ ] Confirmar o CI em `develop` e publicar a tag anotada `fase-02`
+- [x] Consolidar README, metodologia, avaliação e relatório da Fase 2
+- [x] Conferir roteiro, relatório gerado e suíte de testes
+- [x] Abrir o PR #36 para `phase/02-matching`
+- [x] Confirmar o CI e integrar o PR #36 com autorização
+- [x] Conferir a condição de adoção da F2-T07 no backlog e no relatório
+- [x] Registrar o adiamento dos embeddings no ADR 0012
+- [x] Abrir o PR #35 para `phase/02-matching`
+- [x] Confirmar o CI e integrar o PR #35 com autorização
+- [x] Curar o golden set e reproduzir métricas de extração e ranking
+- [x] Confirmar o CI do PR e integrar a F2-T06 na branch da fase
+- [x] Persistir e expor resultados de matching por candidato, vaga e versão
+- [x] Confirmar o CI do PR e integrar a F2-T05 na branch da fase
+- [x] Implementar e testar média ponderada, elegibilidade, explicação e versão
+- [x] Confirmar o CI do PR e integrar a F2-T04 na branch da fase
+- [x] Implementar e testar as regras eliminatórias e a avaliação de elegibilidade
+- [x] Confirmar o CI do PR e integrar a F2-T03 na branch da fase
+- [x] Extrair e persistir requisitos do cadastro manual e da importação, com suporte a reprocessamento
+- [x] Confirmar o CI do PR e integrar a F2-T02 na branch da fase
+- [x] Criar as branches da Fase 2 e da F2-T01 a partir de `develop` sincronizada
+- [x] Implementar e testar o catálogo, o índice de aliases e o relatório
+- [x] Confirmar o CI do PR e integrar a F2-T01 na branch da fase
 - [x] Base da Fase 0 e higiene mescladas (`cbbeb65`, `ff60748`) ✅
 - [x] Criar `phase/01-nucleo-sem-ia` a partir de `develop` e publicar ✅
 - [x] Padronizar documentação (BACKLOG/STATUS/fichas) — PR #7 mesclado ✅
@@ -143,7 +192,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | não iniciada | — | — |
+| 2 — Matching | gate pendente | — | Critérios técnicos aprovados, PR #37 aberto para `develop` |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
@@ -175,6 +224,7 @@
 
 | Data | Decisão | Motivo | ADR |
 |------|---------|--------|-----|
+| 2026-11-24 | Adiar embeddings multilíngues | A avaliação da F2-T06 fornece a linha de base determinística. A adoção exige evidência comparativa de ganho | [0012](adr/0012-adiar-embeddings-multilingues.md) |
 | 2026-11-10 | Repositório GitHub: `JoaumPdr/jobpilot-ai` privado | Nome sugerido no PLANO.md, conta do JP | — |
 | 2026-11-10 | Branch strategy: `main` → `develop` → `phase/*` | Modularidade, resiliência, gates por fase | 0009 (sincronização GitHub) |
 | 2026-11-13 | Gerenciador de dependências: `uv` | Performance, lock file, grupos de dependências | 0008 |
@@ -203,6 +253,7 @@
 
 ## 8. Observações
 
+- **Base da Fase 2 (2026-11-23):** a tag `fase-01` continua apontando para o merge do gate em `bbea363`. A ponta de `develop` avançou para `e8d65d2` com o encerramento documental do [PR #27](https://github.com/JoaumPdr/jobpilot-ai/pull/27). Esse merge manteve a F2-T01 como ponto de retomada.
 - **Divergência corrigida em 2026-11-18:** o §1 dizia último commit `396e851` (merge do PR #12) e push às 22:34 UTC; o Git/GitHub mostravam `05f69aa` ("docs(status): encerrar sessao...") com push às 22:35 UTC e CI verde (run `44191524901`). Era só documentação posterior ao merge; campos corrigidos. Nenhuma outra divergência.
 - **Docker Desktop encerrou sozinho durante a sessão (2026-11-17):** a segunda execução completa de testes gerou 82 erros de conexão; o container `jobpilot-postgres` foi reiniciado (`docker compose up -d`) e a suíte voltou a verde (184 passed). Nenhuma falha de código.
 - **Divergência corrigida em 2026-11-17:** o §1 dizia "F1-T02-b não iniciada; ficha a criar", mas o Git já tinha a ficha (`186b575`), a branch publicada e ~1.900 linhas de implementação não commitadas. Confiado o Git; STATUS corrigido e o trabalho revisado, testado e commitado (`d6513a6`, `eb7481d`). Nenhum outro campo divergia do remoto.

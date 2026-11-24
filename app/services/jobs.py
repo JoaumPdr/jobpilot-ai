@@ -12,12 +12,21 @@ O serviço não conhece HTTP: levanta `ConflictError` e o handler padroniza.
 from __future__ import annotations
 
 import uuid
+from collections.abc import Sequence
+from functools import cache
 from typing import Protocol
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.errors import ConflictError, NotFoundError
-from app.models import Job
+from app.matching.job_requirements import ExtractedRequirement, RequirementExtractor
+from app.matching.knockouts import (
+    KnockoutResult,
+    KnockoutRule,
+    evaluate_knockouts,
+    parse_knockout_terms,
+)
+from app.models import CandidatePreference, Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
 from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
 from app.services.normalization import (
@@ -27,6 +36,14 @@ from app.services.normalization import (
     normalize_seniority,
     normalize_work_mode,
 )
+from app.services.skill_taxonomy import get_default_skill_taxonomy
+
+
+@cache
+def _requirement_extractor() -> RequirementExtractor:
+    # Os aliases são versionados junto da aplicação. Cada processo compila
+    # o índice uma vez para o cadastro manual e os lotes de CSV.
+    return RequirementExtractor(get_default_skill_taxonomy())
 
 
 class JobRepositoryProtocol(Protocol):
@@ -35,6 +52,22 @@ class JobRepositoryProtocol(Protocol):
     def list_page(self, query: JobListQuery) -> list[Job]: ...
 
     def get(self, job_id: uuid.UUID) -> Job | None: ...
+
+    def get_for_update(self, job_id: uuid.UUID) -> Job | None: ...
+
+    def list_required_skill_names(self, job_id: uuid.UUID) -> list[str]: ...
+
+    def list_extracted_requirements(
+        self, job_id: uuid.UUID
+    ) -> list[ExtractedRequirement]: ...
+
+    def save_requirements(
+        self,
+        job: Job,
+        requirements: Sequence[ExtractedRequirement],
+        *,
+        replace: bool = False,
+    ) -> None: ...
 
     def get_by_source_external_id(
         self, source: str, external_id: str
@@ -87,6 +120,71 @@ class JobService:
             raise self._integrity_conflict() from exc
 
         return job, probable
+
+    def refresh_requirements(
+        self, job_id: uuid.UUID
+    ) -> tuple[ExtractedRequirement, ...]:
+        """Reextrai requisitos de uma vaga existente e substitui seu snapshot.
+
+        Levanta NotFoundError se o identificador não existir. Se o texto não
+        contiver requisitos, o novo snapshot fica vazio.
+        """
+        job = self._jobs.get_for_update(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+
+        try:
+            requirements = _requirement_extractor().extract(job.description)
+            self._jobs.save_requirements(job, requirements, replace=True)
+            self._jobs.commit()
+        except (OSError, SQLAlchemyError, ValueError):
+            self._jobs.rollback()
+            raise
+        return requirements
+
+    def evaluate_knockouts(
+        self, job_id: uuid.UUID, preferences: CandidatePreference | None
+    ) -> KnockoutResult:
+        """Avalia se uma vaga existente pode participar da média para o perfil.
+
+        Levanta NotFoundError se a vaga não existir. Só consulta job_skills
+        quando há uma lista válida de exclusão de habilidades.
+        """
+        job = self._jobs.get(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+        if preferences is None:
+            return KnockoutResult()
+
+        rules = preferences.knockout_rules or {}
+        has_skill_rule = parse_knockout_terms(
+            rules.get(KnockoutRule.EXCLUDE_REQUIRED_SKILLS)
+        )
+        skill_names = (
+            self._jobs.list_required_skill_names(job_id) if has_skill_rule else ()
+        )
+        return evaluate_knockouts(
+            job,
+            preferences,
+            taxonomy=get_default_skill_taxonomy(),
+            required_skill_names=skill_names,
+        )
+
+    def get_matching_inputs(
+        self, job_id: uuid.UUID
+    ) -> tuple[Job, tuple[ExtractedRequirement, ...]]:
+        """Carrega a vaga e suas evidências. Levanta NotFoundError se ausente.
+
+        Vagas anteriores à rotina de extração ainda podem ser avaliadas
+        usando a descrição, sem alterar o catálogo na leitura.
+        """
+        job = self._jobs.get(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+        requirements = self._jobs.list_extracted_requirements(job_id)
+        return job, tuple(requirements) or _requirement_extractor().extract(
+            job.description
+        )
 
     def prepare_job(
         self,
@@ -147,7 +245,12 @@ class JobService:
             posted_at=data.posted_at,
             import_batch_id=import_batch_id,
         )
+        requirements = (
+            _requirement_extractor().extract(job.description) if job.description else ()
+        )
         self._jobs.add(job)
+        if requirements:
+            self._jobs.save_requirements(job, requirements)
         return job, probable[:MAX_FINGERPRINT_MATCHES]
 
     def _ensure_not_exact_duplicate(self, data: JobCreate, canonical_url: str) -> None:

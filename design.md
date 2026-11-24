@@ -62,6 +62,7 @@ Arquitetura: **monólito modular** em Python 3.12+, FastAPI, PostgreSQL, SQLAlch
 | 0008 | `uv` como único gerenciador de ambiente e dependências | aceito |
 | 0009 | GitHub como remoto e fonte da verdade (MCP + git local) | aceito |
 | [0011](docs/adr/0011-distribuicao-local-docker-compose.md) | Distribuição local da v1.0.0 com Docker Compose | aceito |
+| [0012](docs/adr/0012-adiar-embeddings-multilingues.md) | Adoção de embeddings multilíngues adiada após a avaliação da Fase 2 | aceito |
 
 ---
 
@@ -102,11 +103,16 @@ Ver `docs/data-model.md` para detalhes completos.
 
 ### 5.2 Matching Determinístico
 1. Extrai requisitos da vaga (taxonomia de skills + aliases PT/EN)
-2. Aplica filtros eliminatórios (knockouts) → flags
-3. Calcula score ponderado: `Σ(peso_i × correspondência_i) / Σ(peso_i)`
+2. Aplica filtros eliminatórios de modalidade, localização, empresas excluídas
+   e habilidades obrigatórias excluídas. `JobService.evaluate_knockouts`
+   carrega os requisitos quando a regra de habilidades está ativa e devolve
+   flags com código e valor encontrado na vaga.
+3. Calcula o score ponderado só para vagas elegíveis pela etapa anterior:
+   `Σ(peso_i × correspondência_i) / Σ(peso_i)`
 4. Níveis: exata=1.0, alias/relacionada=0.7, ausente=0, não confirmada=fora do cálculo
 5. Retorna: atendidos, ausentes, não confirmados, evidências
-6. Versionado via `scoring_version`
+6. Versionado via `scoring_version`. A fórmula, os pesos e as evidências
+   são detalhados na [metodologia do score](docs/matching-methodology.md).
 
 ### 5.3 Pipeline Orquestrado (LangGraph)
 Estado tipado → Nós determinísticos (importar, normalizar, dedup, filtrar, match) → Nós LLM (top-N) → Persistência (`pipeline_runs`) → Aprovação humana antes de ações sensíveis.

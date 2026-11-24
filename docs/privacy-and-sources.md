@@ -38,6 +38,14 @@ O JobPilot AI obtém vagas das seguintes fontes, em ordem de preferência:
 | APIs oficiais | Coletor autorizado (Fase 7) | ⚠️ Condicional | Somente com API oficial/feed permitido, respeitando termos de uso e rate limits |
 | Scraping | Extração automática de sites | ❌ Não | **Não é feito.** Nunca contornar login, CAPTCHA ou proteções. |
 
+### Fonte do golden set
+
+A avaliação da F2-T06 usa fatos técnicos expurgados de uma edição aberta
+do Djinni Recruitment Dataset, publicada sob MIT. O benchmark roda
+localmente a partir do snapshot em `data/golden/`. A curadoria omite
+currículos, nomes, contatos, locais e links de anúncio.
+[Procedência e protocolo](../data/golden/README.md)
+
 ### Checklist para nova fonte (Fase 7-T03)
 
 Antes de adicionar qualquer coletor de vagas externo:

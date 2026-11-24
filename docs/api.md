@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Cobre o núcleo da Fase 1: perfil e preferências,
-> catálogo de vagas e candidaturas com histórico.
+> `GUIA_DOCS_E_GIT.md`). Cobre perfil e preferências, catálogo de vagas,
+> candidaturas com histórico e matching determinístico.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** corpos em JSON (`Content-Type: application/json`).
@@ -191,7 +191,10 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
   "work_modes": ["remoto"],
   "seniority_levels": ["pleno"],
   "min_salary": "12000.00",
-  "knockout_rules": { "exclude_companies": ["Empresa X"] }
+  "knockout_rules": {
+    "exclude_companies": ["Empresa X"],
+    "exclude_required_skills": ["Postgres"]
+  }
 }
 ```
 
@@ -199,7 +202,19 @@ Campos omitidos voltam ao default (`[]`, `null` ou `{}`).
 |-------|------|--------|
 | `desired_titles`, `locations`, `work_modes`, `seniority_levels` | lista de strings | itens aparados; vazios descartados; até 200 caracteres por item |
 | `min_salary` | número decimal | `>= 0`, até 12 dígitos e 2 casas; sem coluna de moeda nesta fase |
-| `knockout_rules` | objeto JSON | chaves livres até a F2-T03 |
+| `knockout_rules` | objeto JSON | `exclude_companies` e `exclude_required_skills` aceitam listas de textos não vazios. Outras chaves são preservadas |
+
+`exclude_companies` compara o nome completo da empresa após normalizar caixa,
+acentos e espaços. `exclude_required_skills` aceita nomes e aliases da
+taxonomia e só elimina quando a vaga exige a habilidade. Lista vazia
+desativa a respectiva regra. Chaves extras, como `max_commute_km`, ficam
+armazenadas para compatibilidade com preferências anteriores.
+
+O matching também avalia `work_modes` e `locations` quando a vaga informa
+valores comparáveis. A modalidade remota é configurada em `work_modes`.
+Localizações podem incluir UF ou país, e componentes conhecidos em ambos
+os lados precisam coincidir. Uma vaga sem localização comparável ou sem
+modalidade conhecida fica elegível nessas regras.
 
 **Erros:** `404` (candidato inexistente), `422` (valores inválidos).
 
@@ -434,6 +449,10 @@ Cadastra uma vaga. O texto é guardado normalizado para exibição (acentos e ca
 preservados, espaços colapsados), `work_mode`/`seniority` são convertidos para
 os valores internos e a URL gera `canonical_url` (sem parâmetros de rastreio,
 fragmento, barra final ou porta padrão).
+
+Os requisitos reconhecidos na descrição são gravados com a vaga. O extrator
+usa seções e gatilhos em português e inglês e resolve termos pela taxonomia.
+O formato da resposta continua igual. [Requisitos extraídos](data-model.md#requisitos-extraídos-job_skills-f2-t02)
 
 ```json
 {
@@ -767,6 +786,37 @@ sem o novo status retorna `422 invalid_data`.
 {"status": "planejada", "transition_note": "Revisar currículo."}
 ```
 
+## Matching
+
+As rotas usam resultados de `job_matches` de um candidato. A versão padrão
+é a configuração de score ativa. Os scores são decimais serializados como
+texto, na escala de 0 a 1. Sem média ou com flag eliminatória, o score é nulo.
+[Metodologia](matching-methodology.md)
+
+| Método e rota | Resposta |
+|---|---|
+| `POST /candidates/{candidate_id}/matches/{job_id}` | `200` com o resultado calculado e persistido na versão ativa. Recalcular atualiza a mesma linha. Candidato ou vaga ausente retorna `404`. |
+| `GET /candidates/{candidate_id}/matches/{job_id}` | `200` com o resultado e a explicação. Aceita `scoring_version` para consultar uma versão anterior. Resultado ausente retorna `404`. |
+| `GET /candidates/{candidate_id}/matches` | `200` com `items`, `scoring_version`, `limit`, `offset` e `has_more`. Candidato ausente retorna `404`. |
+
+O corpo do POST é opcional. Envie ausências verificadas com
+`{"confirmed_absent": ["Docker"]}`. O cálculo usa essa lista na avaliação
+atual. Uma vaga sem requisitos persistidos pode usar a extração da descrição
+durante o cálculo.
+
+O ranking aceita `scoring_version`, `min_score`, `work_mode`,
+`include_unscored`, `limit` (padrão 20, máximo 100) e `offset` (padrão 0).
+A ordenação começa pelo maior score e usa o identificador da vaga em caso
+de empate. Vagas arquivadas ou marcadas como duplicatas ficam fora do
+ranking. `include_unscored=true` inclui resultados sem score no final,
+enquanto `min_score` restringe a lista a resultados com valor numérico.
+
+O detalhe contém `knockout_flags` com código e valor da vaga, e `analysis`
+com o numerador, o denominador e os grupos `met`, `absent` e
+`unconfirmed`. Cada requisito inclui nome, tipo, confiança, trecho literal,
+nível, peso e fator. Uma correspondência inclui a habilidade do perfil que
+a justificou.
+
 ## Fora desta versão
 
-- Matching, LLM e pipeline.
+- LLM e pipeline.

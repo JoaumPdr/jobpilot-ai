@@ -65,6 +65,9 @@ curl -X POST http://localhost:8000/jobs/import \
   de duplicatas (`GET /jobs/duplicates`).
 - Reimportar o mesmo arquivo resulta em `inserted = 0` (as linhas caem em
   `duplicates`), contanto que `source` e URLs não tenham mudado.
+- As vagas novas recebem os requisitos reconhecidos na descrição dentro da
+  transação do lote. Linhas duplicadas preservam os requisitos já gravados.
+  [Requisitos extraídos](data-model.md#requisitos-extraídos-job_skills-f2-t02)
 
 ## Relatório de exemplo
 

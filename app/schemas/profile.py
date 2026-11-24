@@ -8,7 +8,7 @@ listas são normalizadas antes de virar JSON.
 Decisões registradas em `docs/tasks/FASE-01/F1-T02-a.md`:
 - rotas REST por `candidate_id`;
 - `education`/`languages` com estrutura detalhada;
-- `knockout_rules` como objeto livre até a F2-T03.
+- `knockout_rules` guarda regras e outras chaves de preferências já registradas.
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ from pydantic import (
     model_validator,
 )
 
+from app.matching.knockouts import KnockoutRule, parse_knockout_terms
 from app.schemas.common import clean_string_list
 from app.schemas.experiences import ExperienceRead
 from app.schemas.skills import CandidateSkillRead
@@ -88,8 +89,7 @@ class PreferencesBase(BaseModel):
     min_salary: Decimal | None = Field(
         default=None, ge=0, max_digits=12, decimal_places=2
     )
-    # Regras de eliminação serão formalizadas na F2-T03; aqui só exigimos
-    # um objeto JSON, sem inventar chaves que o domínio ainda não definiu.
+    # Preserva o JSON de leitores e clientes anteriores à F2-T03.
     knockout_rules: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("desired_titles", "locations", "work_modes", "seniority_levels")
@@ -100,6 +100,21 @@ class PreferencesBase(BaseModel):
 
 class PreferencesPut(PreferencesBase):
     """Substitui o conjunto inteiro de preferências (PUT idempotente)."""
+
+    @field_validator("knockout_rules")
+    @classmethod
+    def _validate_knockout_rules(cls, value: dict[str, Any]) -> dict[str, Any]:
+        """Valida as regras operacionais em novos PUTs e preserva outras chaves."""
+        rules = value.copy()
+        for rule in KnockoutRule:
+            if rule.value in value:
+                terms = parse_knockout_terms(value[rule.value])
+                if terms is None:
+                    raise ValueError(
+                        f"{rule.value} deve ser uma lista de textos não vazios."
+                    )
+                rules[rule.value] = list(terms)
+        return rules
 
 
 class PreferencesRead(PreferencesBase):

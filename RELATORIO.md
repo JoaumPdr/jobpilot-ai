@@ -137,6 +137,111 @@
 - A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
 - O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) integrou a fase em `develop` com histórico no commit `bbea363`. Depois do [CI verde em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327), a tag anotada [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) foi publicada nesse commit.
 
-## Fases 2–7
+## Fase 2 — Matching
+
+### F2-T01 — Taxonomia de skills (2026-11-23)
+
+- O [catálogo TOML](data/taxonomy/skills.toml) reúne 184 habilidades em 9 categorias, com aliases em português e inglês. A consulta ignora caixa, acentos e variações de espaço, e preserva pontuação significativa em termos como `C++` e `C#`.
+- O catálogo rejeita aliases ambíguos no carregamento. O relatório agrega termos desconhecidos em memória e ordena por frequência, com desempate alfabético. [Ficha da F2-T01](docs/tasks/FASE-02/F2-T01.md)
+- A suíte com PostgreSQL passou com 387 testes, 27 sobre a taxonomia. Cobertura de linhas de 96,70% em `app` e 95,46% em `app/services`. Ruff e formatação passaram.
+
+### F2-T02 — Extrator determinístico de requisitos (2026-11-23)
+
+- O extrator classifica habilidades da taxonomia como obrigatórias ou desejáveis
+  a partir de seções e gatilhos em português e inglês. Guarda a confiança da
+  regra e um trecho literal da vaga. [Ficha da F2-T02](docs/tasks/FASE-02/F2-T02.md)
+- A migração `000000000005` adiciona `job_skills`. Cadastro manual e importação
+  persistem os requisitos na transação da vaga, e o serviço permite reprocessar
+  vagas anteriores. [Modelo de dados](docs/data-model.md#requisitos-extraídos-job_skills-f2-t02)
+- A suíte passou com 400 testes em PostgreSQL, 13 novos. Cobertura de linhas de
+  96,74% em `app` e 95,17% em `app/services`. Ruff e formatação passaram.
+
+### F2-T03 — Filtros eliminatórios (2026-11-23)
+
+- A avaliação devolve flags com o motivo e o valor encontrado na vaga. O
+  resultado sinaliza quais vagas podem entrar na média do score. As regras
+  cobrem modalidade, localização, empresas excluídas e habilidades
+  obrigatórias excluídas. [Ficha da F2-T03](docs/tasks/FASE-02/F2-T03.md)
+- A API valida as duas listas operacionais e preserva as demais chaves do
+  JSON de preferências. A habilidade desejável fica fora da regra de
+  exclusão. [Contrato de preferências](docs/api.md#preferências-11)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 420 testes,
+  20 novos. Cobertura de linhas de 96,90% em `app` e 95,27% em `app/services`.
+
+### F2-T04 — Score determinístico explicável (2026-11-24)
+
+- A versão `deterministico-v1` calcula a média ponderada com pesos 3 e 1.
+  Os eliminatórios interrompem a avaliação, e a explicação preserva as
+  evidências dos requisitos atendidos, ausentes e não confirmados. [Metodologia](docs/matching-methodology.md)
+- A ausência explícita contribui com fator zero. Os requisitos não
+  confirmados ficam fora do numerador e do denominador. A configuração
+  permite declarar relações direcionais entre habilidades. [Configuração](data/matching/scoring.toml)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 434 testes,
+  14 novos. Cobertura de linhas de 97,05% em `app` e 95,35% em `app/services`.
+
+### Manutenção do CI — Node.js 24 (2026-11-24)
+
+- O [PR #32](https://github.com/JoaumPdr/jobpilot-ai/pull/32) atualizou
+  `actions/checkout` para v7.0.1 e `astral-sh/setup-uv` para v10.4.0.
+  O workflow passou na branch da fase sem o aviso de Node.js 20.
+  [Execução do CI](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45299118537)
+
+### F2-T05 — Persistência e rotas de matching (2026-11-24)
+
+- A migração `000000000006` cria `job_matches`, com uma linha por candidato,
+  vaga e versão. O recálculo usa upsert e preserva versões anteriores.
+  [Modelo de dados](docs/data-model.md)
+- As rotas calculam, listam o ranking filtrável e consultam detalhes com
+  evidências. O cálculo usa a descrição quando a vaga ainda não possui
+  requisitos persistidos. [Contrato de matching](docs/api.md#matching)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 437 testes,
+  incluindo três novos. Cobertura de linhas de 97,14% em `app` e 95,14%
+  nos serviços.
+
+### F2-T06 — Golden set e avaliação do matching (2026-11-24)
+
+- Curadoria de 34 vagas reais do Djinni, com descrições técnicas expurgadas
+  em inglês e adaptadas para português e rótulos manuais. A avaliação usa
+  um perfil sintético de dados e backend. [Procedência](data/golden/README.md)
+- A versão `deterministico-v1` obteve 99,24% de precisão, 67,53% de revocação
+  e 86,48% de concordância ordinal. O script reproduz as métricas a partir
+  do snapshot local. [Relatório gerado](docs/evaluation.md)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 440 testes,
+  três novos. Cobertura de 97,14% em `app` e 95,14% nos serviços.
+
+### F2-T07 — Decisão sobre embeddings multilíngues (2026-11-24 UTC)
+
+- A avaliação da F2-T06 estabeleceu a linha de base determinística nas 34
+  vagas. A adoção de embeddings foi adiada até que uma comparação demonstre
+  ganho no ranking. [ADR 0012](docs/adr/0012-adiar-embeddings-multilingues.md)
+- A suíte de partida passou com 440 testes em PostgreSQL. A entrega é documental.
+  [Ficha da F2-T07](docs/tasks/FASE-02/F2-T07.md)
+
+### F2-T08 — Documentação e relatório da fase (2026-11-24 UTC)
+
+- Cadastro e importação extraem requisitos em PT-BR e EN. O matching avalia
+  os filtros eliminatórios, persiste a versão do score com evidências e permite
+  consultar o ranking e o detalhe por candidato. [Metodologia](docs/matching-methodology.md)
+- O roteiro no Swagger UI liga essas etapas com dados fictícios, do cadastro da
+  habilidade à consulta do ranking. [Roteiro da Fase 2](README.md#fluxo-da-fase-2)
+- A avaliação local documenta 99,24% de precisão, 67,53% de revocação e 86,48%
+  de concordância ordinal nas 34 vagas. Um perfil sintético e uma amostra de
+  conveniência delimitam a interpretação das métricas.
+  [Avaliação reproduzível](docs/evaluation.md)
+- A adoção de embeddings fica condicionada a uma comparação que demonstre ganho.
+  [ADR 0012](docs/adr/0012-adiar-embeddings-multilingues.md) · [Ficha da F2-T08](docs/tasks/FASE-02/F2-T08.md)
+
+### F2-GATE — Validação de saída (2026-11-24 UTC)
+
+- A ficha relaciona RF-07 a RF-09 aos testes de extração, score, persistência e
+  filtros eliminatórios. O carregador confirmou `deterministico-v1` como
+  versão ativa, e o golden set reproduziu as métricas publicadas.
+  [Ficha do gate](docs/tasks/FASE-02/F2-GATE.md)
+- A revisão `b1f6d28` passou com 440 testes em PostgreSQL, 97,14% de
+  cobertura em `app` e 95,14% em `app/services`. Ruff, formatação e ciclo de
+  migração passaram no CI da fase.
+  [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313001607)
+
+## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

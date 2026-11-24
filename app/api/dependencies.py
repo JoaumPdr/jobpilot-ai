@@ -15,6 +15,7 @@ from app.core.database import get_db
 from app.repositories.applications import ApplicationRepository
 from app.repositories.imports import ImportBatchRepository
 from app.repositories.jobs import JobRepository
+from app.repositories.matching import MatchRepository
 from app.repositories.profile import (
     CandidateRepository,
     CandidateSkillRepository,
@@ -27,7 +28,9 @@ from app.services.experiences import ExperienceService
 from app.services.job_dedup import JobDedupService
 from app.services.job_import import JobImportService
 from app.services.jobs import JobService
+from app.services.matching import MatchingService
 from app.services.profile import ProfileService
+from app.services.scoring import load_score_calculator
 from app.services.skills import SkillService
 
 DbSession = Annotated[Session, Depends(get_db)]
@@ -77,6 +80,16 @@ def get_application_service(db: DbSession) -> ApplicationService:
     )
 
 
+def get_matching_service(db: DbSession) -> MatchingService:
+    """Monta os repositórios usados pelo matching na mesma sessão."""
+    return MatchingService(
+        MatchRepository(db),
+        CandidateRepository(db),
+        JobService(JobRepository(db)),
+        load_score_calculator(),
+    )
+
+
 ApplicationServiceDep = Annotated[ApplicationService, Depends(get_application_service)]
 ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 SkillServiceDep = Annotated[SkillService, Depends(get_skill_service)]
@@ -84,3 +97,4 @@ ExperienceServiceDep = Annotated[ExperienceService, Depends(get_experience_servi
 JobServiceDep = Annotated[JobService, Depends(get_job_service)]
 JobImportServiceDep = Annotated[JobImportService, Depends(get_job_import_service)]
 JobDedupServiceDep = Annotated[JobDedupService, Depends(get_job_dedup_service)]
+MatchingServiceDep = Annotated[MatchingService, Depends(get_matching_service)]
