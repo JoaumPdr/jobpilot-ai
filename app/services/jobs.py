@@ -20,7 +20,14 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.errors import ConflictError, NotFoundError
 from app.matching.job_requirements import ExtractedRequirement, RequirementExtractor
-from app.models import Job
+from app.matching.knockouts import (
+    KnockoutResult,
+    KnockoutRule,
+    evaluate_knockouts,
+    parse_knockout_terms,
+)
+from app.matching.skill_taxonomy import SkillTaxonomy
+from app.models import CandidatePreference, Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
 from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
 from app.services.normalization import (
@@ -34,10 +41,15 @@ from app.services.skill_taxonomy import load_skill_taxonomy
 
 
 @cache
+def _matching_taxonomy() -> SkillTaxonomy:
+    return load_skill_taxonomy()
+
+
+@cache
 def _requirement_extractor() -> RequirementExtractor:
     # Os aliases são versionados junto da aplicação. Cada processo compila
     # o índice uma vez para o cadastro manual e os lotes de CSV.
-    return RequirementExtractor(load_skill_taxonomy())
+    return RequirementExtractor(_matching_taxonomy())
 
 
 class JobRepositoryProtocol(Protocol):
@@ -48,6 +60,8 @@ class JobRepositoryProtocol(Protocol):
     def get(self, job_id: uuid.UUID) -> Job | None: ...
 
     def get_for_update(self, job_id: uuid.UUID) -> Job | None: ...
+
+    def list_required_skill_names(self, job_id: uuid.UUID) -> list[str]: ...
 
     def save_requirements(
         self,
@@ -129,6 +143,34 @@ class JobService:
             self._jobs.rollback()
             raise
         return requirements
+
+    def evaluate_knockouts(
+        self, job_id: uuid.UUID, preferences: CandidatePreference | None
+    ) -> KnockoutResult:
+        """Avalia se uma vaga existente pode participar da média para o perfil.
+
+        Levanta NotFoundError se a vaga não existir. Só consulta job_skills
+        quando há uma lista válida de exclusão de habilidades.
+        """
+        job = self._jobs.get(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+        if preferences is None:
+            return KnockoutResult()
+
+        rules = preferences.knockout_rules or {}
+        has_skill_rule = parse_knockout_terms(
+            rules.get(KnockoutRule.EXCLUDE_REQUIRED_SKILLS)
+        )
+        skill_names = (
+            self._jobs.list_required_skill_names(job_id) if has_skill_rule else ()
+        )
+        return evaluate_knockouts(
+            job,
+            preferences,
+            taxonomy=_matching_taxonomy(),
+            required_skill_names=skill_names,
+        )
 
     def prepare_job(
         self,

@@ -156,6 +156,18 @@
 - A suíte passou com 400 testes em PostgreSQL, 13 novos. Cobertura de linhas de
   96,74% em `app` e 95,17% em `app/services`. Ruff e formatação passaram.
 
+### F2-T03 — Filtros eliminatórios (2026-11-23)
+
+- A avaliação devolve flags com o motivo e o valor encontrado na vaga. O
+  resultado sinaliza quais vagas podem entrar na média do score. As regras
+  cobrem modalidade, localização, empresas excluídas e habilidades
+  obrigatórias excluídas. [Ficha da F2-T03](docs/tasks/FASE-02/F2-T03.md)
+- A API valida as duas listas operacionais e preserva as demais chaves do
+  JSON de preferências. A habilidade desejável fica fora da regra de
+  exclusão. [Contrato de preferências](docs/api.md#preferências-11)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 420 testes,
+  20 novos. Cobertura de linhas de 96,90% em `app` e 95,27% em `app/services`.
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

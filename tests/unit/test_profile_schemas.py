@@ -142,3 +142,17 @@ def test_preferences_accept_knockout_rules_as_object() -> None:
     )
 
     assert preferences.knockout_rules["max_commute_km"] == 30
+
+
+@pytest.mark.parametrize(
+    ("rule", "value"),
+    [
+        ("exclude_companies", None),
+        ("exclude_companies", ["Empresa A", 42]),
+        ("exclude_required_skills", [" "]),
+        ("exclude_required_skills", {"name": "PostgreSQL"}),
+    ],
+)
+def test_preferences_reject_malformed_knockout_lists(rule: str, value: object) -> None:
+    with pytest.raises(ValidationError, match=rule):
+        PreferencesPut(knockout_rules={rule: value})
