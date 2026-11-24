@@ -110,7 +110,8 @@ Ver `docs/data-model.md` para detalhes completos.
    `Σ(peso_i × correspondência_i) / Σ(peso_i)`
 4. Níveis: exata=1.0, alias/relacionada=0.7, ausente=0, não confirmada=fora do cálculo
 5. Retorna: atendidos, ausentes, não confirmados, evidências
-6. Versionado via `scoring_version`
+6. Versionado via `scoring_version`. A fórmula, os pesos e as evidências
+   são detalhados na [metodologia do score](docs/matching-methodology.md).
 
 ### 5.3 Pipeline Orquestrado (LangGraph)
 Estado tipado → Nós determinísticos (importar, normalizar, dedup, filtrar, match) → Nós LLM (top-N) → Persistência (`pipeline_runs`) → Aprovação humana antes de ações sensíveis.
