@@ -27,7 +27,9 @@ class ScoringConfig(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid", str_strip_whitespace=True)
 
-    scoring_version: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*-v[1-9][0-9]*$")
+    scoring_version: str = Field(
+        max_length=80, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*-v[1-9][0-9]*$"
+    )
     required_weight: Decimal = Field(gt=0, max_digits=12, decimal_places=6)
     preferred_weight: Decimal = Field(gt=0, max_digits=12, decimal_places=6)
     related_skills: tuple[RelatedSkill, ...] = ()
@@ -123,6 +125,11 @@ class ScoreCalculator:
     def _canonical_key(self, name: str) -> str:
         skill = self._taxonomy.lookup(name)
         return comparison_text(skill.canonical_name if skill else name)
+
+    @property
+    def scoring_version(self) -> str:
+        """Identifica a configuração ativa desta instância."""
+        return self._config.scoring_version
 
     def score(
         self,

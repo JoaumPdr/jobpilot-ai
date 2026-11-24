@@ -26,7 +26,6 @@ from app.matching.knockouts import (
     evaluate_knockouts,
     parse_knockout_terms,
 )
-from app.matching.skill_taxonomy import SkillTaxonomy
 from app.models import CandidatePreference, Job
 from app.repositories.jobs import MAX_FINGERPRINT_MATCHES
 from app.schemas.jobs import DuplicateLayer, JobCreate, JobListQuery
@@ -37,19 +36,14 @@ from app.services.normalization import (
     normalize_seniority,
     normalize_work_mode,
 )
-from app.services.skill_taxonomy import load_skill_taxonomy
-
-
-@cache
-def _matching_taxonomy() -> SkillTaxonomy:
-    return load_skill_taxonomy()
+from app.services.skill_taxonomy import get_default_skill_taxonomy
 
 
 @cache
 def _requirement_extractor() -> RequirementExtractor:
     # Os aliases são versionados junto da aplicação. Cada processo compila
     # o índice uma vez para o cadastro manual e os lotes de CSV.
-    return RequirementExtractor(_matching_taxonomy())
+    return RequirementExtractor(get_default_skill_taxonomy())
 
 
 class JobRepositoryProtocol(Protocol):
@@ -62,6 +56,10 @@ class JobRepositoryProtocol(Protocol):
     def get_for_update(self, job_id: uuid.UUID) -> Job | None: ...
 
     def list_required_skill_names(self, job_id: uuid.UUID) -> list[str]: ...
+
+    def list_extracted_requirements(
+        self, job_id: uuid.UUID
+    ) -> list[ExtractedRequirement]: ...
 
     def save_requirements(
         self,
@@ -168,8 +166,24 @@ class JobService:
         return evaluate_knockouts(
             job,
             preferences,
-            taxonomy=_matching_taxonomy(),
+            taxonomy=get_default_skill_taxonomy(),
             required_skill_names=skill_names,
+        )
+
+    def get_matching_inputs(
+        self, job_id: uuid.UUID
+    ) -> tuple[Job, tuple[ExtractedRequirement, ...]]:
+        """Carrega a vaga e suas evidências. Levanta NotFoundError se ausente.
+
+        Vagas anteriores à rotina de extração ainda podem ser avaliadas
+        usando a descrição, sem alterar o catálogo na leitura.
+        """
+        job = self._jobs.get(job_id)
+        if job is None:
+            raise NotFoundError("Vaga não encontrada.")
+        requirements = self._jobs.list_extracted_requirements(job_id)
+        return job, tuple(requirements) or _requirement_extractor().extract(
+            job.description
         )
 
     def prepare_job(

@@ -1,8 +1,8 @@
 # JobPilot AI — API
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
-> `GUIA_DOCS_E_GIT.md`). Cobre o núcleo da Fase 1: perfil e preferências,
-> catálogo de vagas e candidaturas com histórico.
+> `GUIA_DOCS_E_GIT.md`). Cobre perfil e preferências, catálogo de vagas,
+> candidaturas com histórico e matching determinístico.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** corpos em JSON (`Content-Type: application/json`).
@@ -786,6 +786,37 @@ sem o novo status retorna `422 invalid_data`.
 {"status": "planejada", "transition_note": "Revisar currículo."}
 ```
 
+## Matching
+
+As rotas usam resultados de `job_matches` de um candidato. A versão padrão
+é a configuração de score ativa. Os scores são decimais serializados como
+texto, na escala de 0 a 1. Sem média ou com flag eliminatória, o score é nulo.
+[Metodologia](matching-methodology.md)
+
+| Método e rota | Resposta |
+|---|---|
+| `POST /candidates/{candidate_id}/matches/{job_id}` | `200` com o resultado calculado e persistido na versão ativa. Recalcular atualiza a mesma linha. Candidato ou vaga ausente retorna `404`. |
+| `GET /candidates/{candidate_id}/matches/{job_id}` | `200` com o resultado e a explicação. Aceita `scoring_version` para consultar uma versão anterior. Resultado ausente retorna `404`. |
+| `GET /candidates/{candidate_id}/matches` | `200` com `items`, `scoring_version`, `limit`, `offset` e `has_more`. Candidato ausente retorna `404`. |
+
+O corpo do POST é opcional. Envie ausências verificadas com
+`{"confirmed_absent": ["Docker"]}`. O cálculo usa essa lista na avaliação
+atual. Uma vaga sem requisitos persistidos pode usar a extração da descrição
+durante o cálculo.
+
+O ranking aceita `scoring_version`, `min_score`, `work_mode`,
+`include_unscored`, `limit` (padrão 20, máximo 100) e `offset` (padrão 0).
+A ordenação começa pelo maior score e usa o identificador da vaga em caso
+de empate. Vagas arquivadas ou marcadas como duplicatas ficam fora do
+ranking. `include_unscored=true` inclui resultados sem score no final,
+enquanto `min_score` restringe a lista a resultados com valor numérico.
+
+O detalhe contém `knockout_flags` com código e valor da vaga, e `analysis`
+com o numerador, o denominador e os grupos `met`, `absent` e
+`unconfirmed`. Cada requisito inclui nome, tipo, confiança, trecho literal,
+nível, peso e fator. Uma correspondência inclui a habilidade do perfil que
+a justificou.
+
 ## Fora desta versão
 
-- Matching, LLM e pipeline.
+- LLM e pipeline.
