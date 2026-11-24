@@ -11,29 +11,30 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-24 (UTC) |
-| **Fase atual** | Fase 2 — Matching |
-| **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
-| **Última tarefa integrada** | [F2-T08 — Documentação e relatório da Fase 2](tasks/FASE-02/F2-T08.md), em `6600b97` |
-| **Tarefa atual** | [F2-GATE — Validação de saída da Fase 2](tasks/FASE-02/F2-GATE.md), em `phase/02-matching` |
-| **Estado da tarefa** | critérios técnicos aprovados. [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) aberto para `develop` |
-| **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
+| **Fase atual** | Fase 2 — Matching concluída. Próxima fase é a Fase 3 — Camada LLM |
+| **Branch base** | `develop`. A próxima branch de fase será `phase/03-camada-llm` |
+| **Última tarefa integrada** | [F2-GATE — Validação de saída da Fase 2](tasks/FASE-02/F2-GATE.md), em `d30f0fc` |
+| **Próxima tarefa** | F3-T01 — Interface `LLMProvider`, provedores e configuração |
+| **Estado da próxima tarefa** | não iniciada |
+| **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
 | **Testes** | **440 testes aprovados** com PostgreSQL. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff, formatação e reprodução do golden set aprovados |
-| **CI** | [CI da fase na revisão `56916a0`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313865994) aprovado. Conferir os [checks do PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37/checks) antes de integrar |
+| **CI** | [CI do PR #37](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314184412) aprovado em `dc161e6`. [CI do merge `d30f0fc`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314777921) aprovado em `develop` |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `b1f6d28` na partida. Evidências do F2-GATE publicadas na branch da fase |
-| **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
-| **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), aberto de `phase/02-matching` para `develop` |
-| **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir o PR #37 com autorização. MCP usado para consultas |
+| **Sincronização com o remoto** | `develop` atualizada por fast-forward após o PR #37. Branch `phase/02-matching` preservada no GitHub |
+| **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
+| **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
+| **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #37 com autorização. MCP usado para consultar o CI e confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o CI do [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) e, com autorização, integrar a Fase 2 em `develop`.
+> Após integrar o encerramento documental, ler os critérios da F3-T01 no backlog e preparar a branch `phase/03-camada-llm` a partir de `develop` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-GATE concluído (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi mesclado com autorização em `d30f0fc`. O CI do merge passou em `develop`, e a tag anotada `fase-02` foi publicada e conferida no GitHub. Ponto de retomada na F3-T01 após o encerramento documental.
 - **PR do F2-GATE aberto (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi aberto de `phase/02-matching` para `develop` com `gh` autenticado após autorização do JP.
 - **F2-GATE validado tecnicamente (2026-11-24 UTC).** RF-07 a RF-09 cobertos por testes, `deterministico-v1` ativa e golden set reproduzido. Suíte com 440 testes em PostgreSQL, cobertura de 97,14% em `app` e 95,14% em `app/services`. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados. [Ficha do gate](tasks/FASE-02/F2-GATE.md)
 - **F2-T08 integrada (2026-11-24 UTC).** O [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) foi mesclado com histórico e autorização em `6600b97`, após CI verde na revisão `be9d320`. A branch local da fase avançou por fast-forward. Ponto de retomada no F2-GATE.
@@ -107,14 +108,14 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F2-T08](tasks/FASE-02/F2-T08.md), PR #36.
-**Tarefa atual.** [F2-GATE](tasks/FASE-02/F2-GATE.md), critérios técnicos aprovados.
+**Última tarefa integrada.** [F2-GATE](tasks/FASE-02/F2-GATE.md), PR #37.
+**Próxima tarefa.** F3-T01 após o encerramento documental da Fase 2, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Verificar RF-07 a RF-09, golden set e versão de score ativa
 - [x] Registrar evidências do gate e preparar o changelog da Fase 2
 - [x] Abrir o PR #37 da fase para `develop`
-- [ ] Confirmar o CI do PR #37 e integrar com autorização
-- [ ] Confirmar o CI em `develop` e publicar a tag anotada `fase-02`
+- [x] Confirmar o CI do PR #37 e integrar com autorização
+- [x] Confirmar o CI em `develop` e publicar a tag anotada `fase-02`
 - [x] Consolidar README, metodologia, avaliação e relatório da Fase 2
 - [x] Conferir roteiro, relatório gerado e suíte de testes
 - [x] Abrir o PR #36 para `phase/02-matching`
@@ -192,7 +193,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | gate pendente | — | Critérios técnicos aprovados, PR #37 aberto para `develop` |
+| 2 — Matching | concluída | `fase-02` (`d30f0fc`) | PR #37 mesclado com CI verde em `develop` |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |

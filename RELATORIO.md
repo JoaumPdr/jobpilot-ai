@@ -137,7 +137,7 @@
 - A revisão `8c852a7` passou localmente com 360 testes em PostgreSQL, 96,60% de cobertura em `app` e 95,33% em `app/services`. O [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44608937267) também passou com Ruff, formatação e ciclo de migração Alembic.
 - O [PR #26](https://github.com/JoaumPdr/jobpilot-ai/pull/26) integrou a fase em `develop` com histórico no commit `bbea363`. Depois do [CI verde em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/44610945327), a tag anotada [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) foi publicada nesse commit.
 
-## Fase 2 — Matching
+## Fase 2 — Matching (concluída)
 
 ### F2-T01 — Taxonomia de skills (2026-11-23)
 
@@ -241,6 +241,10 @@
   cobertura em `app` e 95,14% em `app/services`. Ruff, formatação e ciclo de
   migração passaram no CI da fase.
   [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313001607)
+- A fase foi integrada com histórico em `develop` no commit `d30f0fc`. Após
+  a aprovação do CI em `develop`, a tag anotada `fase-02` foi publicada e
+  conferida no mesmo commit.
+  [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314777921) · [Tag `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
 ## Fases 3–7
 
