@@ -10,30 +10,31 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-23 (UTC) |
+| **Última atualização** | 2026-11-24 (UTC) |
 | **Fase atual** | Fase 2 — Matching |
 | **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
-| **Última tarefa integrada** | [F2-T02 — Extrator determinístico de requisitos](tasks/FASE-02/F2-T02.md), em `24ce540` |
-| **Tarefa atual** | [F2-T03 — Filtros eliminatórios](tasks/FASE-02/F2-T03.md), em `feat/f2-t03-filtros-eliminatorios` |
-| **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
+| **Última tarefa integrada** | [F2-T03 — Filtros eliminatórios](tasks/FASE-02/F2-T03.md), em `8b740b4` |
+| **Próxima tarefa** | F2-T04 — Score determinístico explicável |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **420 testes aprovados** com PostgreSQL, 20 novos. Cobertura de 96,90% em `app` e 95,27% em `app/services`. Ruff e formatação verdes |
-| **CI** | Conferir o CI do [PR #30 da F2-T03](https://github.com/JoaumPdr/jobpilot-ai/pull/30) antes de integrar |
+| **CI** | [CI do PR #30](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45292477483) aprovado na revisão `c4f597a` antes do merge |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | Branch da fase sincronizada em `d162050` na partida. `feat/f2-t03-filtros-eliminatorios` publicada no GitHub |
+| **Sincronização com o remoto** | `phase/02-matching` atualizada por fast-forward após o merge do PR #30. Branch da F2-T03 preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir o PR #30. O MCP havia retornado 403 para abertura de PR no repositório |
+| **GitHub** | `gh` autenticado usado para abrir, acompanhar e mesclar o PR #30 com autorização. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir os checks do [PR #30](https://github.com/JoaumPdr/jobpilot-ai/pull/30) com `gh pr checks 30` antes da integração em `phase/02-matching`.
+> Ler os critérios da F2-T04 no backlog e preparar a tarefa a partir de `phase/02-matching` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T03 integrada (2026-11-24 UTC).** O [PR #30](https://github.com/JoaumPdr/jobpilot-ai/pull/30) foi mesclado com histórico e autorização em `8b740b4`, após CI verde na revisão `c4f597a`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T04.
 - **F2-T03 implementada (2026-11-23 UTC).** Flags eliminatórias com decisão de elegibilidade, validação das listas de preferências e leitura dos requisitos obrigatórios persistidos. 400 testes na partida e 420 na entrega. Política Base e hook passivo confirmados. Execução direta com `gpt-6.2-sol` em `high`.
 - **F2-T02 integrada (2026-11-23 UTC).** O [PR #29](https://github.com/JoaumPdr/jobpilot-ai/pull/29) foi mesclado com histórico e autorização em `24ce540`, após CI verde na revisão `e9ac9ec`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T03.
 - **F2-T02 implementada (2026-11-23 UTC).** Extração determinística em PT/EN, persistência em `job_skills` no cadastro e na importação e reprocessamento de vagas existentes. 387 testes na partida, 400 na entrega, com ciclo da migração em PostgreSQL. Execução direta com `gpt-6.2-sol` em `high`, após ajuste confirmado pelo JP. Política Base e hook passivo confirmados.
@@ -91,11 +92,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F2-T02](tasks/FASE-02/F2-T02.md), PR #29.
-**Tarefa atual.** [F2-T03](tasks/FASE-02/F2-T03.md), implementação validada localmente.
+**Última tarefa integrada.** [F2-T03](tasks/FASE-02/F2-T03.md), PR #30.
+**Próxima tarefa.** F2-T04, conforme os critérios no [backlog](BACKLOG.md).
 
 - [x] Implementar e testar as regras eliminatórias e a avaliação de elegibilidade
-- [ ] Confirmar o CI do PR e integrar a F2-T03 na branch da fase
+- [x] Confirmar o CI do PR e integrar a F2-T03 na branch da fase
 - [x] Extrair e persistir requisitos do cadastro manual e da importação, com suporte a reprocessamento
 - [x] Confirmar o CI do PR e integrar a F2-T02 na branch da fase
 - [x] Criar as branches da Fase 2 e da F2-T01 a partir de `develop` sincronizada
@@ -157,7 +158,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | em andamento | — | F2-T02 integrada, F2-T03 em integração |
+| 2 — Matching | em andamento | — | F2-T03 integrada, F2-T04 por iniciar |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
