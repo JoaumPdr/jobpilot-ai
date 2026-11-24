@@ -168,6 +168,17 @@
 - Ruff e formatação passaram. A suíte com PostgreSQL passou com 420 testes,
   20 novos. Cobertura de linhas de 96,90% em `app` e 95,27% em `app/services`.
 
+### F2-T04 — Score determinístico explicável (2026-11-24)
+
+- A versão `deterministico-v1` calcula a média ponderada com pesos 3 e 1.
+  Os eliminatórios interrompem a avaliação, e a explicação preserva as
+  evidências dos requisitos atendidos, ausentes e não confirmados. [Metodologia](docs/matching-methodology.md)
+- A ausência explícita contribui com fator zero. Os requisitos não
+  confirmados ficam fora do numerador e do denominador. A configuração
+  permite declarar relações direcionais entre habilidades. [Configuração](data/matching/scoring.toml)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 434 testes,
+  14 novos. Cobertura de linhas de 97,05% em `app` e 95,35% em `app/services`.
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

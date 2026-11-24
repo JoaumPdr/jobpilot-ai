@@ -1,0 +1,13 @@
+# Alterações de pesos, fatores ou relações exigem uma nova scoring_version.
+scoring_version = "deterministico-v1"
+required_weight = 3
+preferred_weight = 1
+
+# Relações direcionais. Cada interface oferece evidência parcial do framework.
+[[related_skills]]
+requirement = "Apache Spark"
+candidate = "PySpark"
+
+[[related_skills]]
+requirement = "Apache Spark"
+candidate = "Spark SQL"
