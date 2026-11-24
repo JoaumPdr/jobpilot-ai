@@ -1,6 +1,6 @@
 # Changelog
 
-## Em desenvolvimento — Fase 2
+## [fase-02] — 2026-11-24
 
 ### Adicionado
 
@@ -27,5 +27,6 @@
 - Estrutura inicial da API FastAPI com verificação de saúde, PostgreSQL via Docker Compose e migrações Alembic.
 - Ambiente gerenciado com `uv`, validações locais, GitHub Actions e documentação de arquitetura e privacidade.
 
+[fase-02]: https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02
 [fase-01]: https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01
 [fase-00]: https://github.com/JoaumPdr/jobpilot-ai/tree/fase-00

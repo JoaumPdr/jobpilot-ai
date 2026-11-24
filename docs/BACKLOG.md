@@ -87,7 +87,7 @@
 | [x] F2-T06 | **Golden set** (30+ vagas anonimizadas e rotuladas) + script de avaliação + relatório. [Ficha](tasks/FASE-02/F2-T06.md) | F2-T05 | Dataset em `data/golden/`; relatório gerado em `docs/evaluation.md` com precisão/recall da extração e concordância do ranking |
 | [x] F2-T07 | *(Condicional)* **Embeddings multilíngues** como sinal semântico. Adoção adiada no [ADR 0012](adr/0012-adiar-embeddings-multilingues.md). [Ficha](tasks/FASE-02/F2-T07.md) | F2-T06 | Só executar se `docs/evaluation.md` mostrar ganho mensurável; comparação determinístico vs semântico documentada; caso contrário, registrar ADR "não adotar por ora" |
 | [x] F2-T08 | Docs e relatório da fase. [Ficha](tasks/FASE-02/F2-T08.md) | F2-T06 | `matching-methodology.md`, `evaluation.md`, `RELATORIO.md`, README atualizados |
-| [ ] F2-GATE | Gate da fase. [Ficha](tasks/FASE-02/F2-GATE.md) | todas | RF-07…09; golden set com métricas; `scoring_version` ativa → PR para `develop`, tag `fase-02` |
+| [x] F2-GATE | Gate da fase. [Ficha](tasks/FASE-02/F2-GATE.md) | todas | RF-07…09; golden set com métricas; `scoring_version` ativa → PR para `develop`, tag `fase-02` |
 
 ---
 
