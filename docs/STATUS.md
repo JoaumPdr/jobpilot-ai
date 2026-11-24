@@ -18,17 +18,17 @@
 | **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **440 testes aprovados** com PostgreSQL, três novos. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff e formatação verdes |
-| **CI** | [CI da fase na partida](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45303171923) verde. Conferir o CI do PR da F2-T06 |
+| **CI** | [CI da fase na partida](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45303171923) verde. Conferir o CI do [PR #34 da F2-T06](https://github.com/JoaumPdr/jobpilot-ai/pull/34) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `9f0814b` na partida |
+| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `9f0814b` na partida. `test/f2-t06-golden-set` publicada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir, acompanhar e mesclar o PR #33 com autorização. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir o PR #34 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o CI do PR de `test/f2-t06-golden-set` para `phase/02-matching` antes de integrar.
+> Conferir os checks do [PR #34](https://github.com/JoaumPdr/jobpilot-ai/pull/34) com `gh pr checks 34` antes da integração em `phase/02-matching`.
 
 ---
 
