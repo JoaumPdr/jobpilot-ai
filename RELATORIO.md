@@ -231,6 +231,17 @@
 - A adoção de embeddings fica condicionada a uma comparação que demonstre ganho.
   [ADR 0012](docs/adr/0012-adiar-embeddings-multilingues.md) · [Ficha da F2-T08](docs/tasks/FASE-02/F2-T08.md)
 
+### F2-GATE — Validação de saída (2026-11-24 UTC)
+
+- A ficha relaciona RF-07 a RF-09 aos testes de extração, score, persistência e
+  filtros eliminatórios. O carregador confirmou `deterministico-v1` como
+  versão ativa, e o golden set reproduziu as métricas publicadas.
+  [Ficha do gate](docs/tasks/FASE-02/F2-GATE.md)
+- A revisão `b1f6d28` passou com 440 testes em PostgreSQL, 97,14% de
+  cobertura em `app` e 95,14% em `app/services`. Ruff, formatação e ciclo de
+  migração passaram no CI da fase.
+  [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45313001607)
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

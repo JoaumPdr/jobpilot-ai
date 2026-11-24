@@ -1,5 +1,14 @@
 # Changelog
 
+## Em desenvolvimento — Fase 2
+
+### Adicionado
+
+- Taxonomia versionada de 184 habilidades e extração de requisitos com aliases em inglês e português, tipo e evidências da descrição.
+- Filtros eliminatórios por modalidade, localização, empresa e habilidades obrigatórias, aplicados antes do cálculo do score.
+- Score determinístico explicável e versionado, com cálculo, detalhe persistido e ranking filtrável pela API.
+- Golden set de 34 vagas expurgadas e rotuladas, avaliação offline reproduzível e roteiro de matching pelo Swagger UI.
+
 ## [fase-01] — 2026-11-19
 
 ### Adicionado
