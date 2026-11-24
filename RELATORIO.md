@@ -209,6 +209,14 @@
 - Ruff e formatação passaram. A suíte com PostgreSQL passou com 440 testes,
   três novos. Cobertura de 97,14% em `app` e 95,14% nos serviços.
 
+### F2-T07 — Decisão sobre embeddings multilíngues (2026-11-24 UTC)
+
+- A avaliação da F2-T06 estabeleceu a linha de base determinística nas 34
+  vagas. A adoção de embeddings foi adiada até que uma comparação demonstre
+  ganho no ranking. [ADR 0012](docs/adr/0012-adiar-embeddings-multilingues.md)
+- A suíte de partida passou com 440 testes em PostgreSQL. A entrega é documental.
+  [Ficha da F2-T07](docs/tasks/FASE-02/F2-T07.md)
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*
