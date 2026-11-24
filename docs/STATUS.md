@@ -18,17 +18,17 @@
 | **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **434 testes aprovados** com PostgreSQL, 14 novos. Cobertura de 97,05% em `app` e 95,35% em `app/services`. Ruff e formatação verdes |
-| **CI** | Conferir o CI do PR da F2-T04 antes de integrar |
+| **CI** | Conferir o CI do [PR #31 da F2-T04](https://github.com/JoaumPdr/jobpilot-ai/pull/31) antes de integrar |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/02-matching` atualizada por fast-forward após o merge do PR #30. Branch da F2-T03 preservada no GitHub |
+| **Sincronização com o remoto** | Branch da fase sincronizada em `d25f4c4` na partida. `feat/f2-t04-score-deterministico` publicada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir, acompanhar e mesclar o PR #30 com autorização. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir o PR #31. O MCP havia retornado 403 para abertura de PR no repositório |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o CI do PR de `feat/f2-t04-score-deterministico` para `phase/02-matching` antes da integração.
+> Conferir os checks do [PR #31](https://github.com/JoaumPdr/jobpilot-ai/pull/31) com `gh pr checks 31` antes da integração em `phase/02-matching`.
 
 ---
 
