@@ -53,3 +53,7 @@ Use `load_score_calculator()` do serviço de score para montar o cálculo com
 a configuração e a taxonomia do repositório. Uma mudança de pesos, fatores
 ou regras que altere resultados exige incrementar `scoring_version`.
 O resultado carrega a versão usada em cada avaliação.
+
+O armazenamento mantém uma linha por candidato, vaga e versão. Um novo
+cálculo atualiza o resultado da versão ativa. O detalhe permite consultar
+as versões anteriores preservadas. [Rotas de matching](api.md#matching)

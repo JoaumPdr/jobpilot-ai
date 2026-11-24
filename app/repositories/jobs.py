@@ -134,6 +134,25 @@ class JobRepository(BaseRepository):
         )
         return list(self._db.scalars(stmt))
 
+    def list_extracted_requirements(
+        self, job_id: uuid.UUID
+    ) -> list[ExtractedRequirement]:
+        """Reconstitui os requisitos persistidos para o cálculo de matching."""
+        stmt = (
+            select(JobSkill, Skill.canonical_name, Skill.category)
+            .join(Skill, Skill.id == JobSkill.skill_id)
+            .where(JobSkill.job_id == job_id)
+        )
+        return [
+            ExtractedRequirement(
+                TaxonomySkill(name, category or ""),
+                RequirementType(item.requirement_type),
+                item.confidence,
+                item.evidence_snippet,
+            )
+            for item, name, category in self._db.execute(stmt)
+        ]
+
     def save_requirements(
         self,
         job: Job,

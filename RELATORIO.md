@@ -179,6 +179,25 @@
 - Ruff e formatação passaram. A suíte com PostgreSQL passou com 434 testes,
   14 novos. Cobertura de linhas de 97,05% em `app` e 95,35% em `app/services`.
 
+### Manutenção do CI — Node.js 24 (2026-11-24)
+
+- O [PR #32](https://github.com/JoaumPdr/jobpilot-ai/pull/32) atualizou
+  `actions/checkout` para v7.0.1 e `astral-sh/setup-uv` para v10.4.0.
+  O workflow passou na branch da fase sem o aviso de Node.js 20.
+  [Execução do CI](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45299118537)
+
+### F2-T05 — Persistência e rotas de matching (2026-11-24)
+
+- A migração `000000000006` cria `job_matches`, com uma linha por candidato,
+  vaga e versão. O recálculo usa upsert e preserva versões anteriores.
+  [Modelo de dados](docs/data-model.md)
+- As rotas calculam, listam o ranking filtrável e consultam detalhes com
+  evidências. O cálculo usa a descrição quando a vaga ainda não possui
+  requisitos persistidos. [Contrato de matching](docs/api.md#matching)
+- Ruff e formatação passaram. A suíte com PostgreSQL passou com 437 testes,
+  incluindo três novos. Cobertura de linhas de 97,14% em `app` e 95,14%
+  nos serviços.
+
 ## Fases 3–7
 
 *(A serem preenchidas conforme avanço das fases)*

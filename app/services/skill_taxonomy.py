@@ -5,6 +5,7 @@ depender do sistema de arquivos.
 """
 
 import tomllib
+from functools import cache
 from pathlib import Path
 
 from app.matching.skill_taxonomy import SkillTaxonomy, TaxonomySkill
@@ -37,3 +38,9 @@ def load_skill_taxonomy(path: Path = _DEFAULT_CATALOG) -> SkillTaxonomy:
                 raise ValueError(f"Taxonomia: {name!r} deve ter uma lista de aliases.")
             skills.append(TaxonomySkill(name, category, tuple(aliases)))
     return SkillTaxonomy(skills)
+
+
+@cache
+def get_default_skill_taxonomy() -> SkillTaxonomy:
+    """Reusa a taxonomia distribuída entre extração e matching no processo."""
+    return load_skill_taxonomy()

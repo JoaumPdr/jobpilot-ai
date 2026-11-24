@@ -2,10 +2,11 @@
 
 import tomllib
 from decimal import Decimal
+from functools import cache
 from pathlib import Path
 
 from app.matching.scoring import ScoreCalculator, ScoringConfig
-from app.services.skill_taxonomy import load_skill_taxonomy
+from app.services.skill_taxonomy import get_default_skill_taxonomy
 
 _DEFAULT_CONFIG = (
     Path(__file__).resolve().parents[2] / "data" / "matching" / "scoring.toml"
@@ -18,6 +19,7 @@ def load_scoring_config(path: Path = _DEFAULT_CONFIG) -> ScoringConfig:
         return ScoringConfig.model_validate(tomllib.load(file, parse_float=Decimal))
 
 
+@cache
 def load_score_calculator() -> ScoreCalculator:
     """Monta o cálculo com a configuração e a taxonomia distribuídas."""
-    return ScoreCalculator(load_scoring_config(), load_skill_taxonomy())
+    return ScoreCalculator(load_scoring_config(), get_default_skill_taxonomy())
