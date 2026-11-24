@@ -5,6 +5,20 @@ extraídos da vaga, as habilidades declaradas no perfil e o resultado dos
 filtros eliminatórios. Pode receber também ausências verificadas pelo
 chamador. [Plano, §7](PLANO.md)
 
+## Da vaga ao ranking
+
+O cadastro manual e a importação extraem requisitos obrigatórios e desejáveis
+em português e inglês e gravam as habilidades reconhecidas com os trechos da
+descrição em `job_skills`. Quando a vaga ainda não tem requisitos persistidos,
+o cálculo usa a descrição para extrair os requisitos daquela avaliação.
+[Modelo de dados](data-model.md#requisitos-extraídos-job_skills-f2-t02)
+
+O cálculo aplica as preferências eliminatórias do candidato, compara os
+requisitos com as habilidades declaradas e grava as evidências em `job_matches`.
+O ranking usa avaliações persistidas. Após alterar o perfil ou as ausências
+confirmadas, solicite um novo cálculo para atualizar o resultado da versão
+ativa. Uma ausência confirmada é fornecida a cada cálculo. [Rotas de matching](api.md#matching)
+
 ## Elegibilidade e correspondência
 
 O cálculo verifica os eliminatórios primeiro. Uma vaga com flag devolve
@@ -57,3 +71,10 @@ O resultado carrega a versão usada em cada avaliação.
 O armazenamento mantém uma linha por candidato, vaga e versão. Um novo
 cálculo atualiza o resultado da versão ativa. O detalhe permite consultar
 as versões anteriores preservadas. [Rotas de matching](api.md#matching)
+
+## Avaliação e sinal semântico
+
+O golden set mede a extração e a concordância ordinal do ranking com rótulos
+manuais. A F2-T07 manteve `deterministico-v1` como linha de base e adiou os
+embeddings multilíngues até uma comparação demonstrar ganho mensurável.
+[Relatório de avaliação](evaluation.md) · [ADR 0012](adr/0012-adiar-embeddings-multilingues.md)
