@@ -14,26 +14,27 @@
 | **Fase atual** | Fase 2 — Matching |
 | **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
 | **Última tarefa integrada** | [F2-T05 — Persistência e rotas de matching](tasks/FASE-02/F2-T05.md), em `673cdd5` |
-| **Próxima tarefa** | F2-T06 — Golden set e avaliação do matching |
-| **Estado da próxima tarefa** | não iniciada |
+| **Tarefa atual** | [F2-T06 — Golden set e avaliação do matching](tasks/FASE-02/F2-T06.md), em `test/f2-t06-golden-set` |
+| **Estado da tarefa** | implementação validada localmente. Integração pelo PR da tarefa |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
-| **Testes** | **437 testes aprovados** com PostgreSQL, três novos. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff e formatação verdes |
-| **CI** | Workflow em Node.js 24. [CI do PR #33](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45300281662) aprovado na revisão `fb4ed4d` antes do merge |
+| **Testes** | **440 testes aprovados** com PostgreSQL, três novos. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff e formatação verdes |
+| **CI** | [CI da fase na partida](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45303171923) verde. Conferir o CI do [PR #34 da F2-T06](https://github.com/JoaumPdr/jobpilot-ai/pull/34) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/02-matching` atualizada por fast-forward após o merge do PR #33. Branch da F2-T05 preservada no GitHub |
+| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `9f0814b` na partida. `test/f2-t06-golden-set` publicada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir, acompanhar e mesclar o PR #33 com autorização. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir o PR #34 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ler os critérios da F2-T06 no backlog e preparar a tarefa a partir de `phase/02-matching` sincronizada.
+> Conferir os checks do [PR #34](https://github.com/JoaumPdr/jobpilot-ai/pull/34) com `gh pr checks 34` antes da integração em `phase/02-matching`.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T06 implementada (2026-11-24 UTC).** Curadoria de 34 vagas expurgadas e rotuladas, script offline e relatório reproduzível. Precisão de 99,24%, revocação de 67,53% e concordância ordinal de 86,48%. 437 testes de partida e 440 na entrega. Execução direta com `gpt-6.2-sol` em `high`. Política Base e hook passivo confirmados.
 - **F2-T05 integrada (2026-11-24 UTC).** O [PR #33](https://github.com/JoaumPdr/jobpilot-ai/pull/33) foi mesclado com histórico e autorização em `673cdd5`, após CI verde na revisão `fb4ed4d`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T06.
 - **F2-T05 implementada (2026-11-24 UTC).** Persistência versionada em `job_matches`, cálculo, ranking e detalhe de matching. Suíte de partida com 434 testes e entrega com 437. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados.
 - **CI atualizado para Node.js 24 (2026-11-24 UTC).** [PR #32](https://github.com/JoaumPdr/jobpilot-ai/pull/32) integrado em `7426146`. `checkout` v7.0.1 e `setup-uv` v10.4.0 passaram no PR e na fase sem a anotação de Node.js 20.
@@ -98,8 +99,10 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** [F2-T05](tasks/FASE-02/F2-T05.md), PR #33.
-**Próxima tarefa.** F2-T06, conforme os critérios no [backlog](BACKLOG.md).
+**Tarefa atual.** [F2-T06](tasks/FASE-02/F2-T06.md), implementação validada localmente.
 
+- [x] Curar o golden set e reproduzir métricas de extração e ranking
+- [ ] Confirmar o CI do PR e integrar a F2-T06 na branch da fase
 - [x] Persistir e expor resultados de matching por candidato, vaga e versão
 - [x] Confirmar o CI do PR e integrar a F2-T05 na branch da fase
 - [x] Implementar e testar média ponderada, elegibilidade, explicação e versão
@@ -167,7 +170,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | em andamento | — | F2-T05 integrada, F2-T06 por iniciar |
+| 2 — Matching | em andamento | — | F2-T05 integrada, F2-T06 em integração |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
