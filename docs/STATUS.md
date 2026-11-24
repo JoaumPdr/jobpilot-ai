@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-24 (UTC) |
 | **Fase atual** | Fase 2 — Matching |
 | **Branch base** | `phase/02-matching`, criada a partir de `develop` em `e8d65d2` |
-| **Última tarefa integrada** | [F2-T07 — Decisão sobre embeddings multilíngues](tasks/FASE-02/F2-T07.md), em `55064a5` |
-| **Tarefa atual** | [F2-T08 — Documentação e relatório da Fase 2](tasks/FASE-02/F2-T08.md), em `docs/f2-t08-documentacao-matching` |
-| **Estado da tarefa** | documentação validada localmente. [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) aberto para a fase |
+| **Última tarefa integrada** | [F2-T08 — Documentação e relatório da Fase 2](tasks/FASE-02/F2-T08.md), em `6600b97` |
+| **Próxima tarefa** | F2-GATE — Validação de saída da Fase 2 |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `bbea363` — PR #26 (F1-GATE), em `develop` |
 | **Testes** | **440 testes aprovados** com PostgreSQL. Roteiro do README exercitado com dados fictícios em PostgreSQL isolado. Relatório reproduzido, Ruff e formatação aprovados |
-| **CI** | [CI da fase na partida](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45309641832) aprovado em `54fd4aa`. Conferir os [checks do PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36/checks) antes de integrar |
+| **CI** | [CI do PR #36](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45312523807) aprovado na revisão `be9d320`. [CI do merge `6600b97`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45312791750) aprovado na fase |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/02-matching` sincronizada em `54fd4aa` na partida. Branch da F2-T08 publicada no GitHub |
+| **Sincronização com o remoto** | `phase/02-matching` atualizada por fast-forward após o merge do PR #36. Branch da F2-T08 preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-19 20:39 UTC, `bbea363` em `develop` |
 | **PR da fase** | [PR #26 — F1-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/26), mesclado em `develop` |
 | **Última tag publicada** | [`fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01) → `bbea363` (tag anotada `7cec39f`) |
-| **GitHub** | `gh` autenticado usado para abrir o PR #36 com autorização. MCP usado para consultas |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #36 com autorização. MCP usado para consultar o CI e confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir o CI do [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) e, com autorização, integrar a F2-T08 em `phase/02-matching`.
+> Ler os critérios do F2-GATE e conferir as evidências de RF-07 a RF-09, as métricas do golden set e o uso de `scoring_version`.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F2-T08 integrada (2026-11-24 UTC).** O [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) foi mesclado com histórico e autorização em `6600b97`, após CI verde na revisão `be9d320`. A branch local da fase avançou por fast-forward. Ponto de retomada no F2-GATE.
 - **PR da F2-T08 aberto (2026-11-24 UTC).** O [PR #36](https://github.com/JoaumPdr/jobpilot-ai/pull/36) foi aberto de `docs/f2-t08-documentacao-matching` para `phase/02-matching` com `gh` autenticado após autorização do JP.
 - **F2-T08 documentada (2026-11-24 UTC).** README com roteiro de cálculo, detalhe e ranking, metodologia com fluxo de persistência e relatório de avaliação regenerado com as mesmas métricas. Roteiro confirmado em PostgreSQL isolado, 440 testes aprovados, Ruff e formatação aprovados. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados.
 - **F2-T07 integrada (2026-11-24 UTC).** O [PR #35](https://github.com/JoaumPdr/jobpilot-ai/pull/35) foi mesclado com histórico e autorização em `55064a5`, após CI verde na revisão `09b139e`. A branch local da fase avançou por fast-forward. Ponto de retomada na F2-T08.
@@ -104,13 +105,13 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F2-T07](tasks/FASE-02/F2-T07.md), PR #35.
-**Tarefa atual.** [F2-T08](tasks/FASE-02/F2-T08.md), documentação validada e integração pendente.
+**Última tarefa integrada.** [F2-T08](tasks/FASE-02/F2-T08.md), PR #36.
+**Próxima tarefa.** F2-GATE, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Consolidar README, metodologia, avaliação e relatório da Fase 2
 - [x] Conferir roteiro, relatório gerado e suíte de testes
 - [x] Abrir o PR #36 para `phase/02-matching`
-- [ ] Confirmar o CI e integrar o PR #36 com autorização
+- [x] Confirmar o CI e integrar o PR #36 com autorização
 - [x] Conferir a condição de adoção da F2-T07 no backlog e no relatório
 - [x] Registrar o adiamento dos embeddings no ADR 0012
 - [x] Abrir o PR #35 para `phase/02-matching`
@@ -184,7 +185,7 @@
 |------|--------|-----|------|
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
-| 2 — Matching | em andamento | — | F2-T07 integrada, F2-T08 documentada e pendente de integração |
+| 2 — Matching | gate pendente | — | F2-T08 integrada, F2-GATE por iniciar |
 | 3 — Camada LLM | não iniciada | — | — |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
