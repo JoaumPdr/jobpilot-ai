@@ -37,6 +37,11 @@ class MatchingService:
         self._jobs = jobs
         self._calculator = calculator
 
+    @property
+    def scoring_version(self) -> str:
+        """Expõe a versão ativa inclusive para execuções sem vagas."""
+        return self._calculator.scoring_version
+
     def calculate(
         self,
         candidate_id: uuid.UUID,

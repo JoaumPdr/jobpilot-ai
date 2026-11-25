@@ -36,6 +36,23 @@ considera todo o conjunto, inclusive vagas arquivadas. Em seguida,
 seleciona a página por `offset` e `limit`. Assim, vagas de outros lotes
 não ocupam posições na página. [Teste com PostgreSQL](../tests/integration/test_deterministic_nodes_db.py)
 
+## Matching, seleção e análise
+
+`match_jobs` chama `MatchingService.calculate` para cada vaga filtrada do
+candidato. O estado recebe os scores determinísticos na ordem de entrada e
+a versão do cálculo. Um lote vazio recebe a versão ativa e zero resultados.
+
+No modo determinístico, `select_jobs` produz uma seleção vazia. Com o LLM
+habilitado, seleciona até dez vagas com score ≥ 0,80, por score decrescente
+e UUID crescente nos empates. Vagas com score nulo ficam fora. O estado
+também verifica esse corte ao reconstruir uma seleção. [Avaliação do funil](evaluation.md#funil-de-custo)
+
+`analyze_jobs` chama `JobAnalysisService.analyze` na ordem da seleção,
+usando o candidato e a versão do matching. Uma seleção vazia completa a
+etapa com zero chamadas. O serviço mantém a validação, o cache e o limite
+de um reparo por vaga. O funil admite, assim, até 20 chamadas lógicas por
+execução, contando os reparos. [Nós](../app/orchestration/matching.py) · [Teste com provedor falso](../tests/integration/test_matching_nodes_db.py)
+
 ## Validação nas fronteiras
 
 `None` indica que o nó ainda não produziu resultado. Uma coleção vazia indica

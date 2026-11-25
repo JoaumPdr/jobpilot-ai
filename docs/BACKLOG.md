@@ -112,7 +112,7 @@
 |----|--------|-----------|------------------------|
 | [x] [F4-T01](tasks/FASE-04/F4-T01.md) | **Estado do pipeline** e contratos de entrada/saída dos nós | F3-GATE | Estado tipado e validado; contratos documentados em `docs/pipeline.md` |
 | [x] [F4-T02](tasks/FASE-04/F4-T02.md) | **Nós determinísticos**: importar, normalizar, deduplicar, filtrar (chamando os serviços existentes) | F4-T01 | Nenhuma lógica de negócio duplicada; cada nó testado isoladamente |
-| [ ] F4-T03 | **Nós de matching, seleção top-N e análise LLM** | F4-T02 | Seleção usa limiar e orçamento definidos na F3-T06; só o top-N chega ao LLM; LLM falso nos testes |
+| [ ] [F4-T03](tasks/FASE-04/F4-T03.md) | **Nós de matching, seleção top-N e análise LLM** | F4-T02 | Seleção usa limiar e orçamento definidos na F3-T06; só o top-N chega ao LLM; LLM falso nos testes |
 | [ ] F4-T04 | **Transições condicionais, retry e falha parcial** | F4-T03 | Falha em uma vaga não derruba a execução; retry limitado; erros registrados por item |
 | [ ] F4-T05 | **Persistência da execução** (`pipeline_runs`) + logging com `run_id` + idempotência/retomada | F4-T04 | Reexecutar não duplica dados; execução interrompida pode ser retomada ou reiniciada com segurança |
 | [ ] F4-T06 | **Ponto de aprovação humana** (interrupção antes de ações sensíveis; no MVP o fluxo termina na lista de recomendações) | F4-T04 | Nenhuma ação automática de candidatura existe; aprovação é explícita |
