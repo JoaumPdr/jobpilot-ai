@@ -20,6 +20,22 @@ O estado transporta referências às vagas e ao lote. O conteúdo do CSV é entr
 transitória da importação. O matching e as evidências da análise ficam nos
 registros que os serviços já mantêm. [Importação](../app/services/job_import.py) · [Estratégia LLM](llm-strategy.md) · [Critérios do funil](evaluation.md#funil-de-custo)
 
+## Execução dos quatro nós determinísticos
+
+`import_jobs` recebe os bytes do CSV e usa `JobImportService.import_csv`.
+Somente as vagas persistidas nesse lote entram em `imported.job_ids`. Como
+o importador chama `JobService.prepare_job` antes de gravar cada vaga,
+`normalize_jobs` pode entregar esses mesmos IDs para a deduplicação.
+Um CSV composto apenas de duplicatas exatas ou linhas rejeitadas produz um
+lote com zero vagas. [Implementação dos nós](../app/orchestration/deterministic.py)
+
+`deduplicate_jobs` exclui as duplicatas confirmadas por revisão humana.
+Vagas que apenas compartilham um fingerprint seguem no pipeline. A etapa
+considera todo o conjunto, inclusive vagas arquivadas. Em seguida,
+`filter_jobs` aplica os filtros do catálogo aos IDs restantes e só então
+seleciona a página por `offset` e `limit`. Assim, vagas de outros lotes
+não ocupam posições na página. [Teste com PostgreSQL](../tests/integration/test_deterministic_nodes_db.py)
+
 ## Validação nas fronteiras
 
 `None` indica que o nó ainda não produziu resultado. Uma coleção vazia indica

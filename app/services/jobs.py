@@ -51,6 +51,12 @@ class JobRepositoryProtocol(Protocol):
 
     def list_page(self, query: JobListQuery) -> list[Job]: ...
 
+    def list_batch_ids(self, batch_id: uuid.UUID) -> tuple[uuid.UUID, ...]: ...
+
+    def list_matching_ids(
+        self, job_ids: Sequence[uuid.UUID], query: JobListQuery, *, paginate: bool
+    ) -> tuple[uuid.UUID, ...]: ...
+
     def get(self, job_id: uuid.UUID) -> Job | None: ...
 
     def get_for_update(self, job_id: uuid.UUID) -> Job | None: ...
@@ -94,6 +100,22 @@ class JobService:
         """Devolve a página e sinaliza se ainda há vagas para os mesmos filtros."""
         jobs = self._jobs.list_page(query)
         return jobs[: query.limit], len(jobs) > query.limit
+
+    def list_batch_ids(self, batch_id: uuid.UUID) -> tuple[uuid.UUID, ...]:
+        """Identifica as vagas persistidas pelo lote, inclusive as arquivadas."""
+        return self._jobs.list_batch_ids(batch_id)
+
+    def deduplicate_ids(self, job_ids: Sequence[uuid.UUID]) -> tuple[uuid.UUID, ...]:
+        """Aplica as confirmações de duplicidade antes dos filtros e da paginação."""
+        return self._jobs.list_matching_ids(
+            job_ids, JobListQuery(include_archived=True), paginate=False
+        )
+
+    def filter_ids(
+        self, job_ids: Sequence[uuid.UUID], query: JobListQuery
+    ) -> tuple[uuid.UUID, ...]:
+        """Seleciona a página dentro do conjunto de vagas da execução."""
+        return self._jobs.list_matching_ids(job_ids, query, paginate=True)
 
     def archive(self, job_id: uuid.UUID) -> Job:
         """Oculta a vaga na listagem padrão e preserva as relações existentes."""
