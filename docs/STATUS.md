@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-25 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F4-T02 — Nós determinísticos](tasks/FASE-04/F4-T02.md), em `7814c97` |
-| **Tarefa atual** | [F4-T03 — Nós de matching, seleção top-N e análise LLM](tasks/FASE-04/F4-T03.md), na branch `feat/f4-t03-matching-selecao-analise` |
-| **Estado da tarefa** | Implementada e validada localmente. Aguarda autorização para PR e integração na fase |
+| **Última tarefa integrada** | [F4-T03 — Nós de matching, seleção top-N e análise LLM](tasks/FASE-04/F4-T03.md), em `9b9b000` |
+| **Próxima tarefa** | F4-T04 — Transições condicionais, retry e falha parcial |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **540 testes aprovados** com PostgreSQL, incluindo sete da F4-T03. Cobertura de 97,57% em `app` e 96,14% em `app/services`. Tipagem dos três módulos alterados, Ruff e formatação aprovados |
-| **CI** | Aprovado na revisão `89c9408` do PR #49 e no merge `7814c97`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45698634252) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45698822990) |
+| **CI** | Aprovado na revisão `dff14a5` do PR #50 e no merge `9b9b000`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45701200200) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45701407395) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #49. A branch da tarefa foi preservada no GitHub |
+| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #50. A branch da tarefa foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | O MCP retornou 403 ao tentar abrir o PR. O JP autorizou o uso de `gh` para abrir e mesclar o PR #49 e acompanhar o CI |
+| **GitHub** | O JP autorizou o uso de `gh` para abrir e mesclar o PR #50 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Com autorização do JP, abrir o PR de `feat/f4-t03-matching-selecao-analise` para `phase/04-orquestracao`, conferir o CI da revisão e integrar com histórico.
+> Conferir a base sincronizada, ler a F4-T04 no backlog e avaliar modelo e esforço do líder antes de iniciar a tarefa.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F4-T03 integrada (2026-11-25 UTC).** O PR #50 integrou os nós de matching, seleção e análise LLM em `9b9b000`. O CI passou na revisão e no merge. O ponto de retomada é a F4-T04. [PR #50](https://github.com/JoaumPdr/jobpilot-ai/pull/50)
 - **F4-T03 implementada (2026-11-25 UTC).** Os três nós usam a versão do matching, o limiar inclusivo de 0,80 e o top-10 da F3-T06. Em PostgreSQL, onze vagas empataram e o provedor simulado recebeu somente as dez selecionadas. Suítes de partida e entrega com 533 e 540 testes. Execução direta com Astra em esforço `high`, política Base e hook confirmados. [Ficha](tasks/FASE-04/F4-T03.md)
 - **F4-T02 integrada (2026-11-25 UTC).** O PR #49 integrou os quatro nós determinísticos em `7814c97`. O CI passou na revisão e no merge. O ponto de retomada é a F4-T03. [PR #49](https://github.com/JoaumPdr/jobpilot-ai/pull/49)
 - **F4-T02 implementada (2026-11-25 UTC).** Os quatro nós usam os dados persistidos pelo importador e os filtros do catálogo. A suíte passou de 524 para 533 testes. Após a correção autorizada, a tipagem dos três módulos passou. Política Base e hook confirmados, execução direta com Astra em esforço `high`. [Ficha](tasks/FASE-04/F4-T02.md)
@@ -130,11 +131,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F4-T02, PR #49. [Ficha](tasks/FASE-04/F4-T02.md)
-**Tarefa atual.** F4-T03, conforme os critérios do [backlog](BACKLOG.md).
+**Última tarefa integrada.** F4-T03, PR #50. [Ficha](tasks/FASE-04/F4-T03.md)
+**Próxima tarefa.** F4-T04, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Validar o matching, o corte do top-10 e as análises persistidas com provedor falso
-- [ ] Abrir o PR da F4-T03 com autorização, conferir o CI, integrar e registrar o merge
+- [x] Abrir o PR da F4-T03 com autorização, conferir o CI, integrar e registrar o merge
 
 - [x] Validar os quatro nós isoladamente e a passagem de um lote entre eles com PostgreSQL
 - [x] Abrir o PR da F4-T02 com autorização, conferir o CI, integrar e registrar o merge
@@ -258,7 +259,7 @@
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
 | 2 — Matching | concluída | `fase-02` (`d30f0fc`) | PR #37 mesclado com CI verde em `develop` |
 | 3 — Camada LLM | concluída | `fase-03` (`b7348cc`) | PR #46 mesclado com CI verde em `develop` |
-| 4 — Orquestração (MVP v0.1.0) | em andamento | — | F4-T02 integrada |
+| 4 — Orquestração (MVP v0.1.0) | em andamento | — | F4-T03 integrada |
 | 5 — Assistente de currículo | não iniciada | — | — |
 | 6 — Dashboard e analytics | não iniciada | — | — |
 | 7 — Hardening e release (v1.0.0) | não iniciada | — | — |
