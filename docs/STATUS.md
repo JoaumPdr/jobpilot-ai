@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-25 (UTC) |
 | **Fase atual** | Fase 3 — Camada LLM |
 | **Branch base** | `phase/03-camada-llm`, criada de `develop` em `aa23972` |
-| **Última tarefa integrada** | [F2-GATE — Validação de saída da Fase 2](tasks/FASE-02/F2-GATE.md), em `d30f0fc` |
-| **Tarefa atual** | [F3-T01 — Interface e configuração de provedores LLM](tasks/FASE-03/F3-T01.md), em `feat/f3-t01-provedores-llm` |
-| **Estado da tarefa atual** | implementada e validada localmente. Aguardando PR e CI |
+| **Última tarefa integrada** | [F3-T01 — Interface e configuração de provedores LLM](tasks/FASE-03/F3-T01.md), em `100666d` |
+| **Próxima tarefa** | F3-T02 — Schemas de saída e prompts versionados |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
 | **Testes** | **461 testes aprovados** com PostgreSQL. Cobertura de 97,20% em `app` e 95,14% em `app/services`. Ruff e formatação aprovados |
-| **CI** | PR da F3-T01 a abrir. [CI do PR #38](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45315644688) aprovado para o encerramento documental da Fase 2 |
+| **CI** | [CI do PR #39](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45520533738) aprovado em `b9d7b7e`. [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45520716435) aprovado em `100666d` |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` conferida em `aa23972`. Branches da etapa atual: `phase/03-camada-llm` e `feat/f3-t01-provedores-llm` |
+| **Sincronização com o remoto** | `phase/03-camada-llm` atualizada por fast-forward após o PR #39. A branch `feat/f3-t01-provedores-llm` foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
 | **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
 | **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
-| **GitHub** | MCP usado para confirmar o merge e o CI do [PR #38](https://github.com/JoaumPdr/jobpilot-ai/pull/38) |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #39 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Abrir, após autorização, o PR de `feat/f3-t01-provedores-llm` para `phase/03-camada-llm` e conferir o CI da F3-T01.
+> Ler os critérios da F3-T02 no backlog e avaliar o modelo e o esforço do líder antes de preparar a tarefa a partir de `phase/03-camada-llm` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F3-T01 integrada (2026-11-25 UTC).** O [PR #39](https://github.com/JoaumPdr/jobpilot-ai/pull/39) foi mesclado com histórico e autorização em `100666d`. CI verde na revisão `b9d7b7e` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T02.
 - **F3-T01 implementada (2026-11-25 UTC).** Interface tipada, provedor falso, Ollama local e limites configuráveis. Suíte de partida com 440 testes aprovados após liberar o diretório temporário do Windows. Suíte de entrega com 461 testes aprovados, Ruff e formatação verdes. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T01.md)
 - **Encerramento documental da Fase 2 conferido.** O PR #38 foi mesclado em `aa23972` com seis arquivos de documentação. As branches da Fase 3 e da F3-T01 foram criadas a partir dessa base. [PR #38](https://github.com/JoaumPdr/jobpilot-ai/pull/38)
 - **F2-GATE concluído (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi mesclado com autorização em `d30f0fc`. O CI do merge passou em `develop`, e a tag anotada `fase-02` foi publicada e conferida no GitHub. Ponto de retomada na F3-T01 após o encerramento documental.
@@ -110,13 +111,13 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F2-GATE](tasks/FASE-02/F2-GATE.md), PR #37.
-**Tarefa atual.** F3-T01, conforme os critérios do [backlog](BACKLOG.md).
+**Última tarefa integrada.** [F3-T01](tasks/FASE-03/F3-T01.md), PR #39.
+**Próxima tarefa.** F3-T02, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Confirmar a base sincronizada e a suíte de partida da F3-T01
 - [x] Implementar e testar o contrato, os provedores e as configurações
-- [ ] Abrir o PR da F3-T01 para a branch da fase com autorização
-- [ ] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Abrir o PR #39 da F3-T01 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
 - [x] Verificar RF-07 a RF-09, golden set e versão de score ativa
 - [x] Registrar evidências do gate e preparar o changelog da Fase 2
 - [x] Abrir o PR #37 da fase para `develop`
