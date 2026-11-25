@@ -279,6 +279,12 @@
 - Cada chamada ao provedor registra tokens, custo estimado em USD e latência. Resultados validados guardam suas métricas no cache, e falhas liberam o bloqueio para nova tentativa. [Estratégia LLM](docs/llm-strategy.md#cache-e-métricas)
 - A suíte passou de 490 para 496 testes em PostgreSQL, com 97,36% de cobertura em `app` e 95,61% em `app/services`. O ciclo da migração `000000000007` passou em banco isolado. [Ficha da F3-T04](docs/tasks/FASE-03/F3-T04.md)
 
+### F3-T05 — Serviço de análise de vaga (2026-11-25 UTC)
+
+- O serviço confere o contrato e as evidências, move itens sem respaldo para `unknown_requirements` e gera o resumo a partir da classificação verificada. A gravação em `job_matches.llm_analysis` confere o snapshot e preserva o score determinístico.
+- O prompt complementar permite uma tentativa de reparo para saída inválida ou vazia. O cache reutiliza também o resultado reparado, e a falha final fica registrada em log estruturado. [Estratégia LLM](docs/llm-strategy.md#serviço-de-análise-de-vaga)
+- A suíte passou de 496 para 506 testes em PostgreSQL, com 97,47% de cobertura em `app` e 96,11% em `app/services`. A validação usou um provedor falso e dados sintéticos. [Ficha da F3-T05](docs/tasks/FASE-03/F3-T05.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*

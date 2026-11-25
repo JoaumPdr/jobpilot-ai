@@ -32,3 +32,11 @@ O perfil contém `skills` para as habilidades que o matching associou à vaga e 
 O PostgreSQL serializa pedidos da mesma chave com um bloqueio transacional. A transação própria do cache mantém o bloqueio até concluir a leitura ou a geração. Se o provedor, a validação ou a gravação falhar, a transação libera o bloqueio e permite nova tentativa.
 
 Cada invocação de `LLMProvider.complete` gera um evento `llm_call` com provedor, modelo, versão do prompt, status, tokens informados, custo estimado em USD e latência monotônica em milissegundos. A duração inclui as tentativas internas do adaptador. O provedor falso e o Ollama local têm custo por chamada igual a zero. Tarifas e contagens desconhecidas ficam nulas. Uma leitura do cache gera `llm_cache_hit`; o log registra metadados operacionais.
+
+## Serviço de análise de vaga
+
+`JobAnalysisService.analyze(candidate_id, job_id, scoring_version)` usa um matching já calculado e a entrada delimitada. A aplicação confere o UUID e os campos do contrato. Para confirmar uma habilidade, exige um trecho literal na descrição enviada, vinculado ao requisito extraído, e a habilidade na lista correspondente do perfil. Itens contraditórios ou sem respaldo passam a `unknown_requirements`. O resumo e a recomendação gravados usam a classificação verificada. [Serviço de análise](../app/services/job_analysis.py)
+
+Uma resposta inválida ou vazia permite uma nova tentativa de geração, com as mesmas informações de entrada e um prompt complementar versionado. A chave da solicitação original inclui as instruções de reparo e sua versão. O cache grava a versão efetivamente usada, que inclui o sufixo de reparo quando aplicável. As duas chamadas têm eventos próprios. Na linha de cache ficam as métricas da chamada que produziu a resposta válida. Uma falha final gera o evento `llm_job_analysis_failed` com identificador da vaga e tipo de erro. [Prompt de reparo](../prompts/job-analysis-repair-v1.txt)
+
+O serviço grava `prompt_version` e `analysis` em `job_matches.llm_analysis` somente se o snapshot ainda for o mesmo. O score determinístico permanece como referência para a decisão. [Modelo de dados](data-model.md#resultados-de-matching-job_matches-f2-t05)
