@@ -285,6 +285,12 @@
 - O prompt complementar permite uma tentativa de reparo para saída inválida ou vazia. O cache reutiliza também o resultado reparado, e a falha final fica registrada em log estruturado. [Estratégia LLM](docs/llm-strategy.md#serviço-de-análise-de-vaga)
 - A suíte passou de 496 para 506 testes em PostgreSQL, com 97,47% de cobertura em `app` e 96,11% em `app/services`. A validação usou um provedor falso e dados sintéticos. [Ficha da F3-T05](docs/tasks/FASE-03/F3-T05.md)
 
+### F3-T06 — Avaliação no golden set (2026-11-25 UTC)
+
+- As 34 vagas foram avaliadas no Ollama local com Qwen2.5 1.5B. A revocação de afirmações de presença e ausência caiu de 71,88% para 39,38%. O score e a ordem do ranking permaneceram iguais.
+- Foram 68 chamadas, com 12 saídas aceitas após reparo, 22 inválidas e tarifa total de USD 0. A latência mediana do serviço ficou em 24,23 s por vaga. [Medições por vaga](docs/evaluation.md#avaliação-com-llm)
+- A grade selecionou score ≥ 0,80 e top-10 para o modo local sob demanda. O funil retém quatro das cinco vagas de alta compatibilidade e o matching determinístico segue como padrão. A suíte completa passou com 507 testes. [Ficha da F3-T06](docs/tasks/FASE-03/F3-T06.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*
