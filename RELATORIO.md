@@ -331,6 +331,15 @@ com zero vagas, confere a origem dos IDs e aplica os limites do funil local
 à seleção. O contrato pode ser reconstruído a partir de JSON e conserva a
 ordem e a versão do matching. [Contratos dos nós](docs/pipeline.md) · [Ficha](docs/tasks/FASE-04/F4-T01.md)
 
+### F4-T02 — Nós determinísticos (2026-11-25 UTC)
+
+O pipeline usa os IDs gravados pelo importador, que já normaliza as vagas,
+e consulta o catálogo para aplicar as confirmações de duplicidade e os
+filtros. O teste com PostgreSQL cobre um lote de 54 vagas com o mesmo
+fingerprint, uma duplicata confirmada e uma vaga arquivada. Também verifica
+a paginação na presença de outro lote e a reimportação de um CSV já processado.
+[Ficha](docs/tasks/FASE-04/F4-T02.md) · [Contratos](docs/pipeline.md)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*

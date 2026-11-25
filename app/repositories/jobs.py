@@ -10,7 +10,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Iterable, Sequence
 
-from sqlalchemy import delete, func, or_, select, tuple_
+from sqlalchemy import Select, delete, func, or_, select, tuple_
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, SessionTransaction
 
@@ -36,6 +36,25 @@ class JobRepository(BaseRepository):
 
     def list_page(self, query: JobListQuery) -> list[Job]:
         """Busca até um item adicional na mesma consulta que lê a página."""
+        stmt = self._filtered_jobs(query).offset(query.offset).limit(query.limit + 1)
+        return list(self._db.scalars(stmt))
+
+    def list_batch_ids(self, batch_id: uuid.UUID) -> tuple[uuid.UUID, ...]:
+        stmt = select(Job.id).where(Job.import_batch_id == batch_id).order_by(Job.id)
+        return tuple(self._db.scalars(stmt))
+
+    def list_matching_ids(
+        self, job_ids: Sequence[uuid.UUID], query: JobListQuery, *, paginate: bool
+    ) -> tuple[uuid.UUID, ...]:
+        if not job_ids:
+            return ()
+        stmt = self._filtered_jobs(query).with_only_columns(Job.id)
+        stmt = stmt.where(Job.id.in_(job_ids))
+        if paginate:
+            stmt = stmt.offset(query.offset).limit(query.limit)
+        return tuple(self._db.scalars(stmt))
+
+    def _filtered_jobs(self, query: JobListQuery) -> Select[Job]:
         stmt = select(Job)
         if query.q is not None:
             # Escapar % e _ permite buscar esses caracteres como texto.
@@ -74,8 +93,7 @@ class JobRepository(BaseRepository):
             stmt = stmt.where(Job.duplicate_of_job_id.is_(None))
 
         # O UUID desempata vagas do mesmo lote, que podem ter a mesma data.
-        stmt = stmt.order_by(Job.created_at.desc(), Job.id.desc())
-        return list(self._db.scalars(stmt.offset(query.offset).limit(query.limit + 1)))
+        return stmt.order_by(Job.created_at.desc(), Job.id.desc())
 
     def get_by_source_external_id(self, source: str, external_id: str) -> Job | None:
         """Camada 1: mesma origem e mesmo identificador externo = duplicata certa."""
@@ -271,7 +289,11 @@ class JobRepository(BaseRepository):
         stmt = select(Job.source, Job.external_id).where(
             tuple_(Job.source, Job.external_id).in_(keys)
         )
-        return {(source, external_id) for source, external_id in self._db.execute(stmt)}
+        return {
+            (source, external_id)
+            for source, external_id in self._db.execute(stmt)
+            if external_id is not None
+        }
 
     def add(self, job: Job) -> Job:
         """Adiciona a vaga à sessão."""
