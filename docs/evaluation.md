@@ -127,7 +127,14 @@ evidências de presença ou ausência. Os rótulos incluem Python e Terraform em
 declara todas essas habilidades. Os acertos da linha de base
 foram 9, 7 e 3, respectivamente. [Rótulos e perfil sintético](../data/golden/matching.json)
 
-A variante com LLM perdeu 52 acertos em relação à linha de base neste ensaio.
-A revocação passou de 71,88% para 39,38%. O matching determinístico fica como
-padrão. O funil de score ≥ 0,80 e top-10 fica reservado à análise local sob
-demanda. Ele retém quatro das cinco vagas de alta compatibilidade da amostra.
+As 12 análises aceitas cumpriram o contrato após o reparo e ficaram com zero
+acertos de presença ou ausência. Os 63 acertos da variante com LLM vieram das
+22 vagas em que a saída inválida levou à classificação determinística. A
+precisão de 100% mede apenas as afirmações emitidas. A revocação captura a
+perda de 52 acertos no conjunto, passando de 71,88% para 39,38%.
+
+O matching determinístico fica como padrão. O funil de score ≥ 0,80 e top-10
+fica reservado à análise local sob demanda. Ele seleciona oito vagas e retém
+quatro das cinco de alta compatibilidade pelo rótulo manual. A retenção mede
+a seleção para análise. A qualidade da saída nas vagas selecionadas depende
+do modelo e das evidências que sobreviverem à validação. [Reprodução da avaliação](llm-strategy.md#reprodução-da-avaliação-local)

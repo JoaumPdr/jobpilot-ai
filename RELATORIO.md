@@ -291,6 +291,21 @@
 - Foram 68 chamadas, com 12 saídas aceitas após reparo, 22 inválidas e tarifa total de USD 0. A latência mediana do serviço ficou em 24,23 s por vaga. [Medições por vaga](docs/evaluation.md#avaliação-com-llm)
 - A grade selecionou score ≥ 0,80 e top-10 para o modo local sob demanda. O funil retém quatro das cinco vagas de alta compatibilidade e o matching determinístico segue como padrão. A suíte completa passou com 507 testes. [Ficha da F3-T06](docs/tasks/FASE-03/F3-T06.md)
 
+### F3-T07 — Documentação e relatório da fase (2026-11-25 UTC)
+
+- A camada LLM atende à análise estruturada do RF-10 por um serviço Python
+  sob demanda. Provedor falso e Ollama local usam o mesmo contrato. O serviço
+  delimita a entrada, verifica as evidências, permite um reparo e armazena a
+  análise validada em cache e no snapshot de matching. [Fluxo de uso](README.md#fluxo-da-fase-3) · [Estratégia LLM](docs/llm-strategy.md)
+- No golden set, o reparo recuperou a estrutura em 12 vagas. Essas análises
+  ficaram sem acertos de presença ou ausência. A queda de revocação e a
+  mediana de 24,23 s por vaga em CPU sustentam o matching determinístico como
+  padrão e o uso local sob demanda com o funil avaliado. A tarifa de USD 0
+  refere-se às chamadas dessa execução local. [Comparação e limites](docs/evaluation.md#revisão-das-evidências-e-decisão-de-uso)
+- O encerramento da fase depende do gate `F3-GATE`. O roteiro de verificação
+  usa o provedor falso no CI e reproduz a linha de base sem inferência.
+  [Ficha da F3-T07](docs/tasks/FASE-03/F3-T07.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*
