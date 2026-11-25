@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-25 (UTC) |
 | **Fase atual** | Fase 3 — Camada LLM |
 | **Branch base** | `phase/03-camada-llm`, criada de `develop` em `aa23972` |
-| **Última tarefa integrada** | [F3-T02 — Schemas de saída e prompts versionados](tasks/FASE-03/F3-T02.md), em `a97e8c8` |
-| **Tarefa atual** | [F3-T03 — Sanitização e defesa de entrada](tasks/FASE-03/F3-T03.md), em `feat/f3-t03-sanitizacao-entrada-llm` |
-| **Estado da tarefa atual** | implementada e validada localmente. Aguardando PR e CI |
+| **Última tarefa integrada** | [F3-T03 — Sanitização e defesa de entrada](tasks/FASE-03/F3-T03.md), em `5543a11` |
+| **Próxima tarefa** | F3-T04 — Cache e registro de custo |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
 | **Testes** | **490 testes aprovados** com PostgreSQL. Cobertura de 97,28% em `app` e 95,34% em `app/services`. Ruff e formatação aprovados |
-| **CI** | PR da F3-T03 a abrir. [CI da branch da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45523780219) aprovado em `41342fa` |
+| **CI** | [CI do PR #41](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45525047293) aprovado em `e9fff2d`. [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45525220402) aprovado em `5543a11` |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/03-camada-llm` conferida em `41342fa`. Branch da tarefa `feat/f3-t03-sanitizacao-entrada-llm` publicada no GitHub |
+| **Sincronização com o remoto** | `phase/03-camada-llm` atualizada por fast-forward após o PR #41. A branch `feat/f3-t03-sanitizacao-entrada-llm` foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
 | **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
 | **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
-| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #40 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #41 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Abrir, após autorização, o PR de `feat/f3-t03-sanitizacao-entrada-llm` para `phase/03-camada-llm` e conferir o CI da F3-T03.
+> Ler os critérios da F3-T04 no backlog e avaliar o modelo e o esforço do líder antes de preparar a tarefa a partir de `phase/03-camada-llm` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F3-T03 integrada (2026-11-25 UTC).** O [PR #41](https://github.com/JoaumPdr/jobpilot-ai/pull/41) foi mesclado com histórico e autorização em `5543a11`. CI verde na revisão `e9fff2d` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T04.
 - **F3-T03 implementada (2026-11-25 UTC).** Descrição delimitada em JSON, limite de 8.000 caracteres, seleção do perfil a partir do matching e prompt `job-analysis-v2`. Suíte de partida com 481 testes aprovados e suíte de entrega com 490. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T03.md)
 - **F3-T02 integrada (2026-11-25 UTC).** O [PR #40](https://github.com/JoaumPdr/jobpilot-ai/pull/40) foi mesclado com histórico e autorização em `a97e8c8`. CI verde na revisão `c08edb2` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T03.
 - **F3-T02 implementada (2026-11-25 UTC).** Contrato Pydantic, prompt `job-analysis-v1` e registro de `prompt_version` a partir do prompt efetivamente usado. Suíte de partida com 461 testes aprovados e suíte da entrega com 481 testes. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T02.md)
@@ -114,13 +115,13 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F3-T02](tasks/FASE-03/F3-T02.md), PR #40.
-**Tarefa atual.** [F3-T03](tasks/FASE-03/F3-T03.md), conforme os critérios do [backlog](BACKLOG.md).
+**Última tarefa integrada.** [F3-T03](tasks/FASE-03/F3-T03.md), PR #41.
+**Próxima tarefa.** F3-T04, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Conferir a base sincronizada e a suíte de partida da F3-T03
 - [x] Implementar e validar a delimitação, a minimização e o prompt versionado
-- [ ] Abrir o PR da F3-T03 para a branch da fase com autorização
-- [ ] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Abrir o PR #41 da F3-T03 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
 - [x] Confirmar base sincronizada e suíte de partida da F3-T02
 - [x] Implementar e validar schema, prompt e registro de versão
 - [x] Abrir o PR #40 da F3-T02 para a branch da fase com autorização
