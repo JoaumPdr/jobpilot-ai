@@ -273,6 +273,12 @@
 - O perfil enviado pela preparação contém as habilidades pertinentes e ausências explícitas do matching, em nomes canônicos do catálogo local. A revisão usou dados sintéticos e um provedor falso para confirmar a separação entre a descrição, o perfil e a mensagem de sistema. [Estratégia LLM](docs/llm-strategy.md#delimitação-e-minimização-da-entrada)
 - A suíte passou de 481 para 490 testes em PostgreSQL. A cobertura ficou em 97,28% em `app` e 95,34% em `app/services`. [Ficha da F3-T03](docs/tasks/FASE-03/F3-T03.md)
 
+### F3-T04 — Cache e registro de custo (2026-11-25 UTC)
+
+- O serviço reutiliza uma análise validada para o mesmo provedor, modelo, versão do prompt e mensagens. Um bloqueio transacional por chave evitou chamadas duplicadas no teste com duas sessões PostgreSQL. [Modelo de dados](docs/data-model.md#cache-de-análises-llm-llm_cache-f3-t04)
+- Cada chamada ao provedor registra tokens, custo estimado em USD e latência. Resultados validados guardam suas métricas no cache, e falhas liberam o bloqueio para nova tentativa. [Estratégia LLM](docs/llm-strategy.md#cache-e-métricas)
+- A suíte passou de 490 para 496 testes em PostgreSQL, com 97,36% de cobertura em `app` e 95,61% em `app/services`. O ciclo da migração `000000000007` passou em banco isolado. [Ficha da F3-T04](docs/tasks/FASE-03/F3-T04.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*
