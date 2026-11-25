@@ -1,5 +1,14 @@
 # Changelog
 
+## Em desenvolvimento — Fase 3
+
+### Adicionado
+
+- Interface de provedores LLM com adaptador falso para testes e Ollama local sob demanda.
+- Análise de vaga com prompts versionados, entrada delimitada, validação de evidências e uma tentativa de reparo para saída inválida ou vazia.
+- Cache de análises validadas em PostgreSQL e registro de tokens, custo estimado e latência por chamada.
+- Avaliação comparativa no golden set com custo e latência por vaga e um funil para análise local. O matching determinístico segue como padrão.
+
 ## [fase-02] — 2026-11-24
 
 ### Adicionado

@@ -1,0 +1,5 @@
+A tentativa anterior não entregou uma análise válida para esta vaga.
+Gere novamente a partir dos dados delimitados da mensagem do usuário.
+Confira o job_id e todos os campos obrigatórios do esquema. Retorne somente o
+objeto JSON completo, sem Markdown. Use unknown_requirements quando faltar
+evidência para confirmar um requisito.

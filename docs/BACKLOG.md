@@ -95,14 +95,14 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] F3-T01 | **Interface `LLMProvider`** + provedor falso + 1 provedor real configurável (e/ou local) + configurações (timeout, retry, max tokens, orçamento) | F2-GATE | Troca de provedor só por `.env`; provedor falso usado em todos os testes; chave nunca em log |
-| [ ] F3-T02 | **Schemas de saída** (Pydantic) e **prompts versionados** em `prompts/` com política anti-inferência | F3-T01 | Campos: `job_id`, `matched_skills`, `missing_skills`, `unknown_requirements`, `recommendation`, `explanation`, `evidence`; `prompt_version` registrado |
-| [ ] F3-T03 | **Sanitização e defesa de entrada**: descrição de vaga delimitada como dado, limite de tamanho, minimização de dados pessoais | F3-T02 | Testes com descrições contendo "instruções" maliciosas não alteram o comportamento; currículo enviado apenas no necessário |
-| [ ] F3-T04 | **Cache e registro de custo** (`llm_cache`, tokens, custo estimado, latência) | F3-T01 | Mesma entrada não gera nova chamada; métricas por chamada registradas; `docs/llm-strategy.md` criado |
-| [ ] F3-T05 | **Serviço de análise de vaga**: valida saída, 1 reparo máximo, falha registrada, itens sem evidência → `unknown_requirements` | F3-T02, F3-T03, F3-T04 | Nenhuma saída inválida persistida; LLM não altera o score determinístico; testes com respostas válidas, inválidas e vazias |
-| [ ] F3-T06 | **Avaliação no golden set**: determinístico vs +LLM, custo e latência por vaga | F3-T05 | Resultados em `docs/evaluation.md`; decisão registrada sobre limiar/top-N para o funil de custo |
-| [ ] F3-T07 | Docs e relatório da fase | F3-T06 | `llm-strategy.md`, `evaluation.md`, `RELATORIO.md`, README atualizados |
-| [ ] F3-GATE | Gate da fase | todas | RF-10; custo/latência medidos; CI verde sem chamar LLM real → PR para `develop`, tag `fase-03` |
+| [x] [F3-T01](tasks/FASE-03/F3-T01.md) | **Interface `LLMProvider`** + provedor falso + 1 provedor real configurável (e/ou local) + configurações (timeout, retry, max tokens, orçamento) | F2-GATE | Troca de provedor só por `.env`; provedor falso usado em todos os testes; chave nunca em log |
+| [x] [F3-T02](tasks/FASE-03/F3-T02.md) | **Schemas de saída** (Pydantic) e **prompts versionados** em `prompts/` com política anti-inferência | F3-T01 | Campos: `job_id`, `matched_skills`, `missing_skills`, `unknown_requirements`, `recommendation`, `explanation`, `evidence`; `prompt_version` registrado |
+| [x] [F3-T03](tasks/FASE-03/F3-T03.md) | **Sanitização e defesa de entrada**: descrição de vaga delimitada como dado, limite de tamanho, minimização de dados pessoais | F3-T02 | Testes com descrições contendo "instruções" maliciosas não alteram o comportamento; currículo enviado apenas no necessário |
+| [x] [F3-T04](tasks/FASE-03/F3-T04.md) | **Cache e registro de custo** (`llm_cache`, tokens, custo estimado, latência) | F3-T01 | Mesma entrada não gera nova chamada; métricas por chamada registradas; `docs/llm-strategy.md` criado |
+| [x] [F3-T05](tasks/FASE-03/F3-T05.md) | **Serviço de análise de vaga**: valida saída, 1 reparo máximo, falha registrada, itens sem evidência → `unknown_requirements` | F3-T02, F3-T03, F3-T04 | Nenhuma saída inválida persistida; LLM não altera o score determinístico; testes com respostas válidas, inválidas e vazias |
+| [x] [F3-T06](tasks/FASE-03/F3-T06.md) | **Avaliação no golden set**: determinístico vs +LLM, custo e latência por vaga | F3-T05 | Resultados em `docs/evaluation.md`; decisão registrada sobre limiar/top-N para o funil de custo |
+| [x] F3-T07 | [Docs e relatório da fase](tasks/FASE-03/F3-T07.md) | F3-T06 | `llm-strategy.md`, `evaluation.md`, `RELATORIO.md`, README atualizados |
+| [ ] [F3-GATE](tasks/FASE-03/F3-GATE.md) | Gate da fase | todas | RF-10; custo/latência medidos; CI verde sem chamar LLM real → PR para `develop`, tag `fase-03` |
 
 ---
 

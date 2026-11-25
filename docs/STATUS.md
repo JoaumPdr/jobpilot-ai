@@ -10,30 +10,46 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-24 (UTC) |
-| **Fase atual** | Fase 2 — Matching concluída. Próxima fase é a Fase 3 — Camada LLM |
-| **Branch base** | `develop`. A próxima branch de fase será `phase/03-camada-llm` |
-| **Última tarefa integrada** | [F2-GATE — Validação de saída da Fase 2](tasks/FASE-02/F2-GATE.md), em `d30f0fc` |
-| **Próxima tarefa** | F3-T01 — Interface `LLMProvider`, provedores e configuração |
-| **Estado da próxima tarefa** | não iniciada |
+| **Última atualização** | 2026-11-25 (UTC) |
+| **Fase atual** | Fase 3 — Camada LLM |
+| **Branch base** | `phase/03-camada-llm`, criada de `develop` em `aa23972` |
+| **Última tarefa integrada** | [F3-T07 — Documentação e relatório da fase](tasks/FASE-03/F3-T07.md), em `7b930d4` |
+| **Próxima tarefa** | [F3-GATE — Gate de saída da Camada LLM](tasks/FASE-03/F3-GATE.md) |
+| **Estado da próxima tarefa** | Critérios técnicos validados. Aguardando autorização para abrir o PR da fase, mesclar com CI verde e publicar `fase-03` |
 | **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
-| **Testes** | **440 testes aprovados** com PostgreSQL. Cobertura de 97,14% em `app` e 95,14% em `app/services`. Ruff, formatação e reprodução do golden set aprovados |
-| **CI** | [CI do PR #37](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314184412) aprovado em `dc161e6`. [CI do merge `d30f0fc`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314777921) aprovado em `develop` |
+| **Testes** | **507 testes aprovados** com PostgreSQL. Cobertura de 97,47% em `app` e 96,11% em `app/services`. Ruff, formatação e reprodução da linha de base aprovados |
+| **CI** | Aprovado na revisão `ac7713c` da fase, com respostas simuladas e ciclo Alembic. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `develop` atualizada por fast-forward após o PR #37. Branch `phase/02-matching` preservada no GitHub |
+| **Sincronização com o remoto** | `phase/03-camada-llm` sincronizada com o GitHub, com evidências do gate publicadas. `develop` sincronizada em `aa23972`, ancestral da fase |
 | **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
-| **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
+| **PR da fase** | F3-GATE aguarda autorização para abrir o PR de `phase/03-camada-llm` para `develop` |
 | **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
-| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #37 com autorização. MCP usado para consultar o CI e confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #45 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Após integrar o encerramento documental, ler os critérios da F3-T01 no backlog e preparar a branch `phase/03-camada-llm` a partir de `develop` sincronizada.
+> Com autorização do JP, abrir o PR de `phase/03-camada-llm` para `develop` e, após confirmar o CI do PR e do merge, publicar a tag anotada `fase-03` no commit do merge.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F3-GATE validado tecnicamente (2026-11-25 UTC).** RF-10, proteção contra persistência de respostas inválidas, custo e latência por vaga e CI com respostas simuladas conferidos. Os 507 testes locais passaram, assim como Ruff, formatação e reprodução offline da linha de base. Execução direta com `gpt-6.2-sol` e esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-GATE.md)
+- **F3-T07 integrada (2026-11-25 UTC).** O PR #45 foi mesclado com histórico e autorização em `7b930d4`. CI aprovado em `bb79bab` e no merge, com 503 testes aprovados e quatro exclusivos do Windows omitidos no CI do PR. A branch da fase avançou por fast-forward. Ponto de retomada no F3-GATE. [PR #45](https://github.com/JoaumPdr/jobpilot-ai/pull/45)
+- **F3-T07 documentada (2026-11-25 UTC).** README com exemplo do serviço Python, estratégia atualizada e síntese das evidências em `evaluation.md` e `RELATORIO.md`. Suítes de partida e entrega com 507 testes. O exemplo foi conferido em PostgreSQL isolado com resposta simulada e reutilização pelo cache. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T07.md)
+- **F3-T06 integrada (2026-11-25 UTC).** O [PR #44](https://github.com/JoaumPdr/jobpilot-ai/pull/44) foi mesclado com histórico e autorização em `6f5ef4d`. CI verde na revisão `807eef8` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T07.
+- **F3-T06 implementada (2026-11-25 UTC).** Avaliação local com 34 vagas, 68 chamadas a Qwen2.5 1.5B em CPU, mediana de 24,23 s e tarifa total de USD 0. A revocação caiu de 71,88% para 39,38%. Funil local sob demanda de score ≥ 0,80 e top-10. Suítes de partida e entrega com 506 e 507 testes. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T06.md) · [Relatório](evaluation.md#avaliação-com-llm)
+- **F3-T05 integrada (2026-11-25 UTC).** O [PR #43](https://github.com/JoaumPdr/jobpilot-ai/pull/43) foi mesclado com histórico e autorização em `01da5d6`. CI verde na revisão `fc96823` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T06.
+- **F3-T05 implementada (2026-11-25 UTC).** Análise validada e persistida no matching, com conferência de evidências, reparo único e reutilização via cache. Suíte de partida com 496 testes aprovados e suíte de entrega com 506. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T05.md)
+- **F3-T04 integrada (2026-11-25 UTC).** O [PR #42](https://github.com/JoaumPdr/jobpilot-ai/pull/42) foi mesclado com histórico e autorização em `8fe13f8`. CI verde na revisão `9556229` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T05.
+- **F3-T04 implementada (2026-11-25 UTC).** Cache de análises validadas em PostgreSQL, bloqueio transacional por chave e métricas por chamada. A revisão `000000000007` passou no ciclo de migração em banco isolado. Suíte de partida com 490 testes aprovados e suíte de entrega com 496. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T04.md)
+- **F3-T03 integrada (2026-11-25 UTC).** O [PR #41](https://github.com/JoaumPdr/jobpilot-ai/pull/41) foi mesclado com histórico e autorização em `5543a11`. CI verde na revisão `e9fff2d` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T04.
+- **F3-T03 implementada (2026-11-25 UTC).** Descrição delimitada em JSON, limite de 8.000 caracteres, seleção do perfil a partir do matching e prompt `job-analysis-v2`. Suíte de partida com 481 testes aprovados e suíte de entrega com 490. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T03.md)
+- **F3-T02 integrada (2026-11-25 UTC).** O [PR #40](https://github.com/JoaumPdr/jobpilot-ai/pull/40) foi mesclado com histórico e autorização em `a97e8c8`. CI verde na revisão `c08edb2` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T03.
+- **F3-T02 implementada (2026-11-25 UTC).** Contrato Pydantic, prompt `job-analysis-v1` e registro de `prompt_version` a partir do prompt efetivamente usado. Suíte de partida com 461 testes aprovados e suíte da entrega com 481 testes. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T02.md)
+- **F3-T01 integrada (2026-11-25 UTC).** O [PR #39](https://github.com/JoaumPdr/jobpilot-ai/pull/39) foi mesclado com histórico e autorização em `100666d`. CI verde na revisão `b9d7b7e` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T02.
+- **F3-T01 implementada (2026-11-25 UTC).** Interface tipada, provedor falso, Ollama local e limites configuráveis. Suíte de partida com 440 testes aprovados após liberar o diretório temporário do Windows. Suíte de entrega com 461 testes aprovados, Ruff e formatação verdes. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T01.md)
+- **Encerramento documental da Fase 2 conferido.** O PR #38 foi mesclado em `aa23972` com seis arquivos de documentação. As branches da Fase 3 e da F3-T01 foram criadas a partir dessa base. [PR #38](https://github.com/JoaumPdr/jobpilot-ai/pull/38)
 - **F2-GATE concluído (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi mesclado com autorização em `d30f0fc`. O CI do merge passou em `develop`, e a tag anotada `fase-02` foi publicada e conferida no GitHub. Ponto de retomada na F3-T01 após o encerramento documental.
 - **PR do F2-GATE aberto (2026-11-24 UTC).** O [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) foi aberto de `phase/02-matching` para `develop` com `gh` autenticado após autorização do JP.
 - **F2-GATE validado tecnicamente (2026-11-24 UTC).** RF-07 a RF-09 cobertos por testes, `deterministico-v1` ativa e golden set reproduzido. Suíte com 440 testes em PostgreSQL, cobertura de 97,14% em `app` e 95,14% em `app/services`. Execução direta com `gpt-6.2-sol` em `high`, política Base e hook passivo confirmados. [Ficha do gate](tasks/FASE-02/F2-GATE.md)
@@ -108,9 +124,42 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F2-GATE](tasks/FASE-02/F2-GATE.md), PR #37.
-**Próxima tarefa.** F3-T01 após o encerramento documental da Fase 2, conforme os critérios do [backlog](BACKLOG.md).
+**Última tarefa integrada.** [F3-T07](tasks/FASE-03/F3-T07.md), PR #45.
+**Tarefa atual.** [F3-GATE](tasks/FASE-03/F3-GATE.md), conforme os critérios do backlog.
 
+- [x] Conferir RF-10, validação antes de persistir e métricas por vaga
+- [x] Confirmar a suíte local, reprodução offline e CI com respostas simuladas
+- [ ] Abrir o PR da fase para `develop` com autorização e conferir o CI da revisão final
+- [ ] Mesclar com histórico, confirmar o CI em `develop` e publicar `fase-03`
+- [ ] Atualizar o status, o backlog, a ficha, o README, o relatório e o changelog com o encerramento
+- [x] Confirmar a base sincronizada e a suíte de partida da F3-T07
+- [x] Consolidar e validar README, estratégia LLM, avaliação e relatório
+- [x] Abrir o PR #45 da F3-T07 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Conferir a base sincronizada e a suíte de partida da F3-T06
+- [x] Medir a qualidade, o custo e a latência no golden set e registrar o funil
+- [x] Abrir o PR #44 da F3-T06 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Conferir a base sincronizada e a suíte de partida da F3-T05
+- [x] Implementar e validar evidências, reparo e persistência da análise
+- [x] Abrir o PR #43 da F3-T05 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Conferir a base sincronizada e a suíte de partida da F3-T04
+- [x] Implementar e validar o cache, as métricas e a migração reversível
+- [x] Abrir o PR #42 da F3-T04 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Conferir a base sincronizada e a suíte de partida da F3-T03
+- [x] Implementar e validar a delimitação, a minimização e o prompt versionado
+- [x] Abrir o PR #41 da F3-T03 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Confirmar base sincronizada e suíte de partida da F3-T02
+- [x] Implementar e validar schema, prompt e registro de versão
+- [x] Abrir o PR #40 da F3-T02 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Confirmar a base sincronizada e a suíte de partida da F3-T01
+- [x] Implementar e testar o contrato, os provedores e as configurações
+- [x] Abrir o PR #39 da F3-T01 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
 - [x] Verificar RF-07 a RF-09, golden set e versão de score ativa
 - [x] Registrar evidências do gate e preparar o changelog da Fase 2
 - [x] Abrir o PR #37 da fase para `develop`
@@ -194,7 +243,7 @@
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
 | 2 — Matching | concluída | `fase-02` (`d30f0fc`) | PR #37 mesclado com CI verde em `develop` |
-| 3 — Camada LLM | não iniciada | — | — |
+| 3 — Camada LLM | gate pendente | — | Critérios técnicos validados, integração pendente |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
 | 6 — Dashboard e analytics | não iniciada | — | — |

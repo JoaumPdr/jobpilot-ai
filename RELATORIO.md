@@ -246,6 +246,78 @@
   conferida no mesmo commit.
   [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314777921) · [Tag `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
-## Fases 3–7
+## Fase 3 — Camada LLM
+
+### F3-T01 — Interface e configuração de provedores LLM (2026-11-25 UTC)
+
+- O contrato `LLMProvider` recebe instruções e dados em campos separados e
+  devolve texto bruto com as contagens de tokens informadas pelo provedor.
+  A configuração seleciona o provedor falso ou o Ollama local.
+- O adaptador Ollama limita a saída e repete apenas falhas transitórias, com
+  espera crescente e limitada. As mensagens de erro preservam o código HTTP
+  quando disponível e omitem o corpo da resposta. A chave configurada é
+  mascarada pelo Pydantic. [API de chat do Ollama](https://docs.ollama.com/api/chat)
+- A suíte com PostgreSQL passou de 440 para 461 testes, com 97,20% de
+  cobertura em `app` e 95,14% em `app/services`. A validação do adaptador
+  usou transporte simulado. [Ficha da F3-T01](docs/tasks/FASE-03/F3-T01.md)
+
+### F3-T02 — Schemas de saída e prompts versionados (2026-11-25 UTC)
+
+- A análise de vaga recebe um contrato Pydantic com UUID, requisitos, recomendação, explicação e evidências tipadas. O parser confere o UUID e registra a versão do prompt usado pela aplicação.
+- O prompt `job-analysis-v1` direciona omissões e contradições para `unknown_requirements` e pede trechos literais da vaga e do perfil para sustentar as classificações. O JSON Schema anexado ao prompt é gerado pela aplicação. [Estratégia LLM](docs/llm-strategy.md)
+- A suíte passou de 461 para 481 testes em PostgreSQL. A cobertura ficou em 97,25% em `app` e 95,14% em `app/services`. Os novos testes usam dados sintéticos e o provedor falso. [Ficha da F3-T02](docs/tasks/FASE-03/F3-T02.md)
+
+### F3-T03 — Sanitização e defesa de entrada (2026-11-25 UTC)
+
+- A descrição fica em um campo JSON da mensagem de usuário, com limite de 8.000 caracteres, normalização de quebras de linha e sinal de truncamento. O prompt `job-analysis-v2` documenta como interpretar a entrada parcial e os delimitadores.
+- O perfil enviado pela preparação contém as habilidades pertinentes e ausências explícitas do matching, em nomes canônicos do catálogo local. A revisão usou dados sintéticos e um provedor falso para confirmar a separação entre a descrição, o perfil e a mensagem de sistema. [Estratégia LLM](docs/llm-strategy.md#delimitação-e-minimização-da-entrada)
+- A suíte passou de 481 para 490 testes em PostgreSQL. A cobertura ficou em 97,28% em `app` e 95,34% em `app/services`. [Ficha da F3-T03](docs/tasks/FASE-03/F3-T03.md)
+
+### F3-T04 — Cache e registro de custo (2026-11-25 UTC)
+
+- O serviço reutiliza uma análise validada para o mesmo provedor, modelo, versão do prompt e mensagens. Um bloqueio transacional por chave evitou chamadas duplicadas no teste com duas sessões PostgreSQL. [Modelo de dados](docs/data-model.md#cache-de-análises-llm-llm_cache-f3-t04)
+- Cada chamada ao provedor registra tokens, custo estimado em USD e latência. Resultados validados guardam suas métricas no cache, e falhas liberam o bloqueio para nova tentativa. [Estratégia LLM](docs/llm-strategy.md#cache-e-métricas)
+- A suíte passou de 490 para 496 testes em PostgreSQL, com 97,36% de cobertura em `app` e 95,61% em `app/services`. O ciclo da migração `000000000007` passou em banco isolado. [Ficha da F3-T04](docs/tasks/FASE-03/F3-T04.md)
+
+### F3-T05 — Serviço de análise de vaga (2026-11-25 UTC)
+
+- O serviço confere o contrato e as evidências, move itens sem respaldo para `unknown_requirements` e gera o resumo a partir da classificação verificada. A gravação em `job_matches.llm_analysis` confere o snapshot e preserva o score determinístico.
+- O prompt complementar permite uma tentativa de reparo para saída inválida ou vazia. O cache reutiliza também o resultado reparado, e a falha final fica registrada em log estruturado. [Estratégia LLM](docs/llm-strategy.md#serviço-de-análise-de-vaga)
+- A suíte passou de 496 para 506 testes em PostgreSQL, com 97,47% de cobertura em `app` e 96,11% em `app/services`. A validação usou um provedor falso e dados sintéticos. [Ficha da F3-T05](docs/tasks/FASE-03/F3-T05.md)
+
+### F3-T06 — Avaliação no golden set (2026-11-25 UTC)
+
+- As 34 vagas foram avaliadas no Ollama local com Qwen2.5 1.5B. A revocação de afirmações de presença e ausência caiu de 71,88% para 39,38%. O score e a ordem do ranking permaneceram iguais.
+- Foram 68 chamadas, com 12 saídas aceitas após reparo, 22 inválidas e tarifa total de USD 0. A latência mediana do serviço ficou em 24,23 s por vaga. [Medições por vaga](docs/evaluation.md#avaliação-com-llm)
+- A grade selecionou score ≥ 0,80 e top-10 para o modo local sob demanda. O funil retém quatro das cinco vagas de alta compatibilidade e o matching determinístico segue como padrão. A suíte completa passou com 507 testes. [Ficha da F3-T06](docs/tasks/FASE-03/F3-T06.md)
+
+### F3-T07 — Documentação e relatório da fase (2026-11-25 UTC)
+
+- A camada LLM atende à análise estruturada do RF-10 por um serviço Python
+  sob demanda. Provedor falso e Ollama local usam o mesmo contrato. O serviço
+  delimita a entrada, verifica as evidências, permite um reparo e armazena a
+  análise validada em cache e no snapshot de matching. [Fluxo de uso](README.md#fluxo-da-fase-3) · [Estratégia LLM](docs/llm-strategy.md)
+- No golden set, o reparo recuperou a estrutura em 12 vagas. Essas análises
+  ficaram sem acertos de presença ou ausência. A queda de revocação e a
+  mediana de 24,23 s por vaga em CPU sustentam o matching determinístico como
+  padrão e o uso local sob demanda com o funil avaliado. A tarifa de USD 0
+  refere-se às chamadas dessa execução local. [Comparação e limites](docs/evaluation.md#revisão-das-evidências-e-decisão-de-uso)
+- O encerramento da fase depende do gate `F3-GATE`. O roteiro de verificação
+  usa o provedor falso no CI e reproduz a linha de base sem inferência.
+  [Ficha da F3-T07](docs/tasks/FASE-03/F3-T07.md)
+
+### F3-GATE — Validação de saída (2026-11-25 UTC)
+
+- O RF-10 foi conferido pelos testes de contrato, evidências, reparo e
+  persistência. A falha final deixa o matching sem a nova análise e o cache
+  sem a resposta inválida. [Ficha do gate](docs/tasks/FASE-03/F3-GATE.md)
+- Os registros por vaga da F3-T06 confirmam 68 chamadas, tarifa de USD 0 e
+  mediana de 24,23 s no serviço local. A linha de base foi reproduzida
+  offline e o matching determinístico segue como padrão. [Avaliação](docs/evaluation.md#avaliação-com-llm)
+- A revisão `ac7713c` passou com 507 testes em PostgreSQL local. O CI passou
+  com respostas simuladas, cobertura de 97,47% em `app` e 96,11% nos serviços,
+  além de Ruff, formatação e ciclo de migração. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242)
+
+## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*

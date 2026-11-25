@@ -20,6 +20,8 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 **Fase 2 — Matching** concluída e integrada em `develop`. A API calcula compatibilidade com evidências e permite consultar o ranking por candidato. [Roteiro de matching](#fluxo-da-fase-2) · [Avaliação no golden set](docs/evaluation.md) · [Marco `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
+**Fase 3 — Camada LLM** em andamento em `phase/03-camada-llm`. O serviço Python gera análises opcionais com evidências verificadas e cache em PostgreSQL. O matching determinístico continua como padrão. [Uso da análise](#fluxo-da-fase-3) · [Comparação no golden set](docs/evaluation.md#avaliação-com-llm)
+
 Roadmap:
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
 - [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
@@ -61,6 +63,21 @@ cp .env.example .env
 # (ex.: jobpilot_test), recriado automaticamente pela suíte.
 # TEST_DATABASE_URL=postgresql+psycopg://jobpilot:jobpilot@localhost:5433/jobpilot_test
 ```
+
+### Provedor LLM opcional
+
+Deixe `LLM_PROVIDER` vazio para manter o LLM desativado. Use `LLM_PROVIDER=fake`
+para obter uma resposta fixa sem rede ou `LLM_PROVIDER=ollama` para usar um modelo
+instalado no Ollama. No segundo caso, defina `LLM_MODEL` no `.env` com o nome do
+modelo local e inicie o Ollama com `OLLAMA_NO_CLOUD=1` no ambiente do servidor.
+A conexão usa `127.0.0.1` e a porta `LLM_OLLAMA_PORT`, com padrão `11434`.
+A API local dispensa chave. [Configuração do Ollama](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features)
+
+`LLM_TIMEOUT` define o timeout de rede de cada tentativa. `LLM_RETRIES` limita
+as tentativas adicionais após uma falha transitória, e `LLM_MAX_TOKENS` limita
+a geração de cada resposta. A inferência local dispensa cobrança por chamada.
+`LLM_BUDGET_USD` fica reservado para o controle de custo do futuro pipeline.
+[Estratégia LLM](docs/llm-strategy.md)
 
 ## Execução
 
@@ -170,6 +187,53 @@ uv run python -m scripts.evaluate_matching --check
 ```
 
 [Rotas de matching](docs/api.md#matching) · [Metodologia](docs/matching-methodology.md) · [Resultados e limitações](docs/evaluation.md)
+
+## Fluxo da Fase 3
+
+A análise é acionada sob demanda pelo serviço Python. Calcule o matching e
+use a versão retornada pela API. Configure o Ollama como provedor, aplique as
+migrações e execute a função abaixo a partir da raiz do repositório, em um
+ambiente Python iniciado com `uv run python`. Passe como argumentos os UUIDs
+e a versão do matching. O exemplo grava a análise no banco configurado.
+[Fluxo da Fase 2](#fluxo-da-fase-2) · [Configuração do provedor](#provedor-llm-opcional)
+
+```python
+from uuid import UUID
+
+from app.core.config import settings
+from app.core.database import SessionLocal
+from app.llm.providers import build_llm_provider
+from app.repositories.matching import MatchRepository
+from app.services.job_analysis import JobAnalysisService
+from app.services.llm_cache import LLMCacheService
+
+
+def analisar_vaga(candidate_id: str, job_id: str, scoring_version: str):
+    provider = build_llm_provider(settings)
+    if provider is None:
+        raise ValueError("Configure LLM_PROVIDER para executar a análise.")
+
+    with SessionLocal() as session:
+        service = JobAnalysisService(
+            MatchRepository(session), LLMCacheService(provider)
+        )
+        return service.analyze(UUID(candidate_id), UUID(job_id), scoring_version)
+```
+
+A função devolve `prompt_version` e `analysis`. O serviço confere a saída,
+tenta um reparo quando a resposta é inválida ou vazia e registra falhas que
+impedem a geração. A seleção de vagas por score ≥ 0,80 e top-10 é o funil medido
+para uso local sob demanda. A chamada acima analisa uma vaga por vez.
+
+Para verificar o fluxo com dados sintéticos e respostas controladas, execute
+os testes de integração com PostgreSQL. Eles cobrem cache, reparo e validação
+das evidências sem uma chamada real ao modelo.
+
+```bash
+uv run pytest tests/db/test_job_analysis.py tests/db/test_llm_cache.py
+```
+
+[Contrato, cache e reprodução da avaliação](docs/llm-strategy.md) · [Medições e escolha do funil](docs/evaluation.md#funil-de-custo)
 
 ## Testes e Qualidade
 

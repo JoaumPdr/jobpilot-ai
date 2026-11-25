@@ -7,7 +7,7 @@ POR QUÊ: Evita espalhar `os.getenv` pelo código; garante que variáveis obriga
 existam no startup; fornece defaults sensatos e documentação via type hints.
 """
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -34,22 +34,35 @@ class Settings(BaseSettings):
         default="INFO", description="Nível de log: DEBUG, INFO, WARNING, ERROR"
     )
 
-    # LLM (Fase 3+)
+    # LLM
     llm_provider: str | None = Field(
-        default=None, description="Provedor LLM: openai, anthropic, etc."
+        default=None,
+        description="Provedor LLM: fake ou ollama. Ausente desativa o LLM.",
     )
     llm_model: str | None = Field(default=None, description="Modelo LLM a usar")
-    llm_api_key: str | None = Field(
+    llm_api_key: SecretStr | None = Field(
         default=None, description="Chave da API do provedor LLM"
     )
     llm_timeout: int = Field(
-        default=30, description="Timeout em segundos para chamadas LLM"
+        default=30, gt=0, description="Timeout de rede por tentativa em segundos"
+    )
+    llm_retries: int = Field(
+        default=2,
+        ge=0,
+        le=5,
+        description="Tentativas adicionais para falhas transitórias",
     )
     llm_max_tokens: int = Field(
-        default=4096, description="Máximo de tokens por resposta LLM"
+        default=4096, gt=0, description="Máximo de tokens por resposta LLM"
     )
     llm_budget_usd: float = Field(
-        default=10.0, description="Orçamento máximo em USD por execução"
+        default=10.0,
+        ge=0,
+        allow_inf_nan=False,
+        description="Orçamento em USD por execução",
+    )
+    llm_ollama_port: int = Field(
+        default=11434, ge=1, le=65535, description="Porta do servidor Ollama local"
     )
 
     # Embeddings (Fase 2+)
