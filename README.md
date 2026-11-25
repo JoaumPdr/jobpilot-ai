@@ -62,6 +62,22 @@ cp .env.example .env
 # TEST_DATABASE_URL=postgresql+psycopg://jobpilot:jobpilot@localhost:5433/jobpilot_test
 ```
 
+### Provedor LLM opcional
+
+Deixe `LLM_PROVIDER` vazio para manter o LLM desativado. Use `LLM_PROVIDER=fake`
+para obter uma resposta fixa sem rede ou `LLM_PROVIDER=ollama` para usar um modelo
+instalado no Ollama. No segundo caso, defina `LLM_MODEL` no `.env` com o nome do
+modelo local e inicie o Ollama com `OLLAMA_NO_CLOUD=1` no ambiente do servidor.
+A conexão usa `127.0.0.1` e a porta `LLM_OLLAMA_PORT`, com padrão `11434`.
+A API local dispensa chave. [Configuração do Ollama](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features)
+
+`LLM_TIMEOUT` define o timeout de rede de cada tentativa. `LLM_RETRIES` limita
+as tentativas adicionais após uma falha transitória, e `LLM_MAX_TOKENS` limita
+a geração de cada resposta. `LLM_BUDGET_USD` configura o orçamento em USD por
+execução para o futuro controle de custo. A inferência local dispensa cobrança
+por chamada. A F3-T01 disponibiliza os adaptadores em Python. O serviço de
+análise de vagas será conectado em uma tarefa própria.
+
 ## Execução
 
 ```bash
