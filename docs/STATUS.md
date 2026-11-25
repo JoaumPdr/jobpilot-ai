@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-25 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F3-GATE — Gate de saída da Camada LLM](tasks/FASE-03/F3-GATE.md), em `b7348cc` |
-| **Tarefa atual** | [F4-T01 — Estado do pipeline e contratos dos nós](tasks/FASE-04/F4-T01.md) |
-| **Estado da tarefa** | Implementada em `feat/f4-t01-estado-pipeline`. Aguarda integração na fase |
+| **Última tarefa integrada** | [F4-T01 — Estado do pipeline e contratos dos nós](tasks/FASE-04/F4-T01.md), em `54badc1` |
+| **Próxima tarefa** | F4-T02 — Nós determinísticos de importação, normalização, deduplicação e filtragem |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **524 testes aprovados** com PostgreSQL, incluindo 17 de contrato do pipeline. Cobertura de 97,51% em `app` e 96,11% em `app/services`. Ruff e formatação aprovados |
-| **CI** | A base da Fase 4 passou no CI em `b6fb209`. A F4-T01 aguarda o CI do PR. [CI da base](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45555306333) |
+| **CI** | Aprovado na revisão `1ae2f2b` do PR #48 e no merge `54badc1`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45693518765) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45693771113) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | Base da Fase 4 publicada em `b6fb209`. A entrega da F4-T01 está na branch `feat/f4-t01-estado-pipeline` |
+| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #48. A branch da tarefa foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #46 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #48 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Com autorização do JP, abrir o PR de `feat/f4-t01-estado-pipeline` para `phase/04-orquestracao` e integrar com histórico após CI verde.
+> Conferir a base sincronizada, ler a F4-T02 no backlog e avaliar o modelo e o esforço do líder antes de iniciar a tarefa.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F4-T01 integrada (2026-11-25 UTC).** O PR #48 integrou o estado tipado e os contratos dos nós em `54badc1`. O CI passou na revisão `1ae2f2b` e no merge. O ponto de retomada é a F4-T02. [PR #48](https://github.com/JoaumPdr/jobpilot-ai/pull/48)
 - **F4-T01 implementada.** A suíte de partida em `b6fb209` passou com 507 testes na repetição autorizada, após seis falhas relacionadas a horários. O líder foi ajustado para `gpt-6.2-astra` com esforço `high`. O launcher confirmou a política Base e o hook do projeto. Execução direta. [Contratos](pipeline.md) · [Ficha](tasks/FASE-04/F4-T01.md)
 - **F3-GATE concluído (2026-11-25 UTC).** O PR #46 integrou a Camada LLM em `b7348cc`. O CI passou na revisão `7ecab9d` e no merge em `develop`, e a tag anotada `fase-03` foi publicada e conferida no GitHub. Próximo ponto de retomada na F4-T01 após integrar o encerramento documental. [PR #46](https://github.com/JoaumPdr/jobpilot-ai/pull/46) · [Tag `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 - **F3-GATE validado tecnicamente (2026-11-25 UTC).** RF-10, proteção contra persistência de respostas inválidas, custo e latência por vaga e CI com respostas simuladas conferidos. Os 507 testes locais passaram, assim como Ruff, formatação e reprodução offline da linha de base. Execução direta com `gpt-6.2-sol` e esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-GATE.md)
@@ -126,11 +127,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F3-GATE, PR #46. [Ficha](tasks/FASE-03/F3-GATE.md)
-**Tarefa atual.** F4-T01, com o estado e os contratos implementados. [Ficha](tasks/FASE-04/F4-T01.md)
+**Última tarefa integrada.** F4-T01, PR #48. [Ficha](tasks/FASE-04/F4-T01.md)
+**Próxima tarefa.** F4-T02, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Implementar e documentar o estado e testar as fronteiras dos nós
-- [ ] Abrir o PR da tarefa, conferir o CI e integrar a F4-T01 na branch da fase
+- [x] Abrir o PR #48, conferir o CI e integrar a F4-T01 na branch da fase
 - [x] Conferir RF-10, validação antes de persistir e métricas por vaga
 - [x] Confirmar a suíte local, reprodução offline e CI com respostas simuladas
 - [x] Abrir o PR da fase para `develop` com autorização e conferir o CI da revisão final
@@ -248,7 +249,7 @@
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
 | 2 — Matching | concluída | `fase-02` (`d30f0fc`) | PR #37 mesclado com CI verde em `develop` |
 | 3 — Camada LLM | concluída | `fase-03` (`b7348cc`) | PR #46 mesclado com CI verde em `develop` |
-| 4 — Orquestração (MVP v0.1.0) | em andamento | — | F4-T01 aguarda integração |
+| 4 — Orquestração (MVP v0.1.0) | em andamento | — | F4-T01 integrada |
 | 5 — Assistente de currículo | não iniciada | — | — |
 | 6 — Dashboard e analytics | não iniciada | — | — |
 | 7 — Hardening e release (v1.0.0) | não iniciada | — | — |

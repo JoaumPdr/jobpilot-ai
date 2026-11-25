@@ -110,7 +110,7 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] [F4-T01](tasks/FASE-04/F4-T01.md) | **Estado do pipeline** e contratos de entrada/saída dos nós | F3-GATE | Estado tipado e validado; contratos documentados em `docs/pipeline.md` |
+| [x] [F4-T01](tasks/FASE-04/F4-T01.md) | **Estado do pipeline** e contratos de entrada/saída dos nós | F3-GATE | Estado tipado e validado; contratos documentados em `docs/pipeline.md` |
 | [ ] F4-T02 | **Nós determinísticos**: importar, normalizar, deduplicar, filtrar (chamando os serviços existentes) | F4-T01 | Nenhuma lógica de negócio duplicada; cada nó testado isoladamente |
 | [ ] F4-T03 | **Nós de matching, seleção top-N e análise LLM** | F4-T02 | Seleção usa limiar e orçamento definidos na F3-T06; só o top-N chega ao LLM; LLM falso nos testes |
 | [ ] F4-T04 | **Transições condicionais, retry e falha parcial** | F4-T03 | Falha em uma vaga não derruba a execução; retry limitado; erros registrados por item |
