@@ -306,6 +306,18 @@
   usa o provedor falso no CI e reproduz a linha de base sem inferência.
   [Ficha da F3-T07](docs/tasks/FASE-03/F3-T07.md)
 
+### F3-GATE — Validação de saída (2026-11-25 UTC)
+
+- O RF-10 foi conferido pelos testes de contrato, evidências, reparo e
+  persistência. A falha final deixa o matching sem a nova análise e o cache
+  sem a resposta inválida. [Ficha do gate](docs/tasks/FASE-03/F3-GATE.md)
+- Os registros por vaga da F3-T06 confirmam 68 chamadas, tarifa de USD 0 e
+  mediana de 24,23 s no serviço local. A linha de base foi reproduzida
+  offline e o matching determinístico segue como padrão. [Avaliação](docs/evaluation.md#avaliação-com-llm)
+- A revisão `ac7713c` passou com 507 testes em PostgreSQL local. O CI passou
+  com respostas simuladas, cobertura de 97,47% em `app` e 96,11% nos serviços,
+  além de Ruff, formatação e ciclo de migração. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*

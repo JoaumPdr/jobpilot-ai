@@ -14,26 +14,27 @@
 | **Fase atual** | Fase 3 — Camada LLM |
 | **Branch base** | `phase/03-camada-llm`, criada de `develop` em `aa23972` |
 | **Última tarefa integrada** | [F3-T07 — Documentação e relatório da fase](tasks/FASE-03/F3-T07.md), em `7b930d4` |
-| **Próxima tarefa** | F3-GATE — Gate de saída da Camada LLM |
-| **Estado da próxima tarefa** | não iniciada |
+| **Próxima tarefa** | [F3-GATE — Gate de saída da Camada LLM](tasks/FASE-03/F3-GATE.md) |
+| **Estado da próxima tarefa** | Critérios técnicos validados. Aguardando autorização para abrir o PR da fase, mesclar com CI verde e publicar `fase-03` |
 | **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
 | **Testes** | **507 testes aprovados** com PostgreSQL. Cobertura de 97,47% em `app` e 96,11% em `app/services`. Ruff, formatação e reprodução da linha de base aprovados |
-| **CI** | Aprovado no PR #45 em `bb79bab` e no merge `7b930d4`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537112835) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537275436) |
+| **CI** | Aprovado na revisão `ac7713c` da fase, com respostas simuladas e ciclo Alembic. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/03-camada-llm` atualizada por fast-forward após o PR #45. A branch `docs/f3-t07-documentacao-camada-llm` foi preservada no GitHub |
+| **Sincronização com o remoto** | `phase/03-camada-llm` sincronizada com o GitHub, com evidências do gate publicadas. `develop` sincronizada em `aa23972`, ancestral da fase |
 | **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
-| **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
+| **PR da fase** | F3-GATE aguarda autorização para abrir o PR de `phase/03-camada-llm` para `develop` |
 | **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
 | **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #45 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Ler os critérios do F3-GATE no backlog e avaliar o modelo e o esforço do líder antes de conferir as evidências do RF-10, da avaliação e do CI na branch da fase sincronizada.
+> Com autorização do JP, abrir o PR de `phase/03-camada-llm` para `develop` e, após confirmar o CI do PR e do merge, publicar a tag anotada `fase-03` no commit do merge.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F3-GATE validado tecnicamente (2026-11-25 UTC).** RF-10, proteção contra persistência de respostas inválidas, custo e latência por vaga e CI com respostas simuladas conferidos. Os 507 testes locais passaram, assim como Ruff, formatação e reprodução offline da linha de base. Execução direta com `gpt-6.2-sol` e esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-GATE.md)
 - **F3-T07 integrada (2026-11-25 UTC).** O PR #45 foi mesclado com histórico e autorização em `7b930d4`. CI aprovado em `bb79bab` e no merge, com 503 testes aprovados e quatro exclusivos do Windows omitidos no CI do PR. A branch da fase avançou por fast-forward. Ponto de retomada no F3-GATE. [PR #45](https://github.com/JoaumPdr/jobpilot-ai/pull/45)
 - **F3-T07 documentada (2026-11-25 UTC).** README com exemplo do serviço Python, estratégia atualizada e síntese das evidências em `evaluation.md` e `RELATORIO.md`. Suítes de partida e entrega com 507 testes. O exemplo foi conferido em PostgreSQL isolado com resposta simulada e reutilização pelo cache. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T07.md)
 - **F3-T06 integrada (2026-11-25 UTC).** O [PR #44](https://github.com/JoaumPdr/jobpilot-ai/pull/44) foi mesclado com histórico e autorização em `6f5ef4d`. CI verde na revisão `807eef8` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T07.
@@ -124,8 +125,13 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** [F3-T07](tasks/FASE-03/F3-T07.md), PR #45.
-**Próxima tarefa.** F3-GATE, conforme os critérios do [backlog](BACKLOG.md).
+**Tarefa atual.** [F3-GATE](tasks/FASE-03/F3-GATE.md), conforme os critérios do backlog.
 
+- [x] Conferir RF-10, validação antes de persistir e métricas por vaga
+- [x] Confirmar a suíte local, reprodução offline e CI com respostas simuladas
+- [ ] Abrir o PR da fase para `develop` com autorização e conferir o CI da revisão final
+- [ ] Mesclar com histórico, confirmar o CI em `develop` e publicar `fase-03`
+- [ ] Atualizar o status, o backlog, a ficha, o README, o relatório e o changelog com o encerramento
 - [x] Confirmar a base sincronizada e a suíte de partida da F3-T07
 - [x] Consolidar e validar README, estratégia LLM, avaliação e relatório
 - [x] Abrir o PR #45 da F3-T07 para a branch da fase com autorização
@@ -237,7 +243,7 @@
 | 0 — Fundação | concluída | `fase-00` (`cbbeb65`) | ✅ PR #4 mesclado com CI verde |
 | 1 — Núcleo sem IA | concluída | `fase-01` (`bbea363`) | PR #26 mesclado com CI verde em `develop` |
 | 2 — Matching | concluída | `fase-02` (`d30f0fc`) | PR #37 mesclado com CI verde em `develop` |
-| 3 — Camada LLM | gate pendente | — | F3-GATE por iniciar |
+| 3 — Camada LLM | gate pendente | — | Critérios técnicos validados, integração pendente |
 | 4 — Orquestração (MVP v0.1.0) | não iniciada | — | — |
 | 5 — Assistente de currículo | não iniciada | — | — |
 | 6 — Dashboard e analytics | não iniciada | — | — |
