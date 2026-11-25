@@ -1,8 +1,8 @@
 # F3-GATE — Gate de saída da Fase 3
 
-- **Integração da fase** — `phase/03-camada-llm` → `develop`.
-- **Estado** — critérios técnicos verificados. Aguardando autorização para o PR da fase, o merge com CI verde e a publicação da tag `fase-03`.
-- **Revisão validada** — `ac7713c`, sincronizada com o GitHub. `develop` em `aa23972` é ancestral da fase.
+- **Integração da fase** — `phase/03-camada-llm` → `develop`. [PR #46](https://github.com/JoaumPdr/jobpilot-ai/pull/46)
+- **Estado** — concluído no merge `b7348cc`, marcado com a tag anotada `fase-03` (`492895f`). [Tag publicada](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
+- **Revisões validadas** — `ac7713c` na partida e `7ecab9d` no PR da fase, com `develop` em `aa23972` como base.
 - **Execução** — direta com `gpt-6.2-sol` e esforço `high`. Política Base e hook passivo confirmados.
 - **Critérios** — [Backlog](../../BACKLOG.md#fase-3--camada-llm--branch-phase03-camada-llm--tag-fase-03) · [Plano mestre, §11](../../PLANO.md#11-fases-resultados-e-gates-de-saída)
 
@@ -18,8 +18,8 @@
 - [x] F3-T01 a F3-T07 integradas na branch da fase. [Documentação da camada LLM](../../llm-strategy.md) · [Relatório técnico](../../../RELATORIO.md#fase-3--camada-llm)
 - [x] Linha de base reproduzida offline e Ruff e formatação aprovados. A medição da F3-T06 permanece a referência do gate.
 - [x] 507 testes aprovados em PostgreSQL no Windows. No CI da revisão `ac7713c`, 503 passaram, quatro exclusivos do Windows foram omitidos e o ciclo de migração passou. Cobertura de 97,47% em `app` e 96,11% em `app/services`. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242)
-- [ ] Abrir o PR da fase para `develop` e confirmar o CI da revisão final.
-- [ ] Mesclar com histórico após autorização, confirmar o CI em `develop` e publicar a tag anotada `fase-03` no commit do merge.
+- [x] Abrir o PR #46 para `develop` e confirmar o CI de `7ecab9d`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45539247863)
+- [x] Mesclar com histórico após autorização, confirmar o CI em `develop` e conferir a tag anotada `fase-03` no GitHub com apontamento para `b7348cc`. [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45539395837)
 
 ```powershell
 uv sync --locked

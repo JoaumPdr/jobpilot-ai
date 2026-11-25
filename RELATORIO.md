@@ -302,8 +302,8 @@
   mediana de 24,23 s por vaga em CPU sustentam o matching determinístico como
   padrão e o uso local sob demanda com o funil avaliado. A tarifa de USD 0
   refere-se às chamadas dessa execução local. [Comparação e limites](docs/evaluation.md#revisão-das-evidências-e-decisão-de-uso)
-- O encerramento da fase depende do gate `F3-GATE`. O roteiro de verificação
-  usa o provedor falso no CI e reproduz a linha de base sem inferência.
+- O roteiro de verificação usa o provedor falso no CI e reproduz a linha de
+  base sem inferência. As evidências de saída estão na seção do `F3-GATE`.
   [Ficha da F3-T07](docs/tasks/FASE-03/F3-T07.md)
 
 ### F3-GATE — Validação de saída (2026-11-25 UTC)
@@ -317,6 +317,9 @@
 - A revisão `ac7713c` passou com 507 testes em PostgreSQL local. O CI passou
   com respostas simuladas, cobertura de 97,47% em `app` e 96,11% nos serviços,
   além de Ruff, formatação e ciclo de migração. [CI da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45537543242)
+- O PR #46 integrou a Fase 3 em `develop` com histórico no commit `b7348cc`.
+  Após o CI do merge, a tag anotada `fase-03` foi publicada nesse commit e
+  conferida no GitHub. [PR #46](https://github.com/JoaumPdr/jobpilot-ai/pull/46) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45539395837) · [Tag `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 
 ## Fases 4–7
 

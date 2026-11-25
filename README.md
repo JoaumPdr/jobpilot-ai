@@ -20,13 +20,13 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 **Fase 2 — Matching** concluída e integrada em `develop`. A API calcula compatibilidade com evidências e permite consultar o ranking por candidato. [Roteiro de matching](#fluxo-da-fase-2) · [Avaliação no golden set](docs/evaluation.md) · [Marco `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
-**Fase 3 — Camada LLM** em andamento em `phase/03-camada-llm`. O serviço Python gera análises opcionais com evidências verificadas e cache em PostgreSQL. O matching determinístico continua como padrão. [Uso da análise](#fluxo-da-fase-3) · [Comparação no golden set](docs/evaluation.md#avaliação-com-llm)
+**Fase 3 — Camada LLM** concluída e integrada em `develop`. O serviço Python gera análises opcionais com evidências verificadas e cache em PostgreSQL. O matching determinístico continua como padrão. [Uso da análise](#fluxo-da-fase-3) · [Comparação no golden set](docs/evaluation.md#avaliação-com-llm) · [Marco `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 
 Roadmap:
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
 - [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
 - [x] Fase 2: Matching (taxonomia, extração, score explicável, golden set)
-- [ ] Fase 3: Camada LLM (provedor abstrato, cache, análise validada)
+- [x] Fase 3: Camada LLM (provedor abstrato, cache, análise validada)
 - [ ] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
 - [ ] Fase 5: Assistente de currículo → v0.2.0
 - [ ] Fase 6: Dashboard e analytics → v0.3.0
