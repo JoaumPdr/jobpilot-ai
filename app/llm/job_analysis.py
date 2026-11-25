@@ -9,7 +9,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-JOB_ANALYSIS_PROMPT_VERSION = "job-analysis-v1"
+JOB_ANALYSIS_PROMPT_VERSION = "job-analysis-v2"
 _PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
 
 _NonEmptyText = Annotated[str, Field(min_length=1)]

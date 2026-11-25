@@ -43,7 +43,7 @@ def test_prompt_ativo_publica_politica_e_schema(
     instructions, raw_schema = prompt.system_prompt.rsplit("\n\n", maxsplit=1)
     schema = json.loads(raw_schema)
 
-    assert prompt.version == "job-analysis-v1"
+    assert prompt.version == "job-analysis-v2"
     assert "Não infira experiência" in instructions
     assert "Uma omissão no perfil não comprova ausência" in instructions
     assert "use unknown_requirements" in instructions

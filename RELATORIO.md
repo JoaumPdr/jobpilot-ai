@@ -267,6 +267,12 @@
 - O prompt `job-analysis-v1` direciona omissões e contradições para `unknown_requirements` e pede trechos literais da vaga e do perfil para sustentar as classificações. O JSON Schema anexado ao prompt é gerado pela aplicação. [Estratégia LLM](docs/llm-strategy.md)
 - A suíte passou de 461 para 481 testes em PostgreSQL. A cobertura ficou em 97,25% em `app` e 95,14% em `app/services`. Os novos testes usam dados sintéticos e o provedor falso. [Ficha da F3-T02](docs/tasks/FASE-03/F3-T02.md)
 
+### F3-T03 — Sanitização e defesa de entrada (2026-11-25 UTC)
+
+- A descrição fica em um campo JSON da mensagem de usuário, com limite de 8.000 caracteres, normalização de quebras de linha e sinal de truncamento. O prompt `job-analysis-v2` documenta como interpretar a entrada parcial e os delimitadores.
+- O perfil enviado pela preparação contém as habilidades pertinentes e ausências explícitas do matching, em nomes canônicos do catálogo local. A revisão usou dados sintéticos e um provedor falso para confirmar a separação entre a descrição, o perfil e a mensagem de sistema. [Estratégia LLM](docs/llm-strategy.md#delimitação-e-minimização-da-entrada)
+- A suíte passou de 481 para 490 testes em PostgreSQL. A cobertura ficou em 97,28% em `app` e 95,34% em `app/services`. [Ficha da F3-T03](docs/tasks/FASE-03/F3-T03.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*
