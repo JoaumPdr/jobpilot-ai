@@ -13,27 +13,28 @@
 | **Última atualização** | 2026-11-25 (UTC) |
 | **Fase atual** | Fase 3 — Camada LLM |
 | **Branch base** | `phase/03-camada-llm`, criada de `develop` em `aa23972` |
-| **Última tarefa integrada** | [F3-T04 — Cache e registro de custo](tasks/FASE-03/F3-T04.md), em `8fe13f8` |
-| **Tarefa atual** | [F3-T05 — Serviço de análise de vaga](tasks/FASE-03/F3-T05.md), em `feat/f3-t05-servico-analise-llm` |
-| **Estado da tarefa atual** | implementada e validada localmente. Aguardando PR e CI |
+| **Última tarefa integrada** | [F3-T05 — Serviço de análise de vaga](tasks/FASE-03/F3-T05.md), em `01da5d6` |
+| **Próxima tarefa** | F3-T06 — Avaliação no golden set |
+| **Estado da próxima tarefa** | não iniciada |
 | **Último merge de fase** | `d30f0fc` — PR #37 (F2-GATE), em `develop` |
 | **Testes** | **506 testes aprovados** com PostgreSQL. Cobertura de 97,47% em `app` e 96,11% em `app/services`. Ruff e formatação aprovados |
-| **CI** | PR da F3-T05 a abrir. [CI da branch da fase](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45527737636) aprovado em `bce58b6` |
+| **CI** | [CI do PR #43](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45529798816) aprovado em `fc96823`. [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45529984461) aprovado em `01da5d6` |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/03-camada-llm` conferida em `bce58b6`. Branch da tarefa `feat/f3-t05-servico-analise-llm` publicada no GitHub |
+| **Sincronização com o remoto** | `phase/03-camada-llm` atualizada por fast-forward após o PR #43. A branch `feat/f3-t05-servico-analise-llm` foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-24 02:46 UTC, `d30f0fc` em `develop` |
 | **PR da fase** | [PR #37 — F2-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/37), mesclado em `develop` |
 | **Última tag publicada** | [`fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02) → `d30f0fc` (tag anotada `8ac12cf`) |
-| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #42 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
+| **GitHub** | `gh` autenticado usado para abrir e mesclar o PR #43 com autorização e acompanhar o CI. MCP usado para confirmar o merge |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Abrir, após autorização, o PR de `feat/f3-t05-servico-analise-llm` para `phase/03-camada-llm` e conferir o CI da F3-T05.
+> Ler os critérios da F3-T06 no backlog e avaliar o modelo e o esforço do líder antes de preparar a avaliação a partir de `phase/03-camada-llm` sincronizada.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F3-T05 integrada (2026-11-25 UTC).** O [PR #43](https://github.com/JoaumPdr/jobpilot-ai/pull/43) foi mesclado com histórico e autorização em `01da5d6`. CI verde na revisão `fc96823` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T06.
 - **F3-T05 implementada (2026-11-25 UTC).** Análise validada e persistida no matching, com conferência de evidências, reparo único e reutilização via cache. Suíte de partida com 496 testes aprovados e suíte de entrega com 506. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T05.md)
 - **F3-T04 integrada (2026-11-25 UTC).** O [PR #42](https://github.com/JoaumPdr/jobpilot-ai/pull/42) foi mesclado com histórico e autorização em `8fe13f8`. CI verde na revisão `9556229` e no merge. A branch local da fase avançou por fast-forward. Ponto de retomada na F3-T05.
 - **F3-T04 implementada (2026-11-25 UTC).** Cache de análises validadas em PostgreSQL, bloqueio transacional por chave e métricas por chamada. A revisão `000000000007` passou no ciclo de migração em banco isolado. Suíte de partida com 490 testes aprovados e suíte de entrega com 496. Execução direta em `gpt-6.2-sol` com esforço `high`, política Base e hook passivo confirmados. [Ficha](tasks/FASE-03/F3-T04.md)
@@ -118,13 +119,13 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** [F3-T04](tasks/FASE-03/F3-T04.md), PR #42.
-**Tarefa atual.** [F3-T05](tasks/FASE-03/F3-T05.md), conforme os critérios do [backlog](BACKLOG.md).
+**Última tarefa integrada.** [F3-T05](tasks/FASE-03/F3-T05.md), PR #43.
+**Próxima tarefa.** F3-T06, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Conferir a base sincronizada e a suíte de partida da F3-T05
 - [x] Implementar e validar evidências, reparo e persistência da análise
-- [ ] Abrir o PR da F3-T05 para a branch da fase com autorização
-- [ ] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
+- [x] Abrir o PR #43 da F3-T05 para a branch da fase com autorização
+- [x] Confirmar o CI, integrar a tarefa e atualizar backlog e ficha
 - [x] Conferir a base sincronizada e a suíte de partida da F3-T04
 - [x] Implementar e validar o cache, as métricas e a migração reversível
 - [x] Abrir o PR #42 da F3-T04 para a branch da fase com autorização
