@@ -10,6 +10,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 JOB_ANALYSIS_PROMPT_VERSION = "job-analysis-v2"
+JOB_ANALYSIS_REPAIR_VERSION = "job-analysis-repair-v1"
 _PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
 
 _NonEmptyText = Annotated[str, Field(min_length=1)]
@@ -74,6 +75,21 @@ def load_job_analysis_prompt() -> JobAnalysisPrompt:
     return JobAnalysisPrompt(
         version=JOB_ANALYSIS_PROMPT_VERSION,
         system_prompt=f"{instructions}\n\n{schema}",
+    )
+
+
+@cache
+def load_job_analysis_repair_prompt() -> JobAnalysisPrompt:
+    """Acrescenta instruções de reparo ao mesmo contrato da análise."""
+    original = load_job_analysis_prompt()
+    correction = (
+        (_PROMPTS_DIR / f"{JOB_ANALYSIS_REPAIR_VERSION}.txt")
+        .read_text(encoding="utf-8")
+        .strip()
+    )
+    return JobAnalysisPrompt(
+        version=f"{original.version}+{JOB_ANALYSIS_REPAIR_VERSION}",
+        system_prompt=f"{original.system_prompt}\n\n{correction}",
     )
 
 

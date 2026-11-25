@@ -2,7 +2,7 @@
 
 import uuid
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, null, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import contains_eager
 
@@ -35,6 +35,11 @@ class MatchRepository(BaseRepository):
                 "match_score": snapshot.match_score,
                 "knockout_flags": snapshot.knockout_flags,
                 "analysis": snapshot.analysis,
+                # Uma análise LLM anterior descreve as evidências do snapshot anterior.
+                "llm_analysis": case(
+                    (JobMatch.analysis.is_distinct_from(snapshot.analysis), null()),
+                    else_=JobMatch.llm_analysis,
+                ),
                 "updated_at": func.now(),
             },
         ).returning(JobMatch)
@@ -57,6 +62,24 @@ class MatchRepository(BaseRepository):
             )
         )
         return self._db.scalar(stmt)
+
+    def save_llm_analysis(self, match: JobMatch, payload: dict[str, object]) -> bool:
+        """Grava a análise somente se o snapshot lido ainda corresponder à vaga."""
+        stmt = (
+            update(JobMatch)
+            .where(
+                JobMatch.id == match.id,
+                JobMatch.updated_at == match.updated_at,
+                JobMatch.analysis == match.analysis,
+                JobMatch.job.has(
+                    Job.description.is_not_distinct_from(match.job.description)
+                ),
+            )
+            .values(llm_analysis=payload)
+            .returning(JobMatch.id)
+            .execution_options(synchronize_session=False)
+        )
+        return self._db.scalar(stmt) is not None
 
     def list_page(
         self, candidate_id: uuid.UUID, version: str, query: MatchRankingQuery

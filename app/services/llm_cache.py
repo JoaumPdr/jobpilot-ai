@@ -11,7 +11,12 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.database import SessionLocal
 from app.core.logging import get_logger
-from app.llm.job_analysis import JobAnalysisOutput, VersionedJobAnalysis
+from app.llm.job_analysis import (
+    JobAnalysisOutput,
+    JobAnalysisOutputError,
+    JobAnalysisPrompt,
+    VersionedJobAnalysis,
+)
 from app.llm.providers import LLMProvider, LLMResponse
 from app.models import LLMCache
 from app.repositories.llm_cache import LLMCacheRepository
@@ -38,9 +43,10 @@ class LLMCacheService:
         inputs: JobAnalysisInput,
         *,
         validate: Callable[[str], JobAnalysisOutput],
+        repair: JobAnalysisPrompt | None = None,
     ) -> VersionedJobAnalysis:
         """Revalida resultados reutilizados e grava somente após a validação da saída."""
-        cache_key = self._cache_key(inputs)
+        cache_key = self._cache_key(inputs, repair=repair)
         version = inputs.prompt.version
         try:
             # A sessão própria libera o bloqueio sem confirmar os dados do chamador.
@@ -50,6 +56,7 @@ class LLMCacheService:
                 stored = cache.get(cache_key)
                 if stored is not None:
                     analysis = validate(json.dumps(stored.response, ensure_ascii=False))
+                    version = stored.prompt_version
                     logger.info(
                         "llm_cache_hit",
                         provider=self._provider.name,
@@ -58,7 +65,15 @@ class LLMCacheService:
                     )
                 else:
                     reply, cost, latency_ms = self._complete(inputs)
-                    analysis = validate(reply.text)
+                    try:
+                        analysis = validate(reply.text)
+                    except JobAnalysisOutputError:
+                        if repair is None:
+                            raise
+                        version = repair.version
+                        repair_input = JobAnalysisInput(repair, inputs.user_prompt)
+                        reply, cost, latency_ms = self._complete(repair_input)
+                        analysis = validate(reply.text)
                     cache.add(
                         LLMCache(
                             cache_key=cache_key,
@@ -78,15 +93,20 @@ class LLMCacheService:
 
         return VersionedJobAnalysis(prompt_version=version, analysis=analysis)
 
-    def _cache_key(self, inputs: JobAnalysisInput) -> str:
+    def _cache_key(
+        self, inputs: JobAnalysisInput, *, repair: JobAnalysisPrompt | None
+    ) -> str:
+        parts = (
+            self._provider.name,
+            self._provider.model,
+            inputs.prompt.version,
+            inputs.prompt.system_prompt,
+            inputs.user_prompt,
+        )
+        if repair is not None:
+            parts += (repair.version, repair.system_prompt)
         material = json.dumps(
-            (
-                self._provider.name,
-                self._provider.model,
-                inputs.prompt.version,
-                inputs.prompt.system_prompt,
-                inputs.user_prompt,
-            ),
+            parts,
             ensure_ascii=False,
             separators=(",", ":"),
         )

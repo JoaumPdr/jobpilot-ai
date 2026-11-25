@@ -464,6 +464,12 @@ os requisitos e as evidências da avaliação, e `knockout_flags` guarda as
 causas de exclusão. O downgrade remove só a tabela de resultados.
 [Rotas de matching](api.md#matching)
 
+Na F3-T05, o serviço de análise grava um objeto com `prompt_version` e
+`analysis` no campo `llm_analysis`. A atualização confere o snapshot de
+matching e a descrição da vaga. Um recálculo que modifica as evidências
+limpa a análise LLM anterior. A gravação mantém os scores existentes.
+[Serviço de análise de vaga](llm-strategy.md#serviço-de-análise-de-vaga)
+
 ## Cache de análises LLM (`llm_cache`, F3-T04)
 
 O cache é indexado por conteúdo. `cache_key` é um SHA-256 hexadecimal da
