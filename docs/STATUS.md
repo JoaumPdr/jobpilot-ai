@@ -14,10 +14,10 @@
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
 | **Última tarefa integrada** | [F4-T03 — Nós de matching, seleção top-N e análise LLM](tasks/FASE-04/F4-T03.md), em `9b9b000` |
-| **Próxima tarefa** | F4-T04 — Transições condicionais, retry e falha parcial |
-| **Estado da próxima tarefa** | não iniciada |
+| **Tarefa atual** | [F4-T04 — Transições condicionais, retry e falha parcial](tasks/FASE-04/F4-T04.md), na branch `feat/f4-t04-transicoes-falha-parcial` |
+| **Estado da tarefa** | Implementada e validada localmente. Aguarda autorização para PR e integração na fase |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
-| **Testes** | **540 testes aprovados** com PostgreSQL, incluindo sete da F4-T03. Cobertura de 97,57% em `app` e 96,14% em `app/services`. Tipagem dos três módulos alterados, Ruff e formatação aprovados |
+| **Testes** | **546 testes aprovados** com PostgreSQL, incluindo seis da F4-T04. Cobertura de 97,48% em `app` e 96,05% em `app/services`. Tipagem dos quatro módulos alterados, Ruff e formatação aprovados |
 | **CI** | Aprovado na revisão `dff14a5` do PR #50 e no merge `9b9b000`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45701200200) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45701407395) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
 | **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #50. A branch da tarefa foi preservada no GitHub |
@@ -28,12 +28,13 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir a base sincronizada, ler a F4-T04 no backlog e avaliar modelo e esforço do líder antes de iniciar a tarefa.
+> Com autorização do JP, abrir o PR de `feat/f4-t04-transicoes-falha-parcial` para `phase/04-orquestracao`, conferir o CI da revisão e integrar com histórico.
 
 ---
 
 ## 2. O que foi feito na última sessão
 
+- **F4-T04 implementada (2026-11-25 UTC).** O grafo LangGraph executa o funil e registra falhas por vaga no estado. Matching admite uma repetição para falhas transitórias. O serviço de análise mantém seu orçamento. Suítes de partida e entrega com 540 e 546 testes. [Ficha](tasks/FASE-04/F4-T04.md)
 - **F4-T03 integrada (2026-11-25 UTC).** O PR #50 integrou os nós de matching, seleção e análise LLM em `9b9b000`. O CI passou na revisão e no merge. O ponto de retomada é a F4-T04. [PR #50](https://github.com/JoaumPdr/jobpilot-ai/pull/50)
 - **F4-T03 implementada (2026-11-25 UTC).** Os três nós usam a versão do matching, o limiar inclusivo de 0,80 e o top-10 da F3-T06. Em PostgreSQL, onze vagas empataram e o provedor simulado recebeu somente as dez selecionadas. Suítes de partida e entrega com 533 e 540 testes. Execução direta com Astra em esforço `high`, política Base e hook confirmados. [Ficha](tasks/FASE-04/F4-T03.md)
 - **F4-T02 integrada (2026-11-25 UTC).** O PR #49 integrou os quatro nós determinísticos em `7814c97`. O CI passou na revisão e no merge. O ponto de retomada é a F4-T03. [PR #49](https://github.com/JoaumPdr/jobpilot-ai/pull/49)
@@ -132,7 +133,10 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** F4-T03, PR #50. [Ficha](tasks/FASE-04/F4-T03.md)
-**Próxima tarefa.** F4-T04, conforme os critérios do [backlog](BACKLOG.md).
+**Tarefa atual.** F4-T04, conforme os critérios do [backlog](BACKLOG.md).
+
+- [x] Validar transições, limite de tentativas, falhas por vaga e propagação de erros de programação
+- [ ] Abrir o PR da F4-T04 com autorização, conferir o CI, integrar e registrar o merge
 
 - [x] Validar o matching, o corte do top-10 e as análises persistidas com provedor falso
 - [x] Abrir o PR da F4-T03 com autorização, conferir o CI, integrar e registrar o merge
