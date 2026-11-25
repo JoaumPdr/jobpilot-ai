@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Revisado em 2026-11-24 (F2-T05). A revisão Alembic atual é `000000000006`.
+> Revisado em 2026-11-25 (F3-T04). A revisão Alembic atual é `000000000007`.
 
 ## Visão geral
 
@@ -22,9 +22,9 @@
 - **Migrações:** `migrations/versions/000000000002_profile_tables.py` (perfil) e
   `000000000003_job_tables.py` (vagas), seguidas por
   `000000000004_application_tables.py` (candidaturas) e
-  `000000000005_job_skills.py` (requisitos extraídos), além de
-  `000000000006_job_matches.py` (resultados de matching). Cada revisão tem
-  `upgrade` e `downgrade`.
+  `000000000005_job_skills.py` (requisitos extraídos),
+  `000000000006_job_matches.py` (resultados de matching) e
+  `000000000007_llm_cache.py` (cache LLM). Cada revisão tem `upgrade` e `downgrade`.
 
 ## Diagrama
 
@@ -164,6 +164,20 @@ erDiagram
         jsonb llm_analysis
         timestamptz created_at
         timestamptz updated_at
+    }
+
+    llm_cache {
+        uuid id PK
+        varchar cache_key UK
+        varchar provider
+        varchar model
+        varchar prompt_version
+        jsonb response
+        integer tokens_in
+        integer tokens_out
+        numeric cost_estimate
+        integer latency_ms
+        timestamptz created_at
     }
 
     applications {
@@ -386,6 +400,9 @@ candidatura preserva o histórico.
 | `ck_application_status_history_from_status` | `application_status_history` | status anterior permitido, aceita `NULL` |
 | `ck_application_status_history_to_status` | `application_status_history` | novo status permitido |
 | `ix_application_status_history_application_changed` | `application_status_history` | busca do histórico por candidatura e data |
+| `uq_llm_cache_key` | `llm_cache` | hash da entrada e do provedor único |
+| `ck_llm_cache_nonnegative_metrics` | `llm_cache` | métricas conhecidas maiores ou iguais a zero |
+| `ck_llm_cache_response_object` | `llm_cache` | resposta armazenada como objeto JSON |
 
 ## Testes do esquema
 
@@ -447,10 +464,21 @@ os requisitos e as evidências da avaliação, e `knockout_flags` guarda as
 causas de exclusão. O downgrade remove só a tabela de resultados.
 [Rotas de matching](api.md#matching)
 
-## Próximas tabelas (fora desta tarefa)
+## Cache de análises LLM (`llm_cache`, F3-T04)
 
-`llm_cache`, `pipeline_runs`, `resume_versions` e
-`interviews` (ver `PLANO.md` §5).
+O cache é indexado por conteúdo. `cache_key` é um SHA-256 hexadecimal da
+entrada efetiva, do provedor, do modelo e da versão do prompt. `response`
+contém a análise validada. `tokens_in`, `tokens_out` e `cost_estimate`
+aceitam `NULL` quando a métrica é desconhecida. `latency_ms` registra a
+duração em milissegundos da geração que produziu a análise.
+
+O downgrade da revisão `000000000007` remove a tabela e seus resultados
+reutilizáveis. O ciclo da migração preserva o perfil e as tabelas de
+matching. [Estratégia de cache](llm-strategy.md#cache-e-métricas)
+
+## Próximas tabelas
+
+`pipeline_runs`, `resume_versions` e `interviews` (ver `PLANO.md` §5).
 
 ## Pendência registrada
 

@@ -24,3 +24,11 @@ O parser recebe o mesmo objeto de prompt usado na chamada e registra sua versão
 A aplicação limita a fonte da descrição a 8.000 caracteres, normaliza as quebras de linha e remove caracteres de controle, exceto tabulações e quebras, além das marcas invisíveis de formatação. `job.description_truncated` sinaliza quando a fonte ultrapassa o limite.
 
 O perfil contém `skills` para as habilidades que o matching associou à vaga e `confirmed_absent` para ausências explícitas. As duas listas usam nomes canônicos do catálogo local, sem trechos do currículo ou campos de identificação do candidato. O prompt orienta o modelo a tratar requisitos fora dessas listas como sem confirmação. [Política de privacidade](privacy-and-sources.md)
+
+## Cache e métricas
+
+`LLMCacheService.get_or_generate` usa SHA-256 sobre o provedor, o modelo, a versão e as mensagens efetivas. O serviço revalida a análise ao reutilizá-la. Em caso de geração, a gravação ocorre depois de o validador aceitar o resultado. O banco guarda a análise e as métricas; as mensagens da chamada entram somente no cálculo da chave. [Serviço de cache](../app/services/llm_cache.py) · [Modelo de dados](data-model.md#cache-de-análises-llm-llm_cache-f3-t04)
+
+O PostgreSQL serializa pedidos da mesma chave com um bloqueio transacional. A transação própria do cache mantém o bloqueio até concluir a leitura ou a geração. Se o provedor, a validação ou a gravação falhar, a transação libera o bloqueio e permite nova tentativa.
+
+Cada invocação de `LLMProvider.complete` gera um evento `llm_call` com provedor, modelo, versão do prompt, status, tokens informados, custo estimado em USD e latência monotônica em milissegundos. A duração inclui as tentativas internas do adaptador. O provedor falso e o Ollama local têm custo por chamada igual a zero. Tarifas e contagens desconhecidas ficam nulas. Uma leitura do cache gera `llm_cache_hit`; o log registra metadados operacionais.
