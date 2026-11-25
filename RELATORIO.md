@@ -246,6 +246,21 @@
   conferida no mesmo commit.
   [PR #37](https://github.com/JoaumPdr/jobpilot-ai/pull/37) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45314777921) · [Tag `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
-## Fases 3–7
+## Fase 3 — Camada LLM
+
+### F3-T01 — Interface e configuração de provedores LLM (2026-11-25 UTC)
+
+- O contrato `LLMProvider` recebe instruções e dados em campos separados e
+  devolve texto bruto com as contagens de tokens informadas pelo provedor.
+  A configuração seleciona o provedor falso ou o Ollama local.
+- O adaptador Ollama limita a saída e repete apenas falhas transitórias, com
+  espera crescente e limitada. As mensagens de erro preservam o código HTTP
+  quando disponível e omitem o corpo da resposta. A chave configurada é
+  mascarada pelo Pydantic. [API de chat do Ollama](https://docs.ollama.com/api/chat)
+- A suíte com PostgreSQL passou de 440 para 461 testes, com 97,20% de
+  cobertura em `app` e 95,14% em `app/services`. A validação do adaptador
+  usou transporte simulado. [Ficha da F3-T01](docs/tasks/FASE-03/F3-T01.md)
+
+## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*

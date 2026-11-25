@@ -95,7 +95,7 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] F3-T01 | **Interface `LLMProvider`** + provedor falso + 1 provedor real configurável (e/ou local) + configurações (timeout, retry, max tokens, orçamento) | F2-GATE | Troca de provedor só por `.env`; provedor falso usado em todos os testes; chave nunca em log |
+| [ ] [F3-T01](tasks/FASE-03/F3-T01.md) | **Interface `LLMProvider`** + provedor falso + 1 provedor real configurável (e/ou local) + configurações (timeout, retry, max tokens, orçamento) | F2-GATE | Troca de provedor só por `.env`; provedor falso usado em todos os testes; chave nunca em log |
 | [ ] F3-T02 | **Schemas de saída** (Pydantic) e **prompts versionados** em `prompts/` com política anti-inferência | F3-T01 | Campos: `job_id`, `matched_skills`, `missing_skills`, `unknown_requirements`, `recommendation`, `explanation`, `evidence`; `prompt_version` registrado |
 | [ ] F3-T03 | **Sanitização e defesa de entrada**: descrição de vaga delimitada como dado, limite de tamanho, minimização de dados pessoais | F3-T02 | Testes com descrições contendo "instruções" maliciosas não alteram o comportamento; currículo enviado apenas no necessário |
 | [ ] F3-T04 | **Cache e registro de custo** (`llm_cache`, tokens, custo estimado, latência) | F3-T01 | Mesma entrada não gera nova chamada; métricas por chamada registradas; `docs/llm-strategy.md` criado |
