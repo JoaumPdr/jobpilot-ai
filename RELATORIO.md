@@ -321,6 +321,16 @@
   Após o CI do merge, a tag anotada `fase-03` foi publicada nesse commit e
   conferida no GitHub. [PR #46](https://github.com/JoaumPdr/jobpilot-ai/pull/46) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45539395837) · [Tag `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 
-## Fases 4–7
+## Fase 4 — Orquestração
+
+### F4-T01 — Estado do pipeline e contratos dos nós (2026-11-25 UTC)
+
+O estado identifica a execução, o candidato, o lote e as vagas que passaram
+por cada etapa. A validação distingue uma etapa pendente de uma etapa concluída
+com zero vagas, confere a origem dos IDs e aplica os limites do funil local
+à seleção. O contrato pode ser reconstruído a partir de JSON e conserva a
+ordem e a versão do matching. [Contratos dos nós](docs/pipeline.md) · [Ficha](docs/tasks/FASE-04/F4-T01.md)
+
+## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
