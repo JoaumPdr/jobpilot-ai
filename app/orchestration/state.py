@@ -48,6 +48,16 @@ class MatchingResult(_Contract):
     ]
     jobs: tuple[ScoredJob, ...]
 
+    def top_job_ids(self) -> tuple[UUID, ...]:
+        """Aplica o funil avaliado na F3-T06, com desempate estável por UUID."""
+        eligible = [
+            (job.score, job.job_id)
+            for job in self.jobs
+            if job.score is not None and job.score >= LLM_MIN_SCORE
+        ]
+        eligible.sort(key=lambda item: (item[0].copy_negate(), item[1]))
+        return tuple(job_id for _, job_id in eligible[:LLM_TOP_N])
+
 
 class PipelineState(_Contract):
     """Snapshot de uma execução. Um resultado ausente indica uma etapa pendente."""
@@ -94,11 +104,6 @@ class PipelineState(_Contract):
         if self.matching is not None and self.selected_ids:
             if not self.llm_enabled:
                 raise ValueError("A seleção de vagas exige análise LLM habilitada.")
-            eligible = {
-                job.job_id
-                for job in self.matching.jobs
-                if job.score is not None and job.score >= LLM_MIN_SCORE
-            }
-            if not eligible.issuperset(self.selected_ids):
-                raise ValueError("A seleção exige vagas com score de pelo menos 0,80.")
+            if not set(self.selected_ids).issubset(self.matching.top_job_ids()):
+                raise ValueError("A seleção exige vagas do top-10 com score ≥ 0,80.")
         return self

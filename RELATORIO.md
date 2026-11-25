@@ -340,6 +340,15 @@ fingerprint, uma duplicata confirmada e uma vaga arquivada. Também verifica
 a paginação na presença de outro lote e a reimportação de um CSV já processado.
 [Ficha](docs/tasks/FASE-04/F4-T02.md) · [Contratos](docs/pipeline.md)
 
+### F4-T03 — Matching, seleção top-N e análise LLM (2026-11-25 UTC)
+
+O pipeline usa o score determinístico e a versão do matching para encaminhar
+até dez vagas ao serviço de análise. No teste com PostgreSQL, onze vagas
+empataram acima do limiar. O provedor simulado recebeu as dez primeiras por
+UUID e o banco registrou análise somente para elas. Os testes isolados também
+conferem o limiar inclusivo de 0,80, o score nulo, o lote vazio e o modo com
+LLM desativado. [Ficha](docs/tasks/FASE-04/F4-T03.md) · [Contratos](docs/pipeline.md)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
