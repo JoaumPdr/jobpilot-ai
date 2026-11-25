@@ -40,3 +40,26 @@ Cada invocação de `LLMProvider.complete` gera um evento `llm_call` com provedo
 Uma resposta inválida ou vazia permite uma nova tentativa de geração, com as mesmas informações de entrada e um prompt complementar versionado. A chave da solicitação original inclui as instruções de reparo e sua versão. O cache grava a versão efetivamente usada, que inclui o sufixo de reparo quando aplicável. As duas chamadas têm eventos próprios. Na linha de cache ficam as métricas da chamada que produziu a resposta válida. Uma falha final gera o evento `llm_job_analysis_failed` com identificador da vaga e tipo de erro. [Prompt de reparo](../prompts/job-analysis-repair-v1.txt)
 
 O serviço grava `prompt_version` e `analysis` em `job_matches.llm_analysis` somente se o snapshot ainda for o mesmo. O score determinístico permanece como referência para a decisão. [Modelo de dados](data-model.md#resultados-de-matching-job_matches-f2-t05)
+
+## Reprodução da avaliação local
+
+Use o modelo indicado no relatório em um servidor Ollama local com
+`OLLAMA_NO_CLOUD=1`. O PostgreSQL local precisa permitir a criação do banco
+temporário da avaliação. O avaliador usa o caminho normal de análise e inicia
+cada execução com cache vazio. [Relatório](evaluation.md#avaliação-com-llm) · [Ollama em modo local](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features)
+
+```powershell
+uv run python -m scripts.evaluate_llm --run-local --model qwen2.5:1.5b --port 11435
+uv run python -m scripts.evaluate_matching --check --timing
+```
+
+O exemplo usa a porta da medição. Informe `--output` para salvar uma nova medição
+em outro arquivo. O avaliador determinístico preserva a seção de comparação
+com LLM ao regenerar a linha de base. A avaliação local usa até 640 tokens por
+resposta, timeout de 60 segundos por tentativa e uma geração de reparo quando
+a primeira saída falha no contrato.
+
+No ensaio com Qwen2.5 1.5B, a revocação caiu e a mediana da análise LLM
+ficou em 24,23 s por vaga. O matching determinístico fica como padrão.
+Para o modo local sob demanda, a grade favoreceu score ≥ 0,80 e top-10,
+com teto de 20 chamadas lógicas incluindo reparos. [Decisão e métricas](evaluation.md#funil-de-custo)

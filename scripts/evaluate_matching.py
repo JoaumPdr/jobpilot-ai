@@ -23,6 +23,7 @@ from app.services.skill_taxonomy import get_default_skill_taxonomy
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET = ROOT / "data" / "golden" / "matching.json"
 DEFAULT_REPORT = ROOT / "docs" / "evaluation.md"
+LLM_REPORT_MARKER = "\n<!-- llm-evaluation -->\n"
 
 
 class Compatibility(IntEnum):
@@ -79,8 +80,8 @@ RequirementKey = tuple[str, RequirementType]
 RankedCase = tuple[Compatibility, Decimal | None]
 
 
-def extraction_counts(
-    expected: set[RequirementKey], predicted: set[RequirementKey]
+def extraction_counts[Key](
+    expected: set[Key], predicted: set[Key]
 ) -> Counter[ExtractionCount]:
     """Conta acertos, extras e omissões. Tipo incorreto gera um extra e uma omissão."""
     return Counter(
@@ -138,7 +139,8 @@ class Evaluation:
     evidence_literal: int = 0
 
 
-def _skill_key(name: str, taxonomy: SkillTaxonomy) -> str:
+def skill_key(name: str, taxonomy: SkillTaxonomy) -> str:
+    """Obtém a chave comum para comparar rótulos e resultados."""
     skill = taxonomy.lookup(name)
     return comparison_text(skill.canonical_name if skill else name)
 
@@ -151,8 +153,8 @@ def evaluate(golden: GoldenSet) -> Evaluation:
     evaluation = Evaluation(calculator.scoring_version, golden.source_revision)
 
     for case in golden.cases:
-        required = {_skill_key(name, taxonomy) for name in case.required}
-        preferred = {_skill_key(name, taxonomy) for name in case.preferred}
+        required = {skill_key(name, taxonomy) for name in case.required}
+        preferred = {skill_key(name, taxonomy) for name in case.preferred}
         if "" in required | preferred or required & preferred:
             raise ValueError(f"Rótulos de requisitos inválidos em {case.id}.")
         expected = {(name, RequirementType.REQUIRED) for name in required} | {
@@ -169,7 +171,7 @@ def evaluate(golden: GoldenSet) -> Evaluation:
         evaluation.elapsed_ms.append((perf_counter() - start) * 1000)
 
         predicted = {
-            (_skill_key(item.skill.canonical_name, taxonomy), item.requirement_type)
+            (skill_key(item.skill.canonical_name, taxonomy), item.requirement_type)
             for item in extracted
         }
         counts = extraction_counts(expected, predicted)
@@ -304,14 +306,15 @@ def main() -> None:
 
     evaluation = evaluate(GoldenSet.model_validate_json(args.dataset.read_bytes()))
     report = render_report(evaluation)
+    previous = args.output.read_text(encoding="utf-8") if args.output.exists() else ""
+    baseline, marker, comparison = previous.partition(LLM_REPORT_MARKER)
     if args.check:
-        if (
-            not args.output.exists()
-            or args.output.read_text(encoding="utf-8") != report
-        ):
+        if baseline != report:
             parser.exit(1, "O relatório de avaliação está desatualizado.\n")
     else:
-        args.output.write_text(report, encoding="utf-8", newline="\n")
+        args.output.write_text(
+            report + marker + comparison, encoding="utf-8", newline="\n"
+        )
     if args.timing:
         print(
             f"Latência por vaga: {mean(evaluation.elapsed_ms):.3f} ms em média, "

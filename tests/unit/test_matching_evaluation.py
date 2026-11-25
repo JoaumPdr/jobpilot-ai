@@ -6,6 +6,7 @@ from app.matching.job_requirements import RequirementType
 from scripts.evaluate_matching import (
     DEFAULT_DATASET,
     DEFAULT_REPORT,
+    LLM_REPORT_MARKER,
     Compatibility,
     ExtractionCount,
     GoldenSet,
@@ -62,4 +63,7 @@ def test_relatorio_versionado_e_reproduzivel() -> None:
     assert {case.language for case in golden.cases} == {"en", "pt-BR"}
     assert result.evidence_total > 0
     assert result.evidence_total == result.evidence_literal
-    assert render_report(result) == DEFAULT_REPORT.read_text(encoding="utf-8")
+    baseline, _, _ = DEFAULT_REPORT.read_text(encoding="utf-8").partition(
+        LLM_REPORT_MARKER
+    )
+    assert render_report(result) == baseline
