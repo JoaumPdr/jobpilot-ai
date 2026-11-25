@@ -115,6 +115,12 @@ Ver `docs/data-model.md` para detalhes completos.
    são detalhados na [metodologia do score](docs/matching-methodology.md).
 
 ### 5.3 Pipeline Orquestrado (LangGraph)
+
+O grafo local processa as vagas em sequência e segue para a análise LLM
+quando a seleção contém vagas. O estado final distingue resultados e erros
+por vaga. [Execução e tratamento de falhas](docs/pipeline.md#execução-local-e-falhas-por-vaga)
+
+Fluxo previsto para o MVP:
 Estado tipado → Nós determinísticos (importar, normalizar, dedup, filtrar, match) → Nós LLM (top-N) → Persistência (`pipeline_runs`) → Aprovação humana antes de ações sensíveis.
 
 ---

@@ -1,7 +1,7 @@
 """Estado compartilhado pelos nós do pipeline de análise de vagas."""
 
 from decimal import Decimal
-from typing import Annotated, Self
+from typing import Annotated, Literal, Self
 from uuid import UUID
 
 from pydantic import (
@@ -40,6 +40,15 @@ class ScoredJob(_Contract):
     score: Annotated[Decimal, Field(ge=0, le=1, allow_inf_nan=False)] | None
 
 
+class ItemError(_Contract):
+    """Falha final de uma vaga, sem persistir texto de exceções ou dados do perfil."""
+
+    job_id: UUID
+    stage: Literal["matching", "analysis"]
+    error_type: str
+    attempts: Annotated[int, Field(ge=1, le=2)]
+
+
 class MatchingResult(_Contract):
     """Vincula os resultados à versão usada para consultar o matching persistido."""
 
@@ -73,6 +82,7 @@ class PipelineState(_Contract):
     matching: MatchingResult | None = None
     selected_ids: Annotated[tuple[UUID, ...], Field(max_length=LLM_TOP_N)] | None = None
     analyzed_ids: tuple[UUID, ...] | None = None
+    errors: tuple[ItemError, ...] = ()
 
     @model_validator(mode="after")
     def _validate_stages(self) -> Self:
@@ -106,4 +116,18 @@ class PipelineState(_Contract):
                 raise ValueError("A seleção de vagas exige análise LLM habilitada.")
             if not set(self.selected_ids).issubset(self.matching.top_job_ids()):
                 raise ValueError("A seleção exige vagas do top-10 com score ≥ 0,80.")
+        if self.errors:
+            for stage, inputs, outputs in (
+                ("matching", self.filtered_ids, stages[4]),
+                ("analysis", self.selected_ids, self.analyzed_ids),
+            ):
+                failed = [error.job_id for error in self.errors if error.stage == stage]
+                if failed and (
+                    outputs is None
+                    or len(set(failed)) != len(failed)
+                    or not set(failed).issubset(set(inputs or ()) - set(outputs))
+                ):
+                    raise ValueError(
+                        "A falha deve corresponder a uma vaga sem resultado na etapa."
+                    )
         return self

@@ -45,8 +45,8 @@ Roadmap:
 git clone https://github.com/JoaumPdr/jobpilot-ai.git
 cd jobpilot-ai
 
-# Instalar dependências (cria .venv automaticamente)
-uv sync
+# Instalar as versões do lockfile, incluindo o LangGraph do pipeline local
+uv sync --locked
 ```
 
 ## Configuração

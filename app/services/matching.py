@@ -42,6 +42,10 @@ class MatchingService:
         """Expõe a versão ativa inclusive para execuções sem vagas."""
         return self._calculator.scoring_version
 
+    def rollback(self) -> None:
+        """Libera a sessão após uma falha de leitura ou escrita antes da próxima vaga."""
+        self._matches.rollback()
+
     def calculate(
         self,
         candidate_id: uuid.UUID,

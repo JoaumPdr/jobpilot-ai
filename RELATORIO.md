@@ -349,6 +349,15 @@ UUID e o banco registrou análise somente para elas. Os testes isolados também
 conferem o limiar inclusivo de 0,80, o score nulo, o lote vazio e o modo com
 LLM desativado. [Ficha](docs/tasks/FASE-04/F4-T03.md) · [Contratos](docs/pipeline.md)
 
+### F4-T04 — Transições condicionais, retry e falha parcial
+
+O LangGraph liga os nós de importação, normalização, deduplicação, filtragem,
+matching e seleção. O caminho de análise só executa quando há vagas selecionadas.
+Nos testes, um timeout transitório permitiu recuperar uma vaga e o esgotamento
+das tentativas de outra ficou registrado no estado. Uma falha do provedor
+preservou as análises bem-sucedidas do mesmo lote.
+[Ficha](docs/tasks/FASE-04/F4-T04.md) · [Execução do grafo](docs/pipeline.md#execução-local-e-falhas-por-vaga)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*

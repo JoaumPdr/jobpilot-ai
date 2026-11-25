@@ -53,6 +53,22 @@ etapa com zero chamadas. O serviço mantém a validação, o cache e o limite
 de um reparo por vaga. O funil admite, assim, até 20 chamadas lógicas por
 execução, contando os reparos. [Nós](../app/orchestration/matching.py) · [Teste com provedor falso](../tests/integration/test_matching_nodes_db.py)
 
+## Execução local e falhas por vaga
+
+`run_pipeline` recebe um `PipelineState` inicial, os bytes do CSV e os serviços
+de importação, catálogo e matching. Nome do arquivo e origem são opcionais.
+Quando `llm_enabled` está ativo, o chamador também fornece o serviço de análise.
+O grafo executa os nós em sequência e devolve o estado final validado. Uma seleção
+vazia encerra o fluxo com `analyzed_ids=()`. [Grafo](../app/orchestration/graph.py)
+
+No matching, um timeout do pool, uma conexão invalidada ou os códigos PostgreSQL
+`40001` e `40P01` permitem uma segunda tentativa da mesma vaga após 250 ms.
+Quando uma falha esperada é definitiva, o grafo registra em `errors` o UUID da
+vaga, a etapa, o tipo da exceção e o número de tentativas do nó. As vagas
+seguintes continuam. Na análise, cada vaga selecionada chega ao serviço uma vez.
+O provedor e o serviço cuidam das tentativas de transporte e do reparo da resposta.
+Erros do lote e erros de programação chegam ao chamador. [Testes do grafo](../tests/unit/test_pipeline_graph.py)
+
 ## Validação nas fronteiras
 
 `None` indica que o nó ainda não produziu resultado. Uma coleção vazia indica
