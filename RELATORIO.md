@@ -261,6 +261,12 @@
   cobertura em `app` e 95,14% em `app/services`. A validação do adaptador
   usou transporte simulado. [Ficha da F3-T01](docs/tasks/FASE-03/F3-T01.md)
 
+### F3-T02 — Schemas de saída e prompts versionados (2026-11-25 UTC)
+
+- A análise de vaga recebe um contrato Pydantic com UUID, requisitos, recomendação, explicação e evidências tipadas. O parser confere o UUID e registra a versão do prompt usado pela aplicação.
+- O prompt `job-analysis-v1` direciona omissões e contradições para `unknown_requirements` e pede trechos literais da vaga e do perfil para sustentar as classificações. O JSON Schema anexado ao prompt é gerado pela aplicação. [Estratégia LLM](docs/llm-strategy.md)
+- A suíte passou de 461 para 481 testes em PostgreSQL. A cobertura ficou em 97,25% em `app` e 95,14% em `app/services`. Os novos testes usam dados sintéticos e o provedor falso. [Ficha da F3-T02](docs/tasks/FASE-03/F3-T02.md)
+
 ## Fases 4–7
 
 *(A serem preenchidas conforme avanço das fases)*
