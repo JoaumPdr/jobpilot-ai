@@ -33,6 +33,31 @@ def run_pipeline(
     """Executa um novo lote com os serviços da mesma execução."""
     if state.imported is not None:
         raise ValueError("Informe o estado inicial da execução.")
+    return invoke_graph(
+        state,
+        content=content,
+        importer=importer,
+        jobs=jobs,
+        matching=matching,
+        analysis=analysis,
+        filename=filename,
+        source=source,
+    )
+
+
+def invoke_graph(
+    state: PipelineState,
+    *,
+    content: bytes,
+    importer: JobImportService,
+    jobs: JobService,
+    matching: MatchingService,
+    analysis: JobAnalysisService | None = None,
+    filename: str | None = None,
+    source: str | None = None,
+    single_step: str | None = None,
+) -> PipelineState:
+    """Executa o grafo inteiro ou o nó pendente da transação de retomada."""
     if state.llm_enabled and analysis is None:
         raise ValueError("O modo LLM exige um serviço de análise.")
 
@@ -54,7 +79,7 @@ def run_pipeline(
     graph.add_node("calcular", partial(match_jobs, matching=matching))
     graph.add_node("selecionar", select_jobs)
     graph.add_node("sem_analise", lambda state: {"analyzed_ids": ()})
-    graph.add_edge(START, "importar")
+    graph.add_edge(START, single_step or "importar")
     graph.add_edge("importar", "normalizar")
     graph.add_edge("normalizar", "deduplicar")
     graph.add_edge("deduplicar", "filtrar")
@@ -73,4 +98,7 @@ def run_pipeline(
     graph.add_edge("sem_analise", END)
     # O lote e os dados do candidato devem permanecer no processo local.
     with tracing_context(enabled=False):
-        return PipelineState.model_validate(graph.compile().invoke(state))
+        result = graph.compile().invoke(
+            state, interrupt_after=[single_step] if single_step else None
+        )
+        return PipelineState.model_validate(result)

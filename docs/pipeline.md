@@ -82,3 +82,29 @@ combine seus campos com `state.model_dump()` e entregue o dicionário completo
 a `PipelineState.model_validate(...)`. Para transportar o estado em JSON,
 use `model_dump_json()` e reconstrua com `model_validate_json()`. A validação
 rejeita campos desconhecidos. [Testes de contrato](../tests/unit/test_pipeline_state.py)
+
+## Persistência e retomada
+
+`run_persisted_pipeline(estado_inicial, content=csv)` reserva o UUID do
+chamador. Para retomar, repita a chamada com o mesmo estado inicial, CSV,
+nome e origem. No modo LLM, forneça também o provedor. O serviço compara o
+SHA-256 dos bytes, os parâmetros da execução, a versão de scoring e a identidade
+do provedor e modelo. Se o UUID estiver associado a outra entrada, levanta
+`ConflictError`. O conteúdo do CSV permanece transitório.
+
+Cada nó bloqueia a linha de `pipeline_runs`, lê o snapshot confirmado e grava
+seus efeitos no catálogo e o novo snapshot em uma transação. Assim, duas
+chamadas simultâneas podem fazer a mesma execução avançar. Se o processo cair
+antes da confirmação, a próxima chamada reencontra o nó pendente. O cache LLM
+mantém sua transação própria e pode reutilizar uma resposta já validada.
+
+| Status | Efeito ao repetir a chamada |
+|---|---|
+| `running` | Continua a partir da primeira etapa pendente |
+| `failed` | Repete a etapa que falhou e preserva as anteriores |
+| `completed` | Devolve o snapshot final |
+| `partial` | Devolve o snapshot final com os erros por vaga |
+
+Os eventos `pipeline_node_completed` e `pipeline_node_failed` identificam
+a etapa e herdam o `run_id` no contexto de logging. A falha registra o tipo
+da exceção. [Execução persistida](../app/orchestration/persistence.py) · [Testes em PostgreSQL](../tests/integration/test_pipeline_runs_db.py)

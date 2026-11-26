@@ -358,6 +358,10 @@ das tentativas de outra ficou registrado no estado. Uma falha do provedor
 preservou as análises bem-sucedidas do mesmo lote.
 [Ficha](docs/tasks/FASE-04/F4-T04.md) · [Execução do grafo](docs/pipeline.md#execução-local-e-falhas-por-vaga)
 
+### F4-T05 — Persistência e retomada da execução
+
+Cada nó confirma seus efeitos e o snapshot do pipeline na mesma transação PostgreSQL. Uma queda simulada após o commit interno do importador deixou o banco sem lote ou vaga duplicada. A repetição com o mesmo UUID recuperou o processamento. Duas chamadas concorrentes produziram um único lote e um único matching. A suíte passou de 546 para 551 testes. [Ficha](docs/tasks/FASE-04/F4-T05.md)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
