@@ -13,26 +13,28 @@
 | **Última atualização** | 2026-11-26 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F4-T05 — Persistência e retomada](tasks/FASE-04/F4-T05.md), em `5fd5d6c` |
-| **Tarefa atual** | [F4-T06 — Ponto de aprovação humana](tasks/FASE-04/F4-T06.md) |
-| **Estado da tarefa** | Implementada e validada em `feat/f4-t06-aprovacao-humana`. Integração pendente |
+| **Última tarefa integrada** | [F4-T06 — Ponto de aprovação humana](tasks/FASE-04/F4-T06.md), em `72830d4` |
+| **Próxima tarefa** | F4-T07 — Rotas do pipeline e testes do fluxo completo |
+| **Estado da próxima tarefa** | Não iniciada |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **553 testes aprovados** com PostgreSQL, incluindo dois novos na F4-T06. Cobertura de 97,54% em `app` e 96,15% em `app/services`. Tipagem, Ruff e formatação aprovados |
-| **CI** | Aprovado na revisão `4624f0c` do PR #52 e no merge `5fd5d6c`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45910592193) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45910716607) |
+| **CI** | Aprovado na revisão `cd739e1` do PR #53 e no merge `72830d4`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45913597642) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45913710491) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | Base da F4-T06 conferida em `26254dd` na branch local e remota `phase/04-orquestracao`. A entrega segue na branch `feat/f4-t06-aprovacao-humana` |
+| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #53. A branch da tarefa foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | O conector retornou 403 ao criar o PR. Com autorização do JP, o líder usou `gh` para abrir e mesclar o PR #52 e acompanhar o CI |
+| **GitHub** | O conector retornou 403 ao criar o PR da F4-T06. Com autorização do JP, o líder usou `gh` para abrir e mesclar o PR #53 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Integrar a F4-T06 por PR de `feat/f4-t06-aprovacao-humana` para `phase/04-orquestracao` após conferir o CI do commit da entrega.
+> Conferir a base sincronizada, ler a F4-T07 no backlog e avaliar o modelo e o esforço do líder antes de iniciar a tarefa.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-T06 integrada (2026-11-26 UTC).** O PR #53 integrou a lista de recomendações para revisão humana em `72830d4`. O CI passou no PR e no merge. A retomada segue na F4-T07. [PR #53](https://github.com/JoaumPdr/jobpilot-ai/pull/53)
 
 - **F4-T06 validada (2026-11-26 UTC).** O grafo entrega recomendações para revisão humana. O teste em PostgreSQL verificou a escolha explícita da vaga e a preservação dessa escolha na reexecução. Suítes de partida e entrega com 551 e 553 testes. [Ficha](tasks/FASE-04/F4-T06.md)
 
@@ -139,11 +141,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F4-T05, PR #52. [Ficha](tasks/FASE-04/F4-T05.md)
-**Tarefa atual.** F4-T06, validada localmente. [Ficha](tasks/FASE-04/F4-T06.md)
+**Última tarefa integrada.** F4-T06, PR #53. [Ficha](tasks/FASE-04/F4-T06.md)
+**Próxima tarefa.** F4-T07, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Conferir a ordenação da lista, o término do grafo e a escolha manual da vaga em PostgreSQL
-- [ ] Conferir o CI da F4-T06 no PR, integrar e registrar o merge na fase
+- [x] Conferir o CI da F4-T06 no PR, integrar e registrar o merge na fase
 
 - [x] Validar idempotência, retomada, concorrência, falha parcial e migração reversível
 - [x] Conferir o CI da F4-T05 no PR, integrar e registrar o merge na fase
