@@ -108,3 +108,22 @@ mantém sua transação própria e pode reutilizar uma resposta já validada.
 Os eventos `pipeline_node_completed` e `pipeline_node_failed` identificam
 a etapa e herdam o `run_id` no contexto de logging. A falha registra o tipo
 da exceção. [Execução persistida](../app/orchestration/persistence.py) · [Testes em PostgreSQL](../tests/integration/test_pipeline_runs_db.py)
+
+## Revisão humana das recomendações
+
+O grafo termina quando entrega as recomendações ao usuário. No estado devolvido
+por `run_pipeline` ou `run_persisted_pipeline`, a propriedade Python
+`recommendations_for_review` lista as vagas do lote com score determinístico,
+por score decrescente e UUID crescente nos empates. Cada item traz `job_id`
+e `score`. Durante a execução, a propriedade vale `None`. Ao final, uma
+tupla vazia indica que nenhuma vaga recebeu score. Uma falha na análise LLM
+preserva a recomendação baseada no matching e aparece em `errors`.
+A lista deriva do snapshot e também está disponível ao recuperar execuções
+anteriores. O top-10 e o limiar de 0,80 continuam específicos da análise LLM.
+
+O usuário pode encerrar a revisão ou escolher uma vaga e solicitar
+`POST /candidates/{candidate_id}/jobs/{job_id}/save`. Essa escolha explícita
+registra a vaga como `salva` no acompanhamento local. Cabe ao usuário enviar
+a candidatura ao empregador e registrar a mudança de status. Concluir ou
+retomar o pipeline preserva as candidaturas existentes.
+[Operação de salvar](api.md#post-candidatescandidate_idjobsjob_idsave) · [Teste em PostgreSQL](../tests/integration/test_pipeline_runs_db.py)
