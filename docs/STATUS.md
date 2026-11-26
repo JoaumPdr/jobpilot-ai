@@ -10,17 +10,17 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Última atualização** | 2026-11-25 (UTC) |
+| **Última atualização** | 2026-11-26 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
 | **Última tarefa integrada** | [F4-T04 — Transições condicionais, retry e falha parcial](tasks/FASE-04/F4-T04.md), em `5c94a08` |
-| **Próxima tarefa** | F4-T05 — Persistência da execução em `pipeline_runs`, logs com `run_id`, idempotência e retomada |
-| **Estado da próxima tarefa** | não iniciada |
+| **Tarefa atual** | [F4-T05 — Persistência e retomada](tasks/FASE-04/F4-T05.md) |
+| **Estado da tarefa** | Implementada e validada em `feat/f4-t05-persistencia-execucao`. Integração pendente |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
-| **Testes** | **546 testes aprovados** com PostgreSQL, incluindo seis da F4-T04. Cobertura de 97,48% em `app` e 96,05% em `app/services`. Tipagem dos quatro módulos alterados, Ruff e formatação aprovados |
+| **Testes** | **551 testes aprovados** com PostgreSQL, incluindo cinco da F4-T05. Cobertura de 97,54% em `app` e 96,15% em `app/services`. Tipagem, Ruff e formatação aprovados |
 | **CI** | Aprovado na revisão `33868a1` do PR #51 e no merge `5c94a08`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45704656294) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45704838981) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #51. A branch da tarefa foi preservada no GitHub |
+| **Sincronização com o remoto** | Base da F4-T05 conferida em `9302af1` na branch local e remota `phase/04-orquestracao`. A entrega segue na branch `feat/f4-t05-persistencia-execucao` |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
@@ -28,11 +28,13 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir a base sincronizada, ler a F4-T05 no backlog e avaliar modelo e esforço do líder antes de iniciar a tarefa.
+> Integrar a F4-T05 por PR de `feat/f4-t05-persistencia-execucao` para `phase/04-orquestracao` após conferir o CI do commit da entrega.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-T05 validada (2026-11-26 UTC).** Persistência por nó, logs com `run_id` e retomada verificados em PostgreSQL. A suíte de partida passou com 546 testes e a de entrega com 551. O JP autorizou a correção dos dois apontamentos de lint e a repetição das verificações. [Ficha](tasks/FASE-04/F4-T05.md)
 
 - **F4-T04 integrada (2026-11-25 UTC).** O PR #51 integrou o grafo com transições condicionais, retry e falhas por vaga em `5c94a08`. O CI passou na revisão e no merge. O ponto de retomada é a F4-T05. [PR #51](https://github.com/JoaumPdr/jobpilot-ai/pull/51)
 - **F4-T04 implementada (2026-11-25 UTC).** O grafo LangGraph executa o funil e registra falhas por vaga no estado. Matching admite uma repetição para falhas transitórias. O serviço de análise mantém seu orçamento. Suítes de partida e entrega com 540 e 546 testes. [Ficha](tasks/FASE-04/F4-T04.md)
@@ -134,7 +136,10 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** F4-T04, PR #51. [Ficha](tasks/FASE-04/F4-T04.md)
-**Próxima tarefa.** F4-T05, conforme os critérios do [backlog](BACKLOG.md).
+**Tarefa atual.** F4-T05, validada localmente. [Ficha](tasks/FASE-04/F4-T05.md)
+
+- [x] Validar idempotência, retomada, concorrência, falha parcial e migração reversível
+- [ ] Conferir o CI da F4-T05 no PR, integrar e registrar o merge na fase
 
 - [x] Validar transições, limite de tentativas, falhas por vaga e propagação de erros de programação
 - [x] Abrir o PR da F4-T04 com autorização, conferir o CI, integrar e registrar o merge

@@ -2,7 +2,7 @@
 
 > Estado do esquema criado pelas migrações Alembic. Atualizar sempre que uma
 > migração criar/alterar tabelas (gatilho A.2 do `GUIA_DOCS_E_GIT.md`).
-> Revisado em 2026-11-25 (F3-T04). A revisão Alembic atual é `000000000007`.
+> Revisado na F4-T05. A revisão Alembic atual é `000000000008`.
 
 ## Visão geral
 
@@ -24,12 +24,23 @@
   `000000000004_application_tables.py` (candidaturas) e
   `000000000005_job_skills.py` (requisitos extraídos),
   `000000000006_job_matches.py` (resultados de matching) e
-  `000000000007_llm_cache.py` (cache LLM). Cada revisão tem `upgrade` e `downgrade`.
+  `000000000007_llm_cache.py` (cache LLM) e `000000000008_pipeline_runs.py`
+  (execuções). Cada revisão tem `upgrade` e `downgrade`.
 
 ## Diagrama
 
 ```mermaid
 erDiagram
+    pipeline_runs {
+        uuid run_id PK
+        varchar status
+        timestamptz started_at
+        timestamptz finished_at
+        jsonb params
+        jsonb counters
+        jsonb errors
+        jsonb state_snapshot
+    }
     candidates ||--o| candidate_preferences : "1:1 preferências"
     candidates ||--o{ candidate_skills : "declara"
     candidates ||--o{ candidate_experiences : "possui"
@@ -482,9 +493,18 @@ O downgrade da revisão `000000000007` remove a tabela e seus resultados
 reutilizáveis. O ciclo da migração preserva o perfil e as tabelas de
 matching. [Estratégia de cache](llm-strategy.md#cache-e-métricas)
 
+## Execuções do pipeline (`pipeline_runs`, F4-T05)
+
+O chamador fornece a chave primária `run_id`. A linha registra os instantes
+de início e término em UTC, os parâmetros que identificam a entrada e o último
+estado confirmado. Os contadores medem vagas por etapa. Os erros por vaga
+incluem UUID, etapa, tipo e tentativas. Um erro do lote inclui etapa e tipo.
+O downgrade de `000000000008` remove os snapshots de execução e preserva os
+lotes, vagas e resultados de matching. [Estados e retomada](pipeline.md#persistência-e-retomada)
+
 ## Próximas tabelas
 
-`pipeline_runs`, `resume_versions` e `interviews` (ver `PLANO.md` §5).
+`resume_versions` e `interviews` (ver `PLANO.md` §5).
 
 ## Pendência registrada
 

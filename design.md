@@ -120,8 +120,10 @@ O grafo local processa as vagas em sequência e segue para a análise LLM
 quando a seleção contém vagas. O estado final distingue resultados e erros
 por vaga. [Execução e tratamento de falhas](docs/pipeline.md#execução-local-e-falhas-por-vaga)
 
-Fluxo previsto para o MVP:
-Estado tipado → Nós determinísticos (importar, normalizar, dedup, filtrar, match) → Nós LLM (top-N) → Persistência (`pipeline_runs`) → Aprovação humana antes de ações sensíveis.
+Na execução persistida, cada nó do LangGraph confirma suas escritas e o
+snapshot em uma transação PostgreSQL. O bloqueio da linha por `run_id`
+coordena chamadas concorrentes. Uma nova chamada retoma o primeiro nó
+pendente ou recupera o resultado final. [Persistência e retomada](docs/pipeline.md#persistência-e-retomada)
 
 ---
 

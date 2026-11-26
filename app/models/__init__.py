@@ -19,6 +19,7 @@ from app.models.job import Job, Seniority, WorkMode
 from app.models.job_match import JobMatch
 from app.models.job_skill import JobSkill
 from app.models.llm_cache import LLMCache
+from app.models.pipeline_run import PipelineRun
 from app.models.preferences import CandidatePreference
 from app.models.skill import CandidateSkill, Skill
 
@@ -37,6 +38,7 @@ __all__ = [
     "JobMatch",
     "JobSkill",
     "LLMCache",
+    "PipelineRun",
     "Seniority",
     "Skill",
     "WorkMode",
