@@ -56,6 +56,9 @@ def test_falhas_por_vaga_preservam_sucessos_e_limitam_tentativas() -> None:
     )
     assert result.selected_ids == (ids[0], ids[3], ids[4])
     assert result.analyzed_ids == (ids[0], ids[4])
+    review = result.recommendations_for_review
+    assert review is not None
+    assert tuple(job.job_id for job in review) == (ids[0], ids[3], ids[4])
     assert [(e.job_id, e.stage, e.attempts, e.error_type) for e in result.errors] == [
         (ids[1], "matching", 2, "TimeoutError"),
         (ids[2], "matching", 1, "NotFoundError"),

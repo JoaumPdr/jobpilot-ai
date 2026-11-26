@@ -125,6 +125,10 @@ snapshot em uma transação PostgreSQL. O bloqueio da linha por `run_id`
 coordena chamadas concorrentes. Uma nova chamada retoma o primeiro nó
 pendente ou recupera o resultado final. [Persistência e retomada](docs/pipeline.md#persistência-e-retomada)
 
+O fluxo termina na lista de vagas para revisão humana. Salvar uma vaga
+exige uma solicitação explícita do usuário à operação de candidaturas.
+[Revisão humana das recomendações](docs/pipeline.md#revisão-humana-das-recomendações)
+
 ---
 
 ## 6. Segurança e Privacidade

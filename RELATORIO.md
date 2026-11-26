@@ -362,6 +362,13 @@ preservou as análises bem-sucedidas do mesmo lote.
 
 Cada nó confirma seus efeitos e o snapshot do pipeline na mesma transação PostgreSQL. Uma queda simulada após o commit interno do importador deixou o banco sem lote ou vaga duplicada. A repetição com o mesmo UUID recuperou o processamento. Duas chamadas concorrentes produziram um único lote e um único matching. A suíte passou de 546 para 551 testes. [Ficha](docs/tasks/FASE-04/F4-T05.md)
 
+### F4-T06 — Ponto de aprovação humana
+
+O pipeline termina com uma lista ordenada de vagas para revisão. Em PostgreSQL,
+duas vagas receberam recomendação e a lista de candidaturas permaneceu vazia
+até o usuário salvar uma delas. Reexecutar o lote preservou a escolha. A suíte
+passou de 551 para 553 testes. [Ficha](docs/tasks/FASE-04/F4-T06.md)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*

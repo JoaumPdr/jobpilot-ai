@@ -10,6 +10,7 @@ from uuid import uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
 from sqlalchemy import Engine, func, inspect, select, text
 from sqlalchemy.orm import Session, sessionmaker
 from structlog.contextvars import get_contextvars
@@ -126,6 +127,33 @@ def test_falha_por_vaga_e_terminal(sessions: sessionmaker[Session]) -> None:
         row = db.get_one(PipelineRun, initial.run_id)
         assert row.status == "partial"
         assert row.errors == [result.errors[0].model_dump(mode="json")]
+
+
+def test_apenas_escolha_explicita_salva_uma_vaga_recomendada(
+    initial: PipelineState, sessions: sessionmaker[Session], api_client: TestClient
+) -> None:
+    candidate = f"/candidates/{initial.candidate_id}"
+    skill = api_client.post(f"{candidate}/skills", json={"canonical_name": "Python"})
+    assert skill.status_code == 201
+    content = (
+        b"title,company,description,url\n"
+        b"Analista A,Equipe A,Requisitos: Python.,https://example.invalid/a\n"
+        b"Analista B,Equipe B,Requisitos: Python.,https://example.invalid/b\n"
+    )
+    state = run_persisted_pipeline(initial, content=content, sessions=sessions)
+    review = state.recommendations_for_review
+    assert review is not None and len(review) == 2
+    assert api_client.get(f"{candidate}/applications").json() == []
+
+    chosen = review[1].job_id
+    saved = api_client.post(f"{candidate}/jobs/{chosen}/save")
+    assert saved.status_code == 201
+    restored = run_persisted_pipeline(initial, content=content, sessions=sessions)
+    assert restored.recommendations_for_review == review
+    applications = api_client.get(f"{candidate}/applications").json()
+    assert [(item["job_id"], item["status"]) for item in applications] == [
+        (str(chosen), "salva")
+    ]
 
 
 def test_migracao_preserva_lotes_ao_reverter(test_engine: Engine) -> None:

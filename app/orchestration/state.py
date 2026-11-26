@@ -57,15 +57,19 @@ class MatchingResult(_Contract):
     ]
     jobs: tuple[ScoredJob, ...]
 
+    def ranked_jobs(self, minimum: Decimal = Decimal(0)) -> tuple[ScoredJob, ...]:
+        """Ordena vagas com score pelo mesmo critério do ranking do candidato."""
+        eligible = [
+            (job.score, job)
+            for job in self.jobs
+            if job.score is not None and job.score >= minimum
+        ]
+        eligible.sort(key=lambda item: (item[0].copy_negate(), item[1].job_id))
+        return tuple(job for _, job in eligible)
+
     def top_job_ids(self) -> tuple[UUID, ...]:
         """Aplica o funil avaliado na F3-T06, com desempate estável por UUID."""
-        eligible = [
-            (job.score, job.job_id)
-            for job in self.jobs
-            if job.score is not None and job.score >= LLM_MIN_SCORE
-        ]
-        eligible.sort(key=lambda item: (item[0].copy_negate(), item[1]))
-        return tuple(job_id for _, job_id in eligible[:LLM_TOP_N])
+        return tuple(job.job_id for job in self.ranked_jobs(LLM_MIN_SCORE)[:LLM_TOP_N])
 
 
 class PipelineState(_Contract):
@@ -83,6 +87,13 @@ class PipelineState(_Contract):
     selected_ids: Annotated[tuple[UUID, ...], Field(max_length=LLM_TOP_N)] | None = None
     analyzed_ids: tuple[UUID, ...] | None = None
     errors: tuple[ItemError, ...] = ()
+
+    @property
+    def recommendations_for_review(self) -> tuple[ScoredJob, ...] | None:
+        """Entrega a lista ao usuário quando o grafo termina, inclusive em falha parcial."""
+        if self.analyzed_ids is None or self.matching is None:
+            return None
+        return self.matching.ranked_jobs()
 
     @model_validator(mode="after")
     def _validate_stages(self) -> Self:

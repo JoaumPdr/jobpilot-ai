@@ -32,9 +32,26 @@ def test_estado_inicial_e_conclusao_sem_vagas() -> None:
     data = snapshot(0)
     initial = PipelineState(run_id=data["run_id"], candidate_id=data["candidate_id"])
     assert initial.selected_ids is None
+    assert initial.recommendations_for_review is None
     assert initial.llm_enabled is False
     completed = PipelineState.model_validate({**data, "llm_enabled": False})
     assert completed.selected_ids == completed.analyzed_ids == ()
+    assert completed.recommendations_for_review == ()
+
+
+def test_revisao_humana_usa_ranking_do_lote_mesmo_sem_analise_llm() -> None:
+    data = snapshot(5)
+    data.update(llm_enabled=False, selected_ids=[], analyzed_ids=None)
+    for job, score in zip(
+        data["matching"]["jobs"], ["0.50", None, "0", "0.80", "0.80"], strict=True
+    ):
+        job["score"] = score
+    data["matching"]["jobs"].reverse()
+    assert PipelineState.model_validate(data).recommendations_for_review is None
+    data["analyzed_ids"] = []
+    review = PipelineState.model_validate(data).recommendations_for_review
+    assert review is not None
+    assert [job.job_id.int for job in review] == [4, 5, 1, 3]
 
 
 def test_snapshot_preserva_versao_ordem_e_resultado_parcial() -> None:
