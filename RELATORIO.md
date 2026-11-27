@@ -397,6 +397,11 @@ por vaga. Os 558 testes passaram em PostgreSQL. A ficha reúne as evidências
 do pipeline, o checklist dos dez critérios e as etapas de publicação.
 [Ficha do gate](docs/tasks/FASE-04/F4-GATE.md)
 
+A Fase 4 foi integrada em `develop` no commit `be137b1`, marcado com a tag
+anotada `fase-04`. O primeiro MVP chegou a `main` em `b36000c`. Após a
+aprovação do CI desse merge, a tag anotada e a release `v0.1.0` foram
+publicadas em 27 de novembro de 2026 (UTC). [Integração da fase](https://github.com/JoaumPdr/jobpilot-ai/pull/56) · [Integração em main](https://github.com/JoaumPdr/jobpilot-ai/pull/57) · [Release do MVP](https://github.com/JoaumPdr/jobpilot-ai/releases/tag/v0.1.0)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
