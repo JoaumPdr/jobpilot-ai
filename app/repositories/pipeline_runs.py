@@ -14,6 +14,10 @@ from app.repositories.base import BaseRepository
 class PipelineRunRepository(BaseRepository):
     """Serializa chamadas com o mesmo UUID no PostgreSQL."""
 
+    def get(self, run_id: UUID) -> PipelineRun | None:
+        """Lê o último estado confirmado sem bloquear o nó em andamento."""
+        return self._db.get(PipelineRun, run_id)
+
     def reserve(
         self, run_id: UUID, params: dict[str, Any], snapshot: dict[str, Any]
     ) -> None:

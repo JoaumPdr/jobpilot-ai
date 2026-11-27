@@ -2,11 +2,11 @@
 
 > Documento vivo. Atualizar sempre que uma rota mudar (gatilho do
 > `GUIA_DOCS_E_GIT.md`). Cobre perfil e preferências, catálogo de vagas,
-> candidaturas com histórico e matching determinístico.
+> candidaturas com histórico, matching determinístico e execuções do pipeline.
 
 - **Base local:** `http://localhost:8000`
 - **Formato:** corpos em JSON (`Content-Type: application/json`).
-  O [envio de CSV](#post-jobsimport) usa `multipart/form-data`.
+  A importação de vagas e a execução do pipeline recebem CSV por `multipart/form-data`.
 - **Autenticação:** nenhuma no MVP (single-user local; ADR 0007). As tabelas já
   carregam `candidate_id` para o futuro multiusuário.
 - **Documentação interativa:** `GET /docs` (Swagger UI) e `GET /openapi.json`.
@@ -817,6 +817,41 @@ com o numerador, o denominador e os grupos `met`, `absent` e
 nível, peso e fator. Uma correspondência inclui a habilidade do perfil que
 a justificou.
 
-## Fora desta versão
+## Pipeline
 
-- LLM e pipeline.
+`POST /pipeline/runs` executa o lote de forma síncrona. Informe `run_id` (UUID
+escolhido pelo cliente), `candidate_id` (UUID de um candidato cadastrado) e
+`file` (CSV em UTF-8 de até 5 MB) no formulário multipart. Os campos opcionais
+são `source` (origem padrão da importação, até 100 caracteres) e `llm_enabled`
+(padrão `false`). Para pedir análise, configure o provedor no servidor e envie
+`llm_enabled=true`. Os filtros do catálogo vão na query string, por exemplo
+`?work_mode=remoto&limit=20`. Um `candidate_id` usado na query deve coincidir
+com o do formulário. [Formato do arquivo](import-csv.md)
+
+Exemplo em PowerShell, com a API local em execução e um arquivo `vagas.csv` no
+diretório atual. Guarde o UUID gerado antes de fazer a chamada.
+
+```powershell
+$candidato = Read-Host 'UUID do candidato cadastrado'
+$execucao = [guid]::NewGuid().ToString()
+curl.exe -sS -F "run_id=$execucao" -F "candidate_id=$candidato" -F "file=@vagas.csv" http://localhost:8000/pipeline/runs
+curl.exe -sS "http://localhost:8000/pipeline/runs/$execucao"
+```
+
+`GET /pipeline/runs/{id}` lê a última etapa confirmada e pode ser usado mesmo
+se o cliente perder a resposta do POST. Ambas as rotas devolvem `200` com
+`run_id`, `status`, `started_at`, `finished_at`, `counters`, `errors`,
+`state_snapshot` e `recommendations_for_review`. Uma análise que falhou por
+vaga pode produzir `partial`, com os resultados das demais vagas. Ao repetir o
+POST, use o mesmo UUID, parâmetros, nome e conteúdo do arquivo. Uma execução
+finalizada devolve o resultado gravado. [Estados e retomada](pipeline.md#persistência-e-retomada)
+
+| Código | Quando ocorre |
+|---|---|
+| `404` | Execução inexistente no GET ou candidato inexistente no POST |
+| `409` | O UUID já está associado a outra entrada |
+| `422` | UUID, filtros ou arquivo inválidos, ou análise solicitada com o LLM desativado no servidor |
+
+Se a importação falhar depois da reserva do UUID, consulte-o pelo GET para ver
+o status `failed` e a etapa em `errors`. Para corrigir o conteúdo do arquivo,
+envie o novo CSV com um novo UUID.

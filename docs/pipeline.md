@@ -85,6 +85,9 @@ rejeita campos desconhecidos. [Testes de contrato](../tests/unit/test_pipeline_s
 
 ## Persistência e retomada
 
+A API local expõe a execução por `POST /pipeline/runs` e a leitura do último
+snapshot por `GET /pipeline/runs/{id}`. [Contrato HTTP e exemplo](api.md#pipeline)
+
 `run_persisted_pipeline(estado_inicial, content=csv)` reserva o UUID do
 chamador. Para retomar, repita a chamada com o mesmo estado inicial, CSV,
 nome e origem. No modo LLM, forneça também o provedor. O serviço compara o
