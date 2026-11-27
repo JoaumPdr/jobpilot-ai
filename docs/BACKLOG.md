@@ -116,7 +116,7 @@
 | [x] [F4-T04](tasks/FASE-04/F4-T04.md) | **Transições condicionais, retry e falha parcial** | F4-T03 | Falha em uma vaga não derruba a execução; retry limitado; erros registrados por item |
 | [x] [F4-T05](tasks/FASE-04/F4-T05.md) | **Persistência da execução** (`pipeline_runs`) + logging com `run_id` + idempotência/retomada | F4-T04 | Reexecutar não duplica dados; execução interrompida pode ser retomada ou reiniciada com segurança |
 | [x] [F4-T06](tasks/FASE-04/F4-T06.md) | **Ponto de aprovação humana** (interrupção antes de ações sensíveis; no MVP o fluxo termina na lista de recomendações) | F4-T04 | Nenhuma ação automática de candidatura existe; aprovação é explícita |
-| [ ] F4-T07 | **Rotas do pipeline** (`POST /pipeline/runs`, `GET /pipeline/runs/{id}`) + testes do fluxo completo | F4-T05 | Fluxo completo verde com LLM falso; cenários de falha parcial cobertos |
+| [x] [F4-T07](tasks/FASE-04/F4-T07.md) | **Rotas do pipeline** (`POST /pipeline/runs`, `GET /pipeline/runs/{id}`) + testes do fluxo completo | F4-T05 | Fluxo completo verde com LLM falso; cenários de falha parcial cobertos |
 | [ ] F4-T08 | **Fechamento do MVP**: checklist dos 10 critérios (`PLANO.md` §12), README final do MVP, `CHANGELOG`, `RELATORIO` | F4-T07 | Todos os critérios marcados com evidência (link para teste/doc) |
 | [ ] F4-GATE | Gate da fase | todas | RF-11 + 10 critérios do MVP → PR para `develop`, tag `fase-04`; PR `develop` → `main`, tag `v0.1.0` |
 

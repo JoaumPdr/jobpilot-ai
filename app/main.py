@@ -20,6 +20,7 @@ from app.api.routes import (
     health,
     jobs,
     matching,
+    pipeline,
     profile,
     skills,
 )
@@ -46,6 +47,7 @@ app.include_router(experiences.router, prefix="")
 app.include_router(jobs.router, prefix="")
 app.include_router(applications.router, prefix="")
 app.include_router(matching.router, prefix="")
+app.include_router(pipeline.router)
 
 
 @app.middleware("http")

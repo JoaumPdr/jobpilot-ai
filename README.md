@@ -235,6 +235,17 @@ uv run pytest tests/db/test_job_analysis.py tests/db/test_llm_cache.py
 
 [Contrato, cache e reprodução da avaliação](docs/llm-strategy.md) · [Medições e escolha do funil](docs/evaluation.md#funil-de-custo)
 
+## Executar um lote pela API
+
+No Swagger UI em `/docs`, abra `POST /pipeline/runs`, informe o UUID de um
+candidato cadastrado, um novo `run_id` e um arquivo CSV em UTF-8. Para experimentar
+o fluxo determinístico, mantenha `llm_enabled=false`. Use vagas novas para que
+o lote contenha itens após a deduplicação.
+
+Consulte `GET /pipeline/runs/{id}` com o mesmo `run_id` para recuperar o estado,
+os erros por vaga e a lista `recommendations_for_review`. Salvar uma vaga é
+uma escolha explícita do usuário. [Contrato e exemplo em PowerShell](docs/api.md#pipeline)
+
 ## Testes e Qualidade
 
 ```bash

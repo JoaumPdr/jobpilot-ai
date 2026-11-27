@@ -369,6 +369,14 @@ duas vagas receberam recomendação e a lista de candidaturas permaneceu vazia
 até o usuário salvar uma delas. Reexecutar o lote preservou a escolha. A suíte
 passou de 551 para 553 testes. [Ficha](docs/tasks/FASE-04/F4-T06.md)
 
+### F4-T07 — Rotas do pipeline
+
+A API executa o lote recebido por multipart e permite recuperar o resultado
+pelo UUID. Nos testes HTTP com PostgreSQL e provedor falso, um erro de análise
+ficou restrito a uma das duas vagas. Repetir o POST recuperou o resultado
+persistido e preservou o número de chamadas ao provedor. A suíte passou de
+553 para 558 testes. [Ficha](docs/tasks/FASE-04/F4-T07.md) · [API](docs/api.md#pipeline)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
