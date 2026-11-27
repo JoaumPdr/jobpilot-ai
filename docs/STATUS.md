@@ -13,26 +13,28 @@
 | **Última atualização** | 2026-11-27 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F4-T06 — Ponto de aprovação humana](tasks/FASE-04/F4-T06.md), em `72830d4` |
-| **Tarefa atual** | [F4-T07 — Rotas do pipeline e testes do fluxo completo](tasks/FASE-04/F4-T07.md) |
-| **Estado da tarefa** | Implementada e validada em `feat/f4-t07-rotas-pipeline`. Integração pendente |
+| **Última tarefa integrada** | [F4-T07 — Rotas do pipeline e testes do fluxo completo](tasks/FASE-04/F4-T07.md), em `12fdb5d` |
+| **Próxima tarefa** | F4-T08 — Fechamento do MVP |
+| **Estado da próxima tarefa** | Não iniciada |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **558 testes aprovados** com PostgreSQL. Cobertura de 97,51% em `app` e 96,00% nos serviços. Ruff, formatação e OpenAPI aprovados. Tipagem dos cinco módulos da integração aprovada. O JP aceitou os dois avisos preexistentes de `on_event` em `app/main.py` |
-| **CI** | Aprovado na revisão `cd739e1` do PR #53 e no merge `72830d4`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45913597642) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45913710491) |
+| **CI** | Aprovado na revisão `12502c5` do PR #54 e no merge `12fdb5d`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916040683) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916180788) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | Base da F4-T07 conferida em `fbacdfe` na branch local e remota `phase/04-orquestracao`. A entrega segue na branch `feat/f4-t07-rotas-pipeline` |
+| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #54. A branch da tarefa foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | O conector retornou 403 ao criar o PR da F4-T06. Com autorização do JP, o líder usou `gh` para abrir e mesclar o PR #53 e acompanhar o CI |
+| **GitHub** | O conector retornou 403 ao criar o PR da F4-T07. Com autorização do JP, o líder usou `gh` para abrir e mesclar o PR #54 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Integrar a F4-T07 por PR de `feat/f4-t07-rotas-pipeline` para `phase/04-orquestracao` após conferir o CI da entrega.
+> Conferir a base sincronizada, ler a F4-T08 no backlog e avaliar o modelo e o esforço do líder antes de iniciar o fechamento do MVP.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-T07 integrada (2026-11-27 UTC).** O PR #54 integrou as rotas de execução e consulta do pipeline em `12fdb5d`. O CI passou no PR e no merge. O ponto de retomada é a F4-T08. [PR #54](https://github.com/JoaumPdr/jobpilot-ai/pull/54)
 
 - **F4-T07 validada (2026-11-27 UTC).** As rotas de execução e consulta passaram nos cinco testes HTTP com PostgreSQL, incluindo o fluxo completo e a falha parcial com provedor falso. O JP autorizou manter os avisos de depreciação do FastAPI na dívida técnica existente. [Ficha](tasks/FASE-04/F4-T07.md)
 
@@ -143,11 +145,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F4-T06, PR #53. [Ficha](tasks/FASE-04/F4-T06.md)
-**Tarefa atual.** F4-T07, validada localmente. [Ficha](tasks/FASE-04/F4-T07.md)
+**Última tarefa integrada.** F4-T07, PR #54. [Ficha](tasks/FASE-04/F4-T07.md)
+**Próxima tarefa.** F4-T08, conforme os critérios do [backlog](BACKLOG.md).
 
 - [x] Validar as duas rotas, as respostas consultáveis e a reexecução com provedor falso
-- [ ] Conferir o CI da F4-T07 no PR, integrar e registrar o merge na fase
+- [x] Conferir o CI da F4-T07 no PR, integrar e registrar o merge na fase
 
 - [x] Conferir a ordenação da lista, o término do grafo e a escolha manual da vaga em PostgreSQL
 - [x] Conferir o CI da F4-T06 no PR, integrar e registrar o merge na fase
