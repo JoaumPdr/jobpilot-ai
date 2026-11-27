@@ -377,6 +377,18 @@ ficou restrito a uma das duas vagas. Repetir o POST recuperou o resultado
 persistido e preservou o número de chamadas ao provedor. A suíte passou de
 553 para 558 testes. [Ficha](docs/tasks/FASE-04/F4-T07.md) · [API](docs/api.md#pipeline)
 
+### F4-T08 — Fechamento do MVP
+
+Em 27 de novembro de 2026 (UTC), os dez critérios da §12 do plano foram
+conferidos com evidências do repositório. A suíte passou com 558 testes em
+PostgreSQL e atingiu 97,51% de cobertura na aplicação e 96,00% nos serviços.
+[Checklist e evidências](docs/tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+
+No roteiro do README, o CSV gerou uma recomendação. Consultar o UUID e repetir
+o envio devolveram a mesma execução. A candidatura apareceu somente após a
+escolha explícita de salvar a vaga. A publicação de `v0.1.0` pertence ao
+F4-GATE. [Roteiro reproduzido](README.md#executar-um-lote-pela-api)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*

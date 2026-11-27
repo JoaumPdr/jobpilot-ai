@@ -14,13 +14,13 @@
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
 | **Última tarefa integrada** | [F4-T07 — Rotas do pipeline e testes do fluxo completo](tasks/FASE-04/F4-T07.md), em `12fdb5d` |
-| **Próxima tarefa** | F4-T08 — Fechamento do MVP |
-| **Estado da próxima tarefa** | Não iniciada |
+| **Tarefa atual** | [F4-T08 — Fechamento do MVP](tasks/FASE-04/F4-T08.md) |
+| **Estado da tarefa** | Dez critérios com evidências e roteiro do README validado. Integração na branch da fase pendente |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **558 testes aprovados** com PostgreSQL. Cobertura de 97,51% em `app` e 96,00% nos serviços. Ruff, formatação e OpenAPI aprovados. Tipagem dos cinco módulos da integração aprovada. O JP aceitou os dois avisos preexistentes de `on_event` em `app/main.py` |
 | **CI** | Aprovado na revisão `12502c5` do PR #54 e no merge `12fdb5d`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916040683) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916180788) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | `phase/04-orquestracao` atualizada por fast-forward após o PR #54. A branch da tarefa foi preservada no GitHub |
+| **Sincronização com o remoto** | A branch `docs/f4-t08-fechamento-mvp` partiu de `26f9e2f`, conferido com `origin/phase/04-orquestracao` |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
@@ -28,11 +28,13 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Conferir a base sincronizada, ler a F4-T08 no backlog e avaliar o modelo e o esforço do líder antes de iniciar o fechamento do MVP.
+> Integrar a F4-T08 por PR de `docs/f4-t08-fechamento-mvp` para `phase/04-orquestracao` após a aprovação do CI.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-T08 validada (2026-11-27 UTC).** Os dez critérios têm evidências na ficha. O exemplo do README passou em banco isolado, inclusive na repetição do lote e na escolha manual de salvar a vaga. Changelog e relatório atualizados. [Ficha](tasks/FASE-04/F4-T08.md)
 
 - **F4-T07 integrada (2026-11-27 UTC).** O PR #54 integrou as rotas de execução e consulta do pipeline em `12fdb5d`. O CI passou no PR e no merge. O ponto de retomada é a F4-T08. [PR #54](https://github.com/JoaumPdr/jobpilot-ai/pull/54)
 
@@ -146,7 +148,9 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** F4-T07, PR #54. [Ficha](tasks/FASE-04/F4-T07.md)
-**Próxima tarefa.** F4-T08, conforme os critérios do [backlog](BACKLOG.md).
+**Tarefa atual.** F4-T08 validada localmente. [Checklist dos dez critérios](tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+
+- [ ] Conferir o CI da F4-T08 no PR, integrar e registrar o merge na fase
 
 - [x] Validar as duas rotas, as respostas consultáveis e a reexecução com provedor falso
 - [x] Conferir o CI da F4-T07 no PR, integrar e registrar o merge na fase
