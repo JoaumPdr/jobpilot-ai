@@ -19,7 +19,7 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 **MVP da Fase 4.** A API local recebe um CSV, calcula a compatibilidade das
 vagas com um perfil e devolve recomendações para revisão. O UUID da execução
 permite consultar os resultados e retomar um lote interrompido. A análise com
-LLM é opcional. A publicação de `v0.1.0` é a próxima etapa do gate da fase.
+LLM é opcional. O MVP corresponde à versão `v0.1.0`.
 [Executar um lote](#executar-um-lote-pela-api) · [Evidências dos dez critérios](docs/tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
 
 **Fase 1 — Núcleo sem IA** concluída e integrada em `develop`. A API permite cadastrar perfil, importar e filtrar vagas, revisar duplicatas e acompanhar candidaturas. Veja o [roteiro de uso](#fluxo-da-fase-1) e o [marco `fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01).
@@ -34,7 +34,7 @@ LLM é opcional. A publicação de `v0.1.0` é a próxima etapa do gate da fase.
 - [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
 - [x] Fase 2: Matching (taxonomia, extração, score explicável, golden set)
 - [x] Fase 3: Camada LLM (provedor abstrato, cache, análise validada)
-- [ ] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
+- [x] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
 - [ ] Fase 5: Assistente de currículo → v0.2.0
 - [ ] Fase 6: Dashboard e analytics → v0.3.0
 - [ ] Fase 7: Hardening e release → **v1.0.0** com distribuição local por Docker Compose, interface no navegador, configuração documentada, dados persistentes e backup/restauração testados em instalação limpa
@@ -48,8 +48,8 @@ LLM é opcional. A publicação de `v0.1.0` é a próxima etapa do gate da fase.
 ## Instalação
 
 ```bash
-# Obter a branch que contém o pipeline do MVP
-git clone --branch phase/04-orquestracao https://github.com/JoaumPdr/jobpilot-ai.git
+# Obter o código da versão do MVP
+git clone --branch v0.1.0 https://github.com/JoaumPdr/jobpilot-ai.git
 cd jobpilot-ai
 
 # Instalar as versões do lockfile, incluindo o LangGraph do pipeline local

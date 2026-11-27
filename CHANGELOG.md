@@ -1,6 +1,6 @@
 # Changelog
 
-## Em desenvolvimento — MVP v0.1.0
+## [v0.1.0] — MVP da Fase 4 — 2026-11-27
 
 ### Adicionado
 
