@@ -11,28 +11,30 @@
 | Campo | Valor |
 |-------|-------|
 | **Última atualização** | 2026-11-27 (UTC) |
-| **Fase atual** | Fase 4 — Orquestração |
-| **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F4-T08 — Fechamento do MVP](tasks/FASE-04/F4-T08.md), em `cc863cb` |
-| **Tarefa atual** | [F4-GATE — integração da Fase 4 e publicação do MVP](tasks/FASE-04/F4-GATE.md) |
-| **Estado da tarefa** | Critérios técnicos validados em `0575c39`. Integração e publicação pendentes |
-| **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
+| **Fase atual** | Fase 4 concluída. O backlog segue com a Fase 5 — Assistente de currículo |
+| **Branch base para retomada** | `develop`, com o F4-GATE integrado |
+| **Última tarefa integrada** | [F4-GATE — integração da Fase 4 e publicação do MVP](tasks/FASE-04/F4-GATE.md) |
+| **Próxima tarefa** | F5-T01 — Currículo estruturado com seções e IDs estáveis |
+| **Estado da próxima tarefa** | A iniciar |
+| **Último merge de fase** | `be137b1` em `develop` pelo PR #56. Publicação em `main` no merge `b36000c` pelo PR #57 |
 | **Testes** | **558 testes aprovados** com PostgreSQL. Cobertura de 97,51% em `app` e 96,00% nos serviços. Ruff, formatação e OpenAPI aprovados. Tipagem dos cinco módulos da integração aprovada. O JP aceitou os dois avisos preexistentes de `on_event` em `app/main.py` |
-| **CI** | Aprovado na revisão `7b13152` do PR #55 e no merge `cc863cb`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45917953051) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45918092965) |
+| **CI da versão** | Aprovado nos dois PRs e nos dois merges. [CI em develop](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45919679044) · [CI em main](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45919956283) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | A branch local `phase/04-orquestracao` recebeu o merge do PR #55 por fast-forward. A branch da tarefa foi preservada no GitHub |
-| **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
-| **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
-| **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | Após o 403 do conector, o JP autorizou o uso de `gh` para abrir e integrar o PR #55 e acompanhar o CI |
+| **Sincronização com o remoto** | Merges recebidos por fast-forward. Tags anotadas conferidas no GitHub contra os commits de destino |
+| **Merges confirmados no remoto** | 2026-11-27 às 00h56 UTC em `develop` e às 00h59 UTC em `main` |
+| **PRs da fase e da versão** | [PR #56](https://github.com/JoaumPdr/jobpilot-ai/pull/56) · [PR #57](https://github.com/JoaumPdr/jobpilot-ai/pull/57) |
+| **Tags e release** | [`fase-04`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-04) → `be137b1` · [`v0.1.0` e notas da versão](https://github.com/JoaumPdr/jobpilot-ai/releases/tag/v0.1.0) → `b36000c` |
+| **GitHub** | Após o 403 do conector, o JP autorizou o uso de `gh` durante todo o F4-GATE |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Abra o PR de `phase/04-orquestracao` para `develop` e confira o CI da revisão antes do merge.
+> Na retomada, sincronize `develop`, leia a F5-T01 no backlog e avalie o modelo e o esforço do líder antes de iniciar a Fase 5.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-GATE concluído (2026-11-27 UTC).** As tags anotadas apontam para os merges aprovados em `develop` e `main`. A release do primeiro MVP está disponível com as notas do changelog. [Ficha](tasks/FASE-04/F4-GATE.md) · [Release v0.1.0](https://github.com/JoaumPdr/jobpilot-ai/releases/tag/v0.1.0)
 
 - **F4-GATE validado tecnicamente (2026-11-27 UTC).** O RF-11 e os dez critérios do MVP têm evidências na ficha. A suíte passou com 558 testes em PostgreSQL. A publicação depende dos merges em `develop` e `main` com CI verde. [Ficha](tasks/FASE-04/F4-GATE.md)
 
@@ -151,11 +153,11 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F4-T08, PR #55. [Checklist dos dez critérios](tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
-**Tarefa atual.** F4-GATE. [Ficha e etapas de publicação](tasks/FASE-04/F4-GATE.md)
+**Última tarefa integrada.** F4-GATE, PRs #56 e #57. [Ficha de publicação](tasks/FASE-04/F4-GATE.md)
+**Próxima tarefa.** F5-T01, conforme o [backlog](BACKLOG.md).
 
-- [ ] Integrar a fase em `develop`, conferir o CI e publicar a tag anotada `fase-04`
-- [ ] Integrar `develop` em `main`, conferir o CI e publicar a tag anotada e a release `v0.1.0`
+- [x] Integrar a fase em `develop`, conferir o CI e publicar a tag anotada `fase-04`
+- [x] Integrar `develop` em `main`, conferir o CI e publicar a tag anotada e a release `v0.1.0`
 
 - [x] Conferir o CI da F4-T08 no PR, integrar e registrar o merge na fase
 
