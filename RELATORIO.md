@@ -389,6 +389,14 @@ o envio devolveram a mesma execução. A candidatura apareceu somente após a
 escolha explícita de salvar a vaga. A publicação de `v0.1.0` pertence ao
 F4-GATE. [Roteiro reproduzido](README.md#executar-um-lote-pela-api)
 
+### F4-GATE — Verificação do MVP
+
+Na revisão `0575c39`, a suíte confirmou o fluxo do RF-11 do CSV à lista de
+recomendações, a recuperação de um lote interrompido e o tratamento de falhas
+por vaga. Os 558 testes passaram em PostgreSQL. A ficha reúne as evidências
+do pipeline, o checklist dos dez critérios e as etapas de publicação.
+[Ficha do gate](docs/tasks/FASE-04/F4-GATE.md)
+
 ## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*

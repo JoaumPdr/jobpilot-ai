@@ -14,8 +14,8 @@
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
 | **Última tarefa integrada** | [F4-T08 — Fechamento do MVP](tasks/FASE-04/F4-T08.md), em `cc863cb` |
-| **Próxima tarefa** | F4-GATE — integração da Fase 4 e publicação do MVP |
-| **Estado da próxima tarefa** | A iniciar |
+| **Tarefa atual** | [F4-GATE — integração da Fase 4 e publicação do MVP](tasks/FASE-04/F4-GATE.md) |
+| **Estado da tarefa** | Critérios técnicos validados em `0575c39`. Integração e publicação pendentes |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **558 testes aprovados** com PostgreSQL. Cobertura de 97,51% em `app` e 96,00% nos serviços. Ruff, formatação e OpenAPI aprovados. Tipagem dos cinco módulos da integração aprovada. O JP aceitou os dois avisos preexistentes de `on_event` em `app/main.py` |
 | **CI** | Aprovado na revisão `7b13152` do PR #55 e no merge `cc863cb`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45917953051) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45918092965) |
@@ -28,11 +28,13 @@
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Retome pelo F4-GATE no backlog e confira o RF-11 e as evidências dos dez critérios antes da integração da fase.
+> Abra o PR de `phase/04-orquestracao` para `develop` e confira o CI da revisão antes do merge.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-GATE validado tecnicamente (2026-11-27 UTC).** O RF-11 e os dez critérios do MVP têm evidências na ficha. A suíte passou com 558 testes em PostgreSQL. A publicação depende dos merges em `develop` e `main` com CI verde. [Ficha](tasks/FASE-04/F4-GATE.md)
 
 - **F4-T08 integrada (2026-11-27 UTC).** O PR #55 integrou o fechamento documental do MVP em `cc863cb`. O CI passou no PR e no merge. A próxima tarefa é o F4-GATE. [PR #55](https://github.com/JoaumPdr/jobpilot-ai/pull/55)
 
@@ -150,7 +152,10 @@
 ## 3. O que falta na tarefa atual (lista concreta)
 
 **Última tarefa integrada.** F4-T08, PR #55. [Checklist dos dez critérios](tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
-**Próxima tarefa.** F4-GATE, conforme o [backlog](BACKLOG.md).
+**Tarefa atual.** F4-GATE. [Ficha e etapas de publicação](tasks/FASE-04/F4-GATE.md)
+
+- [ ] Integrar a fase em `develop`, conferir o CI e publicar a tag anotada `fase-04`
+- [ ] Integrar `develop` em `main`, conferir o CI e publicar a tag anotada e a release `v0.1.0`
 
 - [x] Conferir o CI da F4-T08 no PR, integrar e registrar o merge na fase
 
