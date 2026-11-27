@@ -110,15 +110,15 @@
 
 | ID | Tarefa | Depende de | Critérios de aceitação |
 |----|--------|-----------|------------------------|
-| [ ] F4-T01 | **Estado do pipeline** e contratos de entrada/saída dos nós | F3-GATE | Estado tipado e validado; contratos documentados em `docs/pipeline.md` |
-| [ ] F4-T02 | **Nós determinísticos**: importar, normalizar, deduplicar, filtrar (chamando os serviços existentes) | F4-T01 | Nenhuma lógica de negócio duplicada; cada nó testado isoladamente |
-| [ ] F4-T03 | **Nós de matching, seleção top-N e análise LLM** | F4-T02 | Seleção usa limiar e orçamento definidos na F3-T06; só o top-N chega ao LLM; LLM falso nos testes |
-| [ ] F4-T04 | **Transições condicionais, retry e falha parcial** | F4-T03 | Falha em uma vaga não derruba a execução; retry limitado; erros registrados por item |
-| [ ] F4-T05 | **Persistência da execução** (`pipeline_runs`) + logging com `run_id` + idempotência/retomada | F4-T04 | Reexecutar não duplica dados; execução interrompida pode ser retomada ou reiniciada com segurança |
-| [ ] F4-T06 | **Ponto de aprovação humana** (interrupção antes de ações sensíveis; no MVP o fluxo termina na lista de recomendações) | F4-T04 | Nenhuma ação automática de candidatura existe; aprovação é explícita |
-| [ ] F4-T07 | **Rotas do pipeline** (`POST /pipeline/runs`, `GET /pipeline/runs/{id}`) + testes do fluxo completo | F4-T05 | Fluxo completo verde com LLM falso; cenários de falha parcial cobertos |
-| [ ] F4-T08 | **Fechamento do MVP**: checklist dos 10 critérios (`PLANO.md` §12), README final do MVP, `CHANGELOG`, `RELATORIO` | F4-T07 | Todos os critérios marcados com evidência (link para teste/doc) |
-| [ ] F4-GATE | Gate da fase | todas | RF-11 + 10 critérios do MVP → PR para `develop`, tag `fase-04`; PR `develop` → `main`, tag `v0.1.0` |
+| [x] [F4-T01](tasks/FASE-04/F4-T01.md) | **Estado do pipeline** e contratos de entrada/saída dos nós | F3-GATE | Estado tipado e validado; contratos documentados em `docs/pipeline.md` |
+| [x] [F4-T02](tasks/FASE-04/F4-T02.md) | **Nós determinísticos**: importar, normalizar, deduplicar, filtrar (chamando os serviços existentes) | F4-T01 | Nenhuma lógica de negócio duplicada; cada nó testado isoladamente |
+| [x] [F4-T03](tasks/FASE-04/F4-T03.md) | **Nós de matching, seleção top-N e análise LLM** | F4-T02 | Seleção usa limiar e orçamento definidos na F3-T06; só o top-N chega ao LLM; LLM falso nos testes |
+| [x] [F4-T04](tasks/FASE-04/F4-T04.md) | **Transições condicionais, retry e falha parcial** | F4-T03 | Falha em uma vaga não derruba a execução; retry limitado; erros registrados por item |
+| [x] [F4-T05](tasks/FASE-04/F4-T05.md) | **Persistência da execução** (`pipeline_runs`) + logging com `run_id` + idempotência/retomada | F4-T04 | Reexecutar não duplica dados; execução interrompida pode ser retomada ou reiniciada com segurança |
+| [x] [F4-T06](tasks/FASE-04/F4-T06.md) | **Ponto de aprovação humana** (interrupção antes de ações sensíveis; no MVP o fluxo termina na lista de recomendações) | F4-T04 | Nenhuma ação automática de candidatura existe; aprovação é explícita |
+| [x] [F4-T07](tasks/FASE-04/F4-T07.md) | **Rotas do pipeline** (`POST /pipeline/runs`, `GET /pipeline/runs/{id}`) + testes do fluxo completo | F4-T05 | Fluxo completo verde com LLM falso; cenários de falha parcial cobertos |
+| [x] [F4-T08](tasks/FASE-04/F4-T08.md) | **Fechamento do MVP**: checklist dos 10 critérios (`PLANO.md` §12), README final do MVP, `CHANGELOG`, `RELATORIO` | F4-T07 | Todos os critérios marcados com evidência (link para teste/doc) |
+| [ ] [F4-GATE](tasks/FASE-04/F4-GATE.md) | Gate da fase | todas | RF-11 + 10 critérios do MVP → PR para `develop`, tag `fase-04`; PR `develop` → `main`, tag `v0.1.0` |
 
 ---
 

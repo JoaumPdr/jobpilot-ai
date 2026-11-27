@@ -16,37 +16,44 @@ Assistente pessoal para buscar, analisar e gerir candidaturas a vagas. Desenvolv
 
 ## Status Atual
 
+**MVP da Fase 4.** A API local recebe um CSV, calcula a compatibilidade das
+vagas com um perfil e devolve recomendações para revisão. O UUID da execução
+permite consultar os resultados e retomar um lote interrompido. A análise com
+LLM é opcional. O MVP corresponde à versão `v0.1.0`.
+[Executar um lote](#executar-um-lote-pela-api) · [Evidências dos dez critérios](docs/tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+
 **Fase 1 — Núcleo sem IA** concluída e integrada em `develop`. A API permite cadastrar perfil, importar e filtrar vagas, revisar duplicatas e acompanhar candidaturas. Veja o [roteiro de uso](#fluxo-da-fase-1) e o [marco `fase-01`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-01).
 
 **Fase 2 — Matching** concluída e integrada em `develop`. A API calcula compatibilidade com evidências e permite consultar o ranking por candidato. [Roteiro de matching](#fluxo-da-fase-2) · [Avaliação no golden set](docs/evaluation.md) · [Marco `fase-02`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-02)
 
 **Fase 3 — Camada LLM** concluída e integrada em `develop`. O serviço Python gera análises opcionais com evidências verificadas e cache em PostgreSQL. O matching determinístico continua como padrão. [Uso da análise](#fluxo-da-fase-3) · [Comparação no golden set](docs/evaluation.md#avaliação-com-llm) · [Marco `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 
-Roadmap:
+### Roadmap
+
 - [x] Fase 0: Fundação (repo, CI, Docker, FastAPI `/health`, Alembic, docs-base)
 - [x] Fase 1: Núcleo sem IA (perfil, vagas, CSV, dedup, filtros, candidaturas)
 - [x] Fase 2: Matching (taxonomia, extração, score explicável, golden set)
 - [x] Fase 3: Camada LLM (provedor abstrato, cache, análise validada)
-- [ ] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
+- [x] Fase 4: Orquestração (LangGraph pipeline) → **MVP v0.1.0**
 - [ ] Fase 5: Assistente de currículo → v0.2.0
 - [ ] Fase 6: Dashboard e analytics → v0.3.0
 - [ ] Fase 7: Hardening e release → **v1.0.0** com distribuição local por Docker Compose, interface no navegador, configuração documentada, dados persistentes e backup/restauração testados em instalação limpa
 
 ## Pré-requisitos
 
-- **Python 3.12+** (gerenciado via [`uv`](https://docs.astral.sh/uv/))
+- **uv** instalado para gerenciar o Python 3.12 do projeto e as dependências. [Instalação do uv](https://docs.astral.sh/uv/)
 - **Docker** e **Docker Compose** (para PostgreSQL)
 - **Git**
 
 ## Instalação
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/JoaumPdr/jobpilot-ai.git
+# Obter o código da versão do MVP
+git clone --branch v0.1.0 https://github.com/JoaumPdr/jobpilot-ai.git
 cd jobpilot-ai
 
-# Instalar dependências (cria .venv automaticamente)
-uv sync
+# Instalar as versões do lockfile, incluindo o LangGraph do pipeline local
+uv sync --locked
 ```
 
 ## Configuração
@@ -55,8 +62,8 @@ uv sync
 # Copiar exemplo de variáveis de ambiente
 cp .env.example .env
 
-# Editar .env com suas configurações
-# (pelo menos DATABASE_URL para o PostgreSQL)
+# O DATABASE_URL do exemplo já usa a porta 5433 do PostgreSQL do Compose.
+# Ajuste a URL se usar outro banco de desenvolvimento.
 
 # Opcional: banco de testes isolado.
 # Se omitido, os testes usam DATABASE_URL com o sufixo "_test"
@@ -76,14 +83,15 @@ A API local dispensa chave. [Configuração do Ollama](https://docs.ollama.com/f
 `LLM_TIMEOUT` define o timeout de rede de cada tentativa. `LLM_RETRIES` limita
 as tentativas adicionais após uma falha transitória, e `LLM_MAX_TOKENS` limita
 a geração de cada resposta. A inferência local dispensa cobrança por chamada.
-`LLM_BUDGET_USD` fica reservado para o controle de custo do futuro pipeline.
+No pipeline, a análise opcional recebe até dez vagas com score ≥ 0,80 por lote.
+`LLM_BUDGET_USD` é uma configuração reservada para uso futuro.
 [Estratégia LLM](docs/llm-strategy.md)
 
 ## Execução
 
 ```bash
 # Subir o banco de dados
-docker compose up -d
+docker compose up -d --wait
 
 # Rodar migrações
 uv run alembic upgrade head
@@ -235,6 +243,34 @@ uv run pytest tests/db/test_job_analysis.py tests/db/test_llm_cache.py
 
 [Contrato, cache e reprodução da avaliação](docs/llm-strategy.md) · [Medições e escolha do funil](docs/evaluation.md#funil-de-custo)
 
+## Executar um lote pela API
+
+Com a API em execução, abra `http://localhost:8000/docs`. O exemplo usa um
+perfil fictício e uma vaga nova no catálogo local.
+
+1. Em `POST /candidates`, envie `{"name":"Ana","resume_text":"Perfil fictício."}`
+   e copie o `id` retornado. Em `POST /candidates/{candidate_id}/skills`, use
+   esse UUID e envie `{"canonical_name":"Python"}`.
+2. Salve o conteúdo abaixo em UTF-8 como `lote-mvp.csv`.
+
+   ```csv
+   title,company,description,url
+   Analista de dados,Equipe MVP,Requisitos: Python.,https://example.invalid/mvp/analista
+   ```
+
+3. Em `POST /pipeline/runs`, preencha os campos do formulário com o
+   `candidate_id`, o arquivo e um novo `run_id` (no PowerShell, use
+   `[guid]::NewGuid()`). Guarde esse UUID. Deixe `llm_enabled=false` e execute.
+   A resposta `200` traz `status=completed` e uma vaga em `recommendations_for_review`.
+4. Em `GET /pipeline/runs/{id}`, informe o `run_id`. Confira a recomendação e
+   os contadores do lote. Repetir o POST com os mesmos parâmetros e arquivo
+   recupera a execução. Para salvar a vaga, escolha explicitamente a operação
+   `POST /candidates/{candidate_id}/jobs/{job_id}/save`.
+
+Para usar a análise local, configure o Ollama e envie um novo lote com
+`llm_enabled=true`. Uma execução `partial` identifica em `errors` as vagas
+que falharam. [Configuração do provedor](#provedor-llm-opcional) · [Contrato e exemplo em PowerShell](docs/api.md#pipeline)
+
 ## Testes e Qualidade
 
 ```bash
@@ -245,8 +281,8 @@ uv run pytest
 uv run ruff check
 uv run ruff format --check
 
-# Tipagem (quando adotada)
-uv run mypy
+# Tipagem das rotas do pipeline
+uv run --with ty ty check app/api/routes/pipeline.py
 ```
 
 Os testes de integração usam um banco **isolado** (`jobpilot_test`): a fixture
@@ -258,11 +294,12 @@ igual ao banco de desenvolvimento.
 ## Arquitetura Resumida
 
 ```
-API (FastAPI) → Serviços → Repositórios → PostgreSQL
-                    ↓
-              Orquestração (LangGraph)
-                    ↓
-              Provedores Externos (LLM, embeddings)
+Swagger UI → FastAPI
+               ├─ serviços de perfil, vagas e candidaturas → PostgreSQL
+               └─ serviço do pipeline → grafo LangGraph
+                                         ├─ importação, filtros e matching → PostgreSQL
+                                         ├─ análise opcional → cache / Ollama local
+                                         └─ progresso por etapa → pipeline_runs
 ```
 
 Ver [`design.md`](design.md) para detalhes.

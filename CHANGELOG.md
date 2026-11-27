@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.0] — MVP da Fase 4 — 2026-11-27
+
+### Adicionado
+
+- Pipeline local em LangGraph para importar vagas de um CSV, aplicar filtros e calcular o matching. A análise opcional usa até dez vagas por lote com score ≥ 0,80.
+- Execução e consulta pela API com um UUID por lote. O PostgreSQL guarda o progresso por etapa para permitir a retomada. Em caso de falha parcial, a resposta identifica os erros por vaga e preserva os resultados disponíveis. [Rotas do pipeline](docs/api.md#pipeline)
+- Lista de recomendações para revisão humana. O usuário escolhe quais vagas salvar. [Exemplo completo](README.md#executar-um-lote-pela-api) · [Evidências dos dez critérios do MVP](docs/tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+
 ## [fase-03] — 2026-11-25
 
 ### Adicionado

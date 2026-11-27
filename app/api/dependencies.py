@@ -9,9 +9,11 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
+from app.core.config import settings
 from app.core.database import get_db
+from app.llm.providers import build_llm_provider
 from app.repositories.applications import ApplicationRepository
 from app.repositories.imports import ImportBatchRepository
 from app.repositories.jobs import JobRepository
@@ -29,11 +31,19 @@ from app.services.job_dedup import JobDedupService
 from app.services.job_import import JobImportService
 from app.services.jobs import JobService
 from app.services.matching import MatchingService
+from app.services.pipeline_runs import PipelineRunService
 from app.services.profile import ProfileService
 from app.services.scoring import load_score_calculator
 from app.services.skills import SkillService
 
 DbSession = Annotated[Session, Depends(get_db)]
+
+
+def get_pipeline_run_service(db: DbSession) -> PipelineRunService:
+    """Cria sessões por etapa e adia a montagem do provedor até o pedido de análise."""
+    return PipelineRunService(
+        sessionmaker(bind=db.get_bind()), lambda: build_llm_provider(settings)
+    )
 
 
 def get_profile_service(db: DbSession) -> ProfileService:

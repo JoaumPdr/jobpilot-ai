@@ -159,6 +159,8 @@ def db_session(test_engine: Engine) -> Iterator[Session]:
 
 # Tabelas limpas entre os testes de API (ordem irrelevante por causa do CASCADE).
 _RESET_TABLES = (
+    "pipeline_runs",
+    "llm_cache",
     "jobs",
     "import_batches",
     "candidates",

@@ -321,6 +321,82 @@
   Após o CI do merge, a tag anotada `fase-03` foi publicada nesse commit e
   conferida no GitHub. [PR #46](https://github.com/JoaumPdr/jobpilot-ai/pull/46) · [CI em `develop`](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45539395837) · [Tag `fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03)
 
-## Fases 4–7
+## Fase 4 — Orquestração
+
+### F4-T01 — Estado do pipeline e contratos dos nós (2026-11-25 UTC)
+
+O estado identifica a execução, o candidato, o lote e as vagas que passaram
+por cada etapa. A validação distingue uma etapa pendente de uma etapa concluída
+com zero vagas, confere a origem dos IDs e aplica os limites do funil local
+à seleção. O contrato pode ser reconstruído a partir de JSON e conserva a
+ordem e a versão do matching. [Contratos dos nós](docs/pipeline.md) · [Ficha](docs/tasks/FASE-04/F4-T01.md)
+
+### F4-T02 — Nós determinísticos (2026-11-25 UTC)
+
+O pipeline usa os IDs gravados pelo importador, que já normaliza as vagas,
+e consulta o catálogo para aplicar as confirmações de duplicidade e os
+filtros. O teste com PostgreSQL cobre um lote de 54 vagas com o mesmo
+fingerprint, uma duplicata confirmada e uma vaga arquivada. Também verifica
+a paginação na presença de outro lote e a reimportação de um CSV já processado.
+[Ficha](docs/tasks/FASE-04/F4-T02.md) · [Contratos](docs/pipeline.md)
+
+### F4-T03 — Matching, seleção top-N e análise LLM (2026-11-25 UTC)
+
+O pipeline usa o score determinístico e a versão do matching para encaminhar
+até dez vagas ao serviço de análise. No teste com PostgreSQL, onze vagas
+empataram acima do limiar. O provedor simulado recebeu as dez primeiras por
+UUID e o banco registrou análise somente para elas. Os testes isolados também
+conferem o limiar inclusivo de 0,80, o score nulo, o lote vazio e o modo com
+LLM desativado. [Ficha](docs/tasks/FASE-04/F4-T03.md) · [Contratos](docs/pipeline.md)
+
+### F4-T04 — Transições condicionais, retry e falha parcial
+
+O LangGraph liga os nós de importação, normalização, deduplicação, filtragem,
+matching e seleção. O caminho de análise só executa quando há vagas selecionadas.
+Nos testes, um timeout transitório permitiu recuperar uma vaga e o esgotamento
+das tentativas de outra ficou registrado no estado. Uma falha do provedor
+preservou as análises bem-sucedidas do mesmo lote.
+[Ficha](docs/tasks/FASE-04/F4-T04.md) · [Execução do grafo](docs/pipeline.md#execução-local-e-falhas-por-vaga)
+
+### F4-T05 — Persistência e retomada da execução
+
+Cada nó confirma seus efeitos e o snapshot do pipeline na mesma transação PostgreSQL. Uma queda simulada após o commit interno do importador deixou o banco sem lote ou vaga duplicada. A repetição com o mesmo UUID recuperou o processamento. Duas chamadas concorrentes produziram um único lote e um único matching. A suíte passou de 546 para 551 testes. [Ficha](docs/tasks/FASE-04/F4-T05.md)
+
+### F4-T06 — Ponto de aprovação humana
+
+O pipeline termina com uma lista ordenada de vagas para revisão. Em PostgreSQL,
+duas vagas receberam recomendação e a lista de candidaturas permaneceu vazia
+até o usuário salvar uma delas. Reexecutar o lote preservou a escolha. A suíte
+passou de 551 para 553 testes. [Ficha](docs/tasks/FASE-04/F4-T06.md)
+
+### F4-T07 — Rotas do pipeline
+
+A API executa o lote recebido por multipart e permite recuperar o resultado
+pelo UUID. Nos testes HTTP com PostgreSQL e provedor falso, um erro de análise
+ficou restrito a uma das duas vagas. Repetir o POST recuperou o resultado
+persistido e preservou o número de chamadas ao provedor. A suíte passou de
+553 para 558 testes. [Ficha](docs/tasks/FASE-04/F4-T07.md) · [API](docs/api.md#pipeline)
+
+### F4-T08 — Fechamento do MVP
+
+Em 27 de novembro de 2026 (UTC), os dez critérios da §12 do plano foram
+conferidos com evidências do repositório. A suíte passou com 558 testes em
+PostgreSQL e atingiu 97,51% de cobertura na aplicação e 96,00% nos serviços.
+[Checklist e evidências](docs/tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+
+No roteiro do README, o CSV gerou uma recomendação. Consultar o UUID e repetir
+o envio devolveram a mesma execução. A candidatura apareceu somente após a
+escolha explícita de salvar a vaga. A publicação de `v0.1.0` pertence ao
+F4-GATE. [Roteiro reproduzido](README.md#executar-um-lote-pela-api)
+
+### F4-GATE — Verificação do MVP
+
+Na revisão `0575c39`, a suíte confirmou o fluxo do RF-11 do CSV à lista de
+recomendações, a recuperação de um lote interrompido e o tratamento de falhas
+por vaga. Os 558 testes passaram em PostgreSQL. A ficha reúne as evidências
+do pipeline, o checklist dos dez critérios e as etapas de publicação.
+[Ficha do gate](docs/tasks/FASE-04/F4-GATE.md)
+
+## Fases 5–7
 
 *(A serem preenchidas conforme avanço das fases)*
