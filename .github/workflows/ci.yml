@@ -32,10 +32,12 @@ jobs:
 
     steps:
       - name: Checkout repositório
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Instalar uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v10.4.0
+        with:
+          enable-cache: false
 
       - name: Sincronizar dependências (lock travado)
         run: uv sync --locked
@@ -46,8 +48,11 @@ jobs:
       - name: Formatação com Ruff
         run: uv run ruff format --check .
 
-      - name: Testes com pytest
-        run: uv run pytest
+      - name: Testes com pytest e cobertura
+        run: |
+          uv run coverage run --source=app -m pytest
+          uv run coverage report --precision=2 --show-missing --fail-under=70
+          uv run coverage report --precision=2 --include='app/services/*' --fail-under=85
 
       - name: Teste de migração Alembic (upgrade/downgrade)
         run: |

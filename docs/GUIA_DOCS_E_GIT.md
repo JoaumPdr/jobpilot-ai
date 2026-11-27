@@ -10,6 +10,7 @@
 
 | Arquivo | Para quê | Quando atualizar |
 |---------|----------|------------------|
+| `AGENTS.md` | Ponto de entrada para agentes, com links para as fontes canônicas | Quando mudar a ordem de retomada ou o mapa de instruções |
 | `README.md` | Porta de entrada: objetivo, status, instalação, configuração, execução, arquitetura resumida, roadmap | A cada fase fechada e a cada mudança de instalação/execução |
 | `design.md` | Arquitetura em detalhe: camadas, fluxos, decisões e o *porquê* | Quando a arquitetura ou um fluxo mudar |
 | `RELATORIO.md` | Diário técnico por fase: o que foi feito, problemas, soluções, métricas, aprendizados | Ao fechar cada tarefa (nota curta) e cada fase (seção completa) |
@@ -26,7 +27,7 @@
 | `docs/evaluation.md` | Golden set, métricas, resultados comparativos | Fases 2, 3 e 4 |
 | `docs/pipeline.md` | Grafo LangGraph: estado, nós, transições, falhas | Fase 4 em diante |
 | `docs/privacy-and-sources.md` | Privacidade (LGPD), política de fontes de vagas e checklist de termos de uso | Fase 0 (base) e a cada nova fonte |
-| `docs/tasks/FASE-XX/Fx-Tyy.md` | Ficha de cada tarefa | Criada no início da tarefa |
+| `docs/tasks/FASE-XX/Fx-Tyy.md` | Ficha de cada tarefa | Ao iniciar tarefa que exija planejamento detalhado (política no `BACKLOG.md`) |
 | `CHANGELOG.md` | Mudanças por versão (tags) | Ao criar tag |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Modelo de PR (seção B.5) | F0-T01; raramente depois |
 
@@ -37,6 +38,7 @@
 | Nova rota / alteração de contrato | `docs/api.md`, README (se afetar uso) |
 | Nova migração / tabela / coluna | `docs/data-model.md` |
 | Nova variável de ambiente | `.env.example`, README (seção configuração) |
+| Mudança no pacote local, na persistência ou nos procedimentos de backup e restauração | README (pré-requisitos, configuração e execução) e procedimentos operacionais correspondentes. Na F7-T09, registrar a evidência de instalação limpa no `RELATORIO.md` |
 | Mudança de regra de score/peso | `docs/matching-methodology.md`, incrementar `scoring_version`, `RELATORIO.md` |
 | Novo prompt ou mudança de prompt | `prompts/` (nova `prompt_version`), `docs/llm-strategy.md` |
 | Mudança de fluxo/nó do pipeline | `docs/pipeline.md`, `design.md` |
@@ -48,7 +50,7 @@
 1. Nome, **link do repositório no GitHub e badge de CI**, descrição em 2–3 linhas e **objetivo do repositório** (portfólio + demonstração/estudo de engenharia de dados e **orquestração multiagente**, desenvolvido com apoio da Alethe e arquivos de instruções).
 2. **Princípios** (recomenda e prepara; usuário decide; sem envio automático; sem inventar fatos).
 3. Status atual (fase) e roadmap resumido com links.
-4. Pré-requisitos (incluindo **`uv`** e Docker), instalação (`uv sync`), configuração (`.env`), execução, testes e lint (sempre via `uv run`).
+4. Para desenvolvimento, documentar pré-requisitos (incluindo **`uv`** e Docker), instalação (`uv sync`), configuração (`.env`), execução, testes e lint (via `uv run`). Quando o pacote local for entregue, documentar separadamente os pré-requisitos e a instalação por Docker Compose, a configuração inicial, o acesso à interface e os procedimentos de backup e restauração ou seus links.
 5. Arquitetura resumida com diagrama e link para `design.md`.
 6. Estrutura de pastas.
 7. Como contribuir/retomar o desenvolvimento (aponta para `docs/STATUS.md` e `docs/ALETHE_INSTRUCOES.md`).
@@ -148,7 +150,7 @@ Passos (executar uma vez; o repositório local e o remoto nascem juntos):
 ### B.3 Fluxo de integração
 
 1. Branch de tarefa criada **a partir da branch da fase**.
-2. Ao atender os critérios de aceitação, abrir **PR no GitHub** (pelo MCP) da tarefa → fase, usando **merge com histórico** (preserva commits pequenos, útil para retomada). Mesclar só com **CI verde no remoto**.
+2. Ao atender os critérios de aceitação, abrir **PR no GitHub** da tarefa → fase via MCP autenticado ou `gh`, usando **merge com histórico** (preserva commits pequenos, útil para retomada). Mesclar só com **CI verde no remoto**.
 3. Ao cumprir o **gate da fase**: PR `phase/NN-*` → `develop`.
 4. Ao fechar marcos de release (`v0.1.0` no fim da Fase 4, `v1.0.0` na Fase 7): PR `develop` → `main` + **tag anotada publicada no remoto**; criar também um *release* no GitHub com o trecho do `CHANGELOG.md`.
 5. Tag a cada fase fechada: `fase-00`, `fase-01`, … **sempre enviadas ao GitHub** (permite voltar rapidamente a qualquer ponto bom).
@@ -241,14 +243,14 @@ Testes que chamam LLM real ficam **fora** do CI padrão (marcador opt-in).
 
 **Princípio:** nenhum trabalho confirmado fica só na máquina. O GitHub é o backup e o ponto de retomada.
 
-**Ferramentas:** MCP do GitHub (ligado à conta do JP no VS Code) para operações de repositório (criar repositório/branches, PRs, status de CI, milestones); git local para commits, branches, merge local e push. Se o MCP falhar, usar o git local e registrar no `STATUS.md`. Credenciais nunca entram em arquivos, URLs do remoto ou commits.
+**Ferramentas.** Use o MCP do GitHub quando estiver disponível e autenticado. Use `gh` autenticado para PRs e CI quando o MCP estiver indisponível e registre a alternativa no `STATUS.md`. Use `git` local para commits, branches, merge local e push. Credenciais ficam nos mecanismos de autenticação das ferramentas.
 
 | Momento | Ação | Verificação |
 |---------|------|-------------|
 | Início de sessão | `git fetch --all --prune`; se o remoto estiver à frente, `git pull --ff-only` | `git status -sb` sem `behind`; sem divergência |
 | Nova branch de tarefa | Primeiro commit → **primeiro push** com upstream | Branch aparece no GitHub |
 | Durante a tarefa | Push após cada commit significativo (ciclo verde) | Sem `ahead` ao pausar |
-| Tarefa concluída | PR tarefa → fase pelo MCP; CI roda no GitHub | CI verde antes de mesclar |
+| Tarefa concluída | PR tarefa → fase pelo MCP ou `gh`. O CI roda no GitHub | CI verde antes de mesclar |
 | Fase concluída | PR fase → `develop`; tag `fase-NN` publicada | Tag visível no GitHub; CI verde em `develop` |
 | Release | PR `develop` → `main`; tag `vX.Y.Z` + release no GitHub | `main` com a tag e o `CHANGELOG.md` atualizado |
 | Fim de sessão | Commit (`chore(wip)` se incompleto) + push | Árvore limpa, sem `ahead`, `STATUS.md` com o estado de sincronização |
@@ -266,7 +268,7 @@ Testes que chamam LLM real ficam **fora** do CI padrão (marcador opt-in).
 |----------|-------------|
 | Push rejeitado (remoto à frente) | `git fetch`, integrar com `git pull --ff-only` ou rebase **apenas da própria branch de tarefa**; nunca force |
 | Histórico divergiu | Parar, registrar no `STATUS.md` e avisar o JP |
-| MCP sem permissão ou autenticação | Avisar o JP; continuar com git local se a credencial dele já estiver configurada na máquina; não contornar |
+| MCP sem permissão ou autenticação | Avisar o JP e registrar a alternativa no `STATUS.md`. Usar `gh` ou `git` local somente nas operações cobertas pelas permissões de cada ferramenta |
 | CI vermelho no GitHub | Corrigir na branch da tarefa e novo push; não mesclar |
 | Segredo enviado ao remoto | Avisar o JP para **revogar a chave imediatamente**; só então tratar o histórico com a orientação dele |
 
