@@ -13,26 +13,28 @@
 | **Última atualização** | 2026-11-27 (UTC) |
 | **Fase atual** | Fase 4 — Orquestração |
 | **Branch base** | `phase/04-orquestracao`, criada de `develop` em `b6fb209` após a integração do encerramento documental pelo PR #47 |
-| **Última tarefa integrada** | [F4-T07 — Rotas do pipeline e testes do fluxo completo](tasks/FASE-04/F4-T07.md), em `12fdb5d` |
-| **Tarefa atual** | [F4-T08 — Fechamento do MVP](tasks/FASE-04/F4-T08.md) |
-| **Estado da tarefa** | Dez critérios com evidências e roteiro do README validado. Integração na branch da fase pendente |
+| **Última tarefa integrada** | [F4-T08 — Fechamento do MVP](tasks/FASE-04/F4-T08.md), em `cc863cb` |
+| **Próxima tarefa** | F4-GATE — integração da Fase 4 e publicação do MVP |
+| **Estado da próxima tarefa** | A iniciar |
 | **Último merge de fase** | `b7348cc` — PR #46 (F3-GATE), em `develop` |
 | **Testes** | **558 testes aprovados** com PostgreSQL. Cobertura de 97,51% em `app` e 96,00% nos serviços. Ruff, formatação e OpenAPI aprovados. Tipagem dos cinco módulos da integração aprovada. O JP aceitou os dois avisos preexistentes de `on_event` em `app/main.py` |
-| **CI** | Aprovado na revisão `12502c5` do PR #54 e no merge `12fdb5d`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916040683) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45916180788) |
+| **CI** | Aprovado na revisão `7b13152` do PR #55 e no merge `cc863cb`. [CI do PR](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45917953051) · [CI do merge](https://github.com/JoaumPdr/jobpilot-ai/actions/runs/45918092965) |
 | **Repositório remoto** | `https://github.com/JoaumPdr/jobpilot-ai` |
-| **Sincronização com o remoto** | A branch `docs/f4-t08-fechamento-mvp` partiu de `26f9e2f`, conferido com `origin/phase/04-orquestracao` |
+| **Sincronização com o remoto** | A branch local `phase/04-orquestracao` recebeu o merge do PR #55 por fast-forward. A branch da tarefa foi preservada no GitHub |
 | **Merge da fase confirmado no remoto** | 2026-11-25 03:21 UTC, `b7348cc` em `develop` |
 | **PR da fase** | [PR #46 — F3-GATE](https://github.com/JoaumPdr/jobpilot-ai/pull/46), mesclado em `develop` |
 | **Última tag publicada** | [`fase-03`](https://github.com/JoaumPdr/jobpilot-ai/tree/fase-03) → `b7348cc` (tag anotada `492895f`) |
-| **GitHub** | O conector retornou 403 ao criar o PR da F4-T07. Com autorização do JP, o líder usou `gh` para abrir e mesclar o PR #54 e acompanhar o CI |
+| **GitHub** | Após o 403 do conector, o JP autorizou o uso de `gh` para abrir e integrar o PR #55 e acompanhar o CI |
 
 ### Próxima ação exata (uma frase, imperativa)
 
-> Integrar a F4-T08 por PR de `docs/f4-t08-fechamento-mvp` para `phase/04-orquestracao` após a aprovação do CI.
+> Retome pelo F4-GATE no backlog e confira o RF-11 e as evidências dos dez critérios antes da integração da fase.
 
 ---
 
 ## 2. O que foi feito na última sessão
+
+- **F4-T08 integrada (2026-11-27 UTC).** O PR #55 integrou o fechamento documental do MVP em `cc863cb`. O CI passou no PR e no merge. A próxima tarefa é o F4-GATE. [PR #55](https://github.com/JoaumPdr/jobpilot-ai/pull/55)
 
 - **F4-T08 validada (2026-11-27 UTC).** Os dez critérios têm evidências na ficha. O exemplo do README passou em banco isolado, inclusive na repetição do lote e na escolha manual de salvar a vaga. Changelog e relatório atualizados. [Ficha](tasks/FASE-04/F4-T08.md)
 
@@ -147,10 +149,10 @@
 
 ## 3. O que falta na tarefa atual (lista concreta)
 
-**Última tarefa integrada.** F4-T07, PR #54. [Ficha](tasks/FASE-04/F4-T07.md)
-**Tarefa atual.** F4-T08 validada localmente. [Checklist dos dez critérios](tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+**Última tarefa integrada.** F4-T08, PR #55. [Checklist dos dez critérios](tasks/FASE-04/F4-T08.md#evidências-dos-dez-critérios)
+**Próxima tarefa.** F4-GATE, conforme o [backlog](BACKLOG.md).
 
-- [ ] Conferir o CI da F4-T08 no PR, integrar e registrar o merge na fase
+- [x] Conferir o CI da F4-T08 no PR, integrar e registrar o merge na fase
 
 - [x] Validar as duas rotas, as respostas consultáveis e a reexecução com provedor falso
 - [x] Conferir o CI da F4-T07 no PR, integrar e registrar o merge na fase
